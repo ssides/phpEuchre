@@ -7,28 +7,28 @@
 
         $firstname     = $_POST["firstname"];
         $lastname      = $_POST["lastname"];
-        $email         = $_POST["email"];
+        $name          = $_POST["name"];
         $mobilenumber  = $_POST["mobilenumber"];
         $password      = $_POST["password"];
         
-        $email_check_query = mysqli_query($connection, "select * from `users` where email = '{$email}' ");
-        $emailCount = mysqli_num_rows($email_check_query);
+        $name_check_query = mysqli_query($connection, "select * from `Players` where `Name` = '{$name}' ");
+        $nameCount = mysqli_num_rows($name_check_query);
         
-        if($emailCount > 0) {
+        if($nameCount > 0) {
             $email_exist = '
                 <div class="alert alert-danger" role="alert">
-                    User with email already exist!
+                    A user with that name already exists!
                 </div>
             ';
         } else {
           // PHP validation
           // Verify if form values are not empty
-          if(!empty($firstname) && !empty($lastname) && !empty($email) && !empty($mobilenumber) && !empty($password)){
+          if(!empty($name) && !empty($password)){
             
                // clean the form data before sending to database
             $_first_name = mysqli_real_escape_string($connection, $firstname);
             $_last_name = mysqli_real_escape_string($connection, $lastname);
-            $_email = mysqli_real_escape_string($connection, $email);
+            $_name = mysqli_real_escape_string($connection, $name);
             $_mobile_number = mysqli_real_escape_string($connection, $mobilenumber);
             $_password = mysqli_real_escape_string($connection, $password);
             
@@ -43,36 +43,20 @@
                         Only letters and white space allowed.
                     </div>';
             }
-            if(!filter_var($_email, FILTER_VALIDATE_EMAIL)) {
-                $_emailErr = '<div class="alert alert-danger">
-                        Email format is invalid.
-                    </div>';
-            }
-            if(!preg_match("/^[0-9]{10}+$/", $_mobile_number)) {
-                $_mobileErr = '<div class="alert alert-danger">
-                        Only 10-digit mobile numbers allowed.
-                    </div>';
-            }
-            if(!preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{6,20}$/", $_password)) {
-                $_passwordErr = '<div class="alert alert-danger">
-                         Password should be between 6 to 20 charcters long, contain at least one special chacter, lowercase, uppercase and a digit.
-                    </div>';
-            }
             
             if((preg_match("/^[a-zA-Z ]*$/", $_first_name)) 
               && (preg_match("/^[a-zA-Z ]*$/", $_last_name)) 
-              && (filter_var($_email, FILTER_VALIDATE_EMAIL)) 
-              && (preg_match("/^[0-9]{10}+$/", $_mobile_number)) 
-              && (preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/", $_password))){
+              ){
                 // Generate random activation token
                 $token = md5(rand().time());
+                $playerID = com_create_guid();
                 
                 // Password hash
                 $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
                 // Query
-                $sql = "insert into `users` (`firstname`, `lastname`, `email`, `mobilenumber`, `password`, `token`, `is_active`, `date_time`) 
-                  values ('{$firstname}', '{$lastname}', '{$email}', '{$mobilenumber}', '{$password_hash}', '{$token}', '0', now())";
+                $sql = "insert into `Players` (`PlayerID`, `Name`, `Password`, `Token`, `IsActive`, `InsertDate`) 
+                  values ('{$playerID}','{$name}', '{$password_hash}', '{$token}', '1, now())";
                   
                 // Create mysql query
                 $insertResult = mysqli_query($connection, $sql);

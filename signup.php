@@ -47,11 +47,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" class="form-control" name="email" id="email" />
+                        <label>Name</label>
+                        <input type="text" class="form-control"  id="name" />
 
-                        <?php echo $_emailErr; ?>
-                        <?php echo $emailEmptyErr; ?>
+                        <?php echo $nameEmptyErr; ?>
                     </div>
 
                     <div class="form-group">
