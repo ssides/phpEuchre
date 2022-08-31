@@ -5,17 +5,14 @@
     
     if(isset($_POST["submit"])) {
 
-        $firstname     = $_POST["firstname"];
-        $lastname      = $_POST["lastname"];
         $name          = $_POST["name"];
-        $mobilenumber  = $_POST["mobilenumber"];
         $password      = $_POST["password"];
         
         $name_check_query = mysqli_query($connection, "select * from `Players` where `Name` = '{$name}' ");
         $nameCount = mysqli_num_rows($name_check_query);
         
         if($nameCount > 0) {
-            $email_exist = '
+            $name_exist = '
                 <div class="alert alert-danger" role="alert">
                     A user with that name already exists!
                 </div>
@@ -25,11 +22,8 @@
           // Verify if form values are not empty
           if(!empty($name) && !empty($password)){
             
-               // clean the form data before sending to database
-            $_first_name = mysqli_real_escape_string($connection, $firstname);
-            $_last_name = mysqli_real_escape_string($connection, $lastname);
+            // clean the form data before sending to database
             $_name = mysqli_real_escape_string($connection, $name);
-            $_mobile_number = mysqli_real_escape_string($connection, $mobilenumber);
             $_password = mysqli_real_escape_string($connection, $password);
             
              // perform validation
@@ -56,7 +50,7 @@
 
                 // Query
                 $sql = "insert into `Players` (`PlayerID`, `Name`, `Password`, `Token`, `IsActive`, `InsertDate`) 
-                  values ('{$playerID}','{$name}', '{$password_hash}', '{$token}', '1, now())";
+                  values ('{$playerID}','{$name}', '{$password_hash}', '{$token}', '1', now())";
                   
                 // Create mysql query
                 $insertResult = mysqli_query($connection, $sql);

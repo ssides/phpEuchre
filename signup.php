@@ -26,39 +26,15 @@
                     <h3>Register</h3>
 
                     <?php if(isset($success_msg)){ echo $success_msg; }; ?>
-                    <?php if(isset($email_exist)){ echo $email_exist; }; ?>
+                    <?php if(isset($name_exist)){ echo $name_exist; }; ?>
                     <?php if(isset($email_verify_err)){ echo $email_verify_err; }; ?>
                     <?php if(isset($email_verify_success)){ echo $email_verify_success; }; ?>
-
-                    <div class="form-group">
-                        <label>First name</label>
-                        <input type="text" class="form-control" name="firstname" id="firstName" />
-
-                        <?php echo $fNameEmptyErr; ?>
-                        <?php echo $f_NameErr; ?>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Last name</label>
-                        <input type="text" class="form-control" name="lastname" id="lastName" />
-
-                        <?php echo $l_NameErr; ?>
-                        <?php echo $lNameEmptyErr; ?>
-                    </div>
 
                     <div class="form-group">
                         <label>Name</label>
                         <input type="text" class="form-control" name="name" id="name" />
 
                         <?php echo $nameEmptyErr; ?>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Mobile</label>
-                        <input type="text" class="form-control" name="mobilenumber" id="mobilenumber" />
-
-                        <?php echo $_mobileErr; ?>
-                        <?php echo $mobileEmptyErr; ?>
                     </div>
 
                     <div class="form-group">
