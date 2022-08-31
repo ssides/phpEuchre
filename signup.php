@@ -16,9 +16,14 @@
 
 <body>
    
-   <?php include_once('config/config.php'); ?>
-   <?php include('header.php'); ?>
-
+    <?php include_once('config/config.php'); ?>
+    <?php include('header.php'); ?>
+    <?php     
+      // Error & success messages
+      global $success_msg, $email_exist, $f_NameErr, $l_NameErr, $_emailErr, $_mobileErr, $_passwordErr;
+      global $fNameEmptyErr, $lNameEmptyErr, $emailEmptyErr, $mobileEmptyErr, $passwordEmptyErr, $email_verify_err, $email_verify_success;
+    ?>
+    
     <div class="App">
         <div class="vertical-center">
             <div class="inner-block">
