@@ -3,6 +3,16 @@
     // Database connection
     include('config/db.php');
     
+    function GUID()
+    {
+        if (function_exists('com_create_guid') === true)
+        {
+            return trim(com_create_guid(), '{}');
+        }
+
+        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+    }
+    
     if(isset($_POST["submit"])) {
 
         $name          = $_POST["name"];
@@ -31,7 +41,7 @@
                 // Generate random activation token
                 $token = md5(rand().time());
                 
-                $playerID = com_create_guid();
+                $playerID = GUID();
                 
                 // Password hash
                 $password_hash = password_hash($password, PASSWORD_BCRYPT);
