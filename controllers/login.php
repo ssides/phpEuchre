@@ -24,7 +24,30 @@
                 $accountNotExistErr = '<div class="alert alert-danger">
                         User account does not exist.
                     </div>';
-            } 
+            } else {
+                if(!empty($name_signin) && !empty($password_signin)){
+                    while($row = mysqli_fetch_array($query)) {
+                        $id          = $row['PlayerID'];
+                        $name        = $row['Name'];
+                        $pass_word   = $row['Password'];
+                        $token       = $row['Token'];
+                        $is_active   = $row['IsActive'];
+                    }
+
+                } else {
+                    if(empty($name_signin)){
+                        $name_empty_err = "<div class='alert alert-danger email_alert'>
+                                Email not provided.
+                        </div>";
+                    }
+
+                    if(empty($password_signin)){
+                        $pass_empty_err = "<div class='alert alert-danger email_alert'>
+                                Password not provided.
+                            </div>";
+                    }
+                }
+            }
         }
 
         
