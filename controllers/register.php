@@ -23,7 +23,6 @@
                     User with email already exist!
                 </div>
             ';
-            header("Location: register.php");
         }
         /*
 
