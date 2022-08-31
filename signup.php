@@ -16,12 +16,13 @@
 
 <body>
    
+   <?php include_once('config/config.php'); ?>
    <?php include('header.php'); ?>
 
     <div class="App">
         <div class="vertical-center">
             <div class="inner-block">
-                <form action="controllers/register.php" method="post">
+                <form action="<?php echo $appUrl.'controllers/register.php' ?>" method="post">
                     <h3>Register</h3>
 
                     <?php echo $success_msg; ?>
