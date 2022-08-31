@@ -3,7 +3,6 @@
     // Database connection
     include('config/db.php');
     
-
     if(isset($_POST["submit"])) {
 
         $firstname     = $_POST["firstname"];

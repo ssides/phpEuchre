@@ -1,3 +1,4 @@
+<?php include('controllers/register.php'); ?>
 
 <!doctype html>
 <html lang="en">
@@ -17,22 +18,15 @@
    
     <?php include_once('config/config.php'); ?>
     <?php include('header.php'); ?>
-    <?php 
-      // Set empty form vars for validation mapping
-      $_first_name = $_last_name = $_email = $_mobile_number = $_password = '';
-      $email_exist = $email_verify_err = '';
-    ?>
-    <?php include('controllers/register.php'); ?>
     <div class="App">
         <div class="vertical-center">
             <div class="inner-block">
-                    <h3>Registration Error</h3>
+              <h3>Registration Error</h3>
 
-                    <?php echo $success_msg; ?>
-                    <?php echo $email_exist; ?>
-
-                    <?php echo $email_verify_err; ?>
-                    <?php echo $email_verify_success; ?>
+              <?php echo $success_msg; ?>
+              <?php if(isset($email_exist)){ echo $email_exist; }; ?>
+              <?php echo $email_verify_err; ?>
+              <?php echo $email_verify_success; ?>
 
             </div>
         </div>
