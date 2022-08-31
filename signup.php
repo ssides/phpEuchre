@@ -25,12 +25,10 @@
                 <form action="" method="post">
                     <h3>Register</h3>
 
-                    <?php echo $success_msg; ?>
+                    <?php if(isset($success_msg)){ echo $success_msg; }; ?>
                     <?php if(isset($email_exist)){ echo $email_exist; }; ?>
                     <?php if(isset($email_verify_err)){ echo $email_verify_err; }; ?>
-                    <?php if(isset($postSubmit)){ echo $postSubmit; }; ?>
-
-                    <?php echo $email_verify_success; ?>
+                    <?php if(isset($email_verify_success)){ echo $email_verify_success; }; ?>
 
                     <div class="form-group">
                         <label>First name</label>
