@@ -57,10 +57,19 @@
             }
             if(!preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{6,20}$/", $_password)) {
                 $_passwordErr = '<div class="alert alert-danger">
-                         Password should be between 6 to 20 charcters long, contains atleast one special chacter, lowercase, uppercase and a digit.
+                         Password should be between 6 to 20 charcters long, contain at least one special chacter, lowercase, uppercase and a digit.
                     </div>';
             }
             
+            if((preg_match("/^[a-zA-Z ]*$/", $_first_name)) 
+              && (preg_match("/^[a-zA-Z ]*$/", $_last_name)) 
+              && (filter_var($_email, FILTER_VALIDATE_EMAIL)) 
+              && (preg_match("/^[0-9]{10}+$/", $_mobile_number)) 
+              && (preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/", $_password))){
+                // Generate random activation token
+                $token = md5(rand().time());
+
+            }
           } else {
               if(empty($firstname)){
                 $fNameEmptyErr = '<div class="alert alert-danger">
