@@ -72,8 +72,16 @@
 
                 // Query
                 $sql = "insert into `users` (`firstname`, `lastname`, `email`, `mobilenumber`, `password`, `token`, `is_active`, `date_time`) 
-                values ('{$firstname}', '{$lastname}', '{$email}', '{$mobilenumber}', '{$password_hash}', '{$token}', '0', now())";
-
+                  values ('{$firstname}', '{$lastname}', '{$email}', '{$mobilenumber}', '{$password_hash}', '{$token}', '0', now())";
+                  
+                // Create mysql query
+                $insertResult = mysqli_query($connection, $sql);
+                
+                 if(!$insertResult){
+                    $success_msg = mysqli_error($connection);
+                } else {
+                    $success_msg = 'Registration successful';
+                }
             }
           } else {
               if(empty($firstname)){
