@@ -1,3 +1,5 @@
+include 'vars.php';
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container">
         <a class="navbar-brand" href="#">PHP User Auth System</a>
@@ -9,10 +11,10 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="http://localhost:8888/php-user-authentication/index.php">Sign in</a>
+                    <a class="nav-link" href="$baseUrl/php-user-authentication/index.php">Sign in</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="http://localhost:8888/php-user-authentication/signup.php">Sign up</a>
+                    <a class="nav-link" href="baseUrl/php-user-authentication/signup.php">Sign up</a>
                 </li>
             </ul>
         </div>
