@@ -22,6 +22,7 @@
     $dbname = "Euchre";
     
    // $connection = mysqli_connect($hostname, $username, $password, $dbname) or die("Database connection not established.")
+   $connection = mysqli($hostname, $username, $password, $dbname) or die("Database connection not established.")
 
 ?>
     <div class="App">
