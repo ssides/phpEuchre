@@ -1,3 +1,5 @@
+<?php include('controllers/register.php'); ?>
+
 <!doctype html>
 <html lang="en">
 
@@ -20,13 +22,14 @@
     <div class="App">
         <div class="vertical-center">
             <div class="inner-block">
-                <form action="<?php echo $appUrl.'register.php' ?>" method="post">
+                <form action="" method="post">
                     <h3>Register</h3>
 
                     <?php echo $success_msg; ?>
-                    <?php echo $email_exist; ?>
+                    <?php if(isset($email_exist)){ echo $email_exist; }; ?>
+                    <?php if(isset($email_verify_err)){ echo $email_verify_err; }; ?>
+                    <?php if(isset($postSubmit)){ echo $postSubmit; }; ?>
 
-                    <?php echo $email_verify_err; ?>
                     <?php echo $email_verify_success; ?>
 
                     <div class="form-group">
