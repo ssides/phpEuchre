@@ -1,5 +1,5 @@
 
-<?php include('config/config.php'); ?>
+<?php include_once('config/config.php'); ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container">

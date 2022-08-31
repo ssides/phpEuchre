@@ -12,6 +12,8 @@
 
     if(isset($_POST["submit"])) {
       $fNameEmptyErr = "submitted";
+       header("Location: ./signup.php");
+
       /*
         $firstname     = $_POST["firstname"];
         $lastname      = $_POST["lastname"];
@@ -22,7 +24,6 @@
         // check if email already exist
         $email_check_query = mysqli_query($connection, "SELECT * FROM users WHERE email = '{$email}' ");
         $rowCount = mysqli_num_rows($email_check_query);
-
 
         // PHP validation
         // Verify if form values are not empty
