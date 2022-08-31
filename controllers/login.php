@@ -16,10 +16,15 @@
         $query = mysqli_query($connection, $sql);
         
         if(!$query){
-            $sqlErr = mysqli_error($connection));
+            $sqlErr = mysqli_error($connection);
         } else {
             $rowCount = mysqli_num_rows($query);
             
+            if($rowCount <= 0) {
+                $accountNotExistErr = '<div class="alert alert-danger">
+                        User account does not exist.
+                    </div>';
+            } 
         }
 
         
