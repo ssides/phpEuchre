@@ -13,7 +13,8 @@
 
         // Query if email exists in db
         $sql = "select * from `Players` where `Name` = '{$_name}' ";
-     
+        $query = mysqli_query($connection, $sql);
+
         
     }
 
