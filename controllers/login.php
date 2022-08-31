@@ -16,7 +16,25 @@
         $query = mysqli_query($connection, $sql);
         $rowCount = mysqli_num_rows($query);
 
-      
+        if(!$query){
+            $sqlErr = mysqli_error($connection));
+        }
+        if(!empty($name_signin) && !empty($password_signin)){
+
+        } else {
+            if(empty($name_signin)){
+                $name_empty_err = "<div class='alert alert-danger email_alert'>
+                    Email not provided.
+                </div>";
+            }
+
+            if(empty($password_signin)){
+                $pass_empty_err = "<div class='alert alert-danger email_alert'>
+                    Password not provided.
+                </div>";
+            }
+
+        }
     }
 
 ?>
