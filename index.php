@@ -16,16 +16,17 @@
 
 <?php 
 
-    $hostname = "35.229.118.28";
+    $hostname = "localhost";
     $username = "dbUser";
-    $password = "$Password1";
+    $password = "PwdPwd123";
     $dbname = "Euchre";
     
-    $connection = mysqli_connect($hostname, $username, $password, $dbname) or die("Database connection not established.")
+   // $connection = mysqli_connect($hostname, $username, $password, $dbname) or die("Database connection not established.")
 
 ?>
     <div class="App">
       <h3>Hello World!</h3>
+      <?php var_dump(function_exists('mysqli_connect')); ?>
     </div>
 
 </body>
