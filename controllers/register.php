@@ -24,7 +24,7 @@
                     User with email already exist!
                 </div>
             ';
-            header("Location: ../signup.php");
+            header("Location: register.php");
         }
         /*
 
