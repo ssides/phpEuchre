@@ -30,8 +30,9 @@
             if($confirmpassword == $password){
                 // Generate random activation token
                 $token = md5(rand().time());
-                // $playerID = com_create_guid();
-                $PlayerID = "asdf";
+                
+                $playerID = com_create_guid();
+                
                 // Password hash
                 $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
