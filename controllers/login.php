@@ -33,7 +33,16 @@
                         $token       = $row['Token'];
                         $is_active   = $row['IsActive'];
                     }
+                    
+                    // Verify password
+                    $password = password_verify($pswd, $pass_word);
 
+                    if($pswd == $password) {
+                       // header("Location: ./dashboard.php");
+                       $sqlErr = "Credentials match";
+                    } else {
+                       $sqlErr = $pswd . "," . $password_signin .",". $password .",". $pass_word;
+                    }
                 } else {
                     if(empty($name_signin)){
                         $name_empty_err = "<div class='alert alert-danger email_alert'>
