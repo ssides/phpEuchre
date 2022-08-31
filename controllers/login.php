@@ -14,6 +14,13 @@
         // Query if email exists in db
         $sql = "select * from `Players` where `Name` = '{$_name}' ";
         $query = mysqli_query($connection, $sql);
+        
+        if(!$query){
+            $sqlErr = mysqli_error($connection));
+        } else {
+            $rowCount = mysqli_num_rows($query);
+            
+        }
 
         
     }
