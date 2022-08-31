@@ -27,6 +27,40 @@
           // Verify if form values are not empty
           if(!empty($firstname) && !empty($lastname) && !empty($email) && !empty($mobilenumber) && !empty($password)){
             
+               // clean the form data before sending to database
+            $_first_name = mysqli_real_escape_string($connection, $firstname);
+            $_last_name = mysqli_real_escape_string($connection, $lastname);
+            $_email = mysqli_real_escape_string($connection, $email);
+            $_mobile_number = mysqli_real_escape_string($connection, $mobilenumber);
+            $_password = mysqli_real_escape_string($connection, $password);
+            
+             // perform validation
+            if(!preg_match("/^[a-zA-Z ]*$/", $_first_name)) {
+                $f_NameErr = '<div class="alert alert-danger">
+                        Only letters and white space allowed.
+                    </div>';
+            }
+            if(!preg_match("/^[a-zA-Z ]*$/", $_last_name)) {
+                $l_NameErr = '<div class="alert alert-danger">
+                        Only letters and white space allowed.
+                    </div>';
+            }
+            if(!filter_var($_email, FILTER_VALIDATE_EMAIL)) {
+                $_emailErr = '<div class="alert alert-danger">
+                        Email format is invalid.
+                    </div>';
+            }
+            if(!preg_match("/^[0-9]{10}+$/", $_mobile_number)) {
+                $_mobileErr = '<div class="alert alert-danger">
+                        Only 10-digit mobile numbers allowed.
+                    </div>';
+            }
+            if(!preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{6,20}$/", $_password)) {
+                $_passwordErr = '<div class="alert alert-danger">
+                         Password should be between 6 to 20 charcters long, contains atleast one special chacter, lowercase, uppercase and a digit.
+                    </div>';
+            }
+            
           } else {
               if(empty($firstname)){
                 $fNameEmptyErr = '<div class="alert alert-danger">
