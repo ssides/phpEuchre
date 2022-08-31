@@ -25,10 +25,10 @@
                 <form action="" method="post">
                     <h3>Register</h3>
 
-                    <?php if(isset($success_msg)){ echo $success_msg; }; ?>
-                    <?php if(isset($name_exist)){ echo $name_exist; }; ?>
-                    <?php if(isset($email_verify_err)){ echo $email_verify_err; }; ?>
-                    <?php if(isset($email_verify_success)){ echo $email_verify_success; }; ?>
+                    <?php echo $success_msg; ?>
+                    <?php echo $name_exist; ?>
+                    <?php echo $email_verify_err; ?>
+                    <?php echo $email_verify_success; ?>
 
                     <div class="form-group">
                         <label>Name</label>
@@ -43,6 +43,11 @@
 
                         <?php echo $_passwordErr; ?>
                         <?php echo $passwordEmptyErr; ?>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" class="form-control" name="confirmpassword" id="confirmpassword" />
                     </div>
 
                     <button type="submit" name="submit" id="submit" class="btn btn-outline-primary btn-lg btn-block">Sign up</button>

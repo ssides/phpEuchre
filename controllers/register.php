@@ -7,6 +7,7 @@
 
         $name          = $_POST["name"];
         $password      = $_POST["password"];
+        $confirmpassword=$_POST["confirmpassword"];
         
         $name_check_query = mysqli_query($connection, "select * from `Players` where `Name` = '{$name}' ");
         $nameCount = mysqli_num_rows($name_check_query);
@@ -20,27 +21,13 @@
         } else {
           // PHP validation
           // Verify if form values are not empty
-          if(!empty($name) && !empty($password)){
+          if(!empty($name) && !empty($password) && !empty($confirmpassword)){
             
             // clean the form data before sending to database
             $_name = mysqli_real_escape_string($connection, $name);
             $_password = mysqli_real_escape_string($connection, $password);
             
-             // perform validation
-            if(!preg_match("/^[a-zA-Z ]*$/", $_first_name)) {
-                $f_NameErr = '<div class="alert alert-danger">
-                        Only letters and white space allowed.
-                    </div>';
-            }
-            if(!preg_match("/^[a-zA-Z ]*$/", $_last_name)) {
-                $l_NameErr = '<div class="alert alert-danger">
-                        Only letters and white space allowed.
-                    </div>';
-            }
-            
-            if((preg_match("/^[a-zA-Z ]*$/", $_first_name)) 
-              && (preg_match("/^[a-zA-Z ]*$/", $_last_name)) 
-              ){
+            if($confirmpassword == $password){
                 // Generate random activation token
                 $token = md5(rand().time());
                 // $playerID = com_create_guid();
@@ -58,8 +45,12 @@
                  if(!$insertResult){
                     $success_msg = mysqli_error($connection);
                 } else {
-                    $success_msg = 'Registration successful';
+                    $success_msg = 'Registration successful. Please sign in.';
                 }
+            } else {
+                $passwordEmptyErr = '<div class="alert alert-danger">
+                    Confirm Password does not match Password.
+                </div>';
             }
           } else {
              
@@ -72,6 +63,11 @@
             if(empty($password)){
                 $passwordEmptyErr = '<div class="alert alert-danger">
                     Password cannot be blank.
+                </div>';
+            }
+            if(empty($confirmpassword)){
+                $confirmpasswordEmptyErr = '<div class="alert alert-danger">
+                    Confirm Password cannot be blank.
                 </div>';
             }
           }
