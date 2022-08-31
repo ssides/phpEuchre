@@ -23,10 +23,9 @@
             <div class="inner-block">
               <h3>Registration Error</h3>
 
-              <?php echo $success_msg; ?>
+              <?php if(isset($email_verify_err)){ echo $email_verify_err; }; ?>
               <?php if(isset($email_exist)){ echo $email_exist; }; ?>
-              <?php echo $email_verify_err; ?>
-              <?php echo $email_verify_success; ?>
+              <?php if(isset($postSubmit)){ echo $postSubmit; }; ?>
 
             </div>
         </div>
