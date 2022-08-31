@@ -28,15 +28,15 @@
         // PHP validation
         // Verify if form values are not empty
         if(!empty($firstname) && !empty($lastname) && !empty($email) && !empty($mobilenumber) && !empty($password)){
-            
+          
             // clean the form data before sending to database
             $_first_name = mysqli_real_escape_string($connection, $firstname);
             $_last_name = mysqli_real_escape_string($connection, $lastname);
             $_email = mysqli_real_escape_string($connection, $email);
             $_mobile_number = mysqli_real_escape_string($connection, $mobilenumber);
             $_password = mysqli_real_escape_string($connection, $password);
-
-            // perform validation
+            
+             // perform validation
             if(!preg_match("/^[a-zA-Z ]*$/", $_first_name)) {
                 $f_NameErr = '<div class="alert alert-danger">
                         Only letters and white space allowed.
@@ -62,14 +62,12 @@
                          Password should be between 6 to 20 charcters long, contains atleast one special chacter, lowercase, uppercase and a digit.
                     </div>';
             }
-                
-            // Store the data in db, if all the preg_match condition met
+            
             if((preg_match("/^[a-zA-Z ]*$/", $_first_name)) 
-                && (preg_match("/^[a-zA-Z ]*$/", $_last_name)) 
-                && (filter_var($_email, FILTER_VALIDATE_EMAIL)) 
-                && (preg_match("/^[0-9]{10}+$/", $_mobile_number)) 
-                && (preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/", $_password))){
-
+            && (preg_match("/^[a-zA-Z ]*$/", $_last_name)) 
+            && (filter_var($_email, FILTER_VALIDATE_EMAIL)) 
+            && (preg_match("/^[0-9]{10}+$/", $_mobile_number)) 
+            && (preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/", $_password))){
                 // Generate random activation token
                 $token = md5(rand().time());
 
@@ -89,8 +87,9 @@
                     $success_msg = 'Registration successful';
                 }
             } else {
-              $success_msg = 'Invalid name, mobile number or password.';
+               $success_msg = 'Invalid name, mobile number or password.';
             }
+
         } else {
             if(empty($firstname)){
                 $fNameEmptyErr = '<div class="alert alert-danger">
