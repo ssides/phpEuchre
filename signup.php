@@ -1,5 +1,3 @@
-<?php include('controllers/register.php'); ?>
-
 <!doctype html>
 <html lang="en">
 
@@ -18,16 +16,11 @@
    
     <?php include_once('config/config.php'); ?>
     <?php include('header.php'); ?>
-    <?php     
-      // Error & success messages
-      global $success_msg, $email_exist, $f_NameErr, $l_NameErr, $_emailErr, $_mobileErr, $_passwordErr;
-      global $fNameEmptyErr, $lNameEmptyErr, $emailEmptyErr, $mobileEmptyErr, $passwordEmptyErr, $email_verify_err, $email_verify_success;
-    ?>
     
     <div class="App">
         <div class="vertical-center">
             <div class="inner-block">
-                <form action="<?php echo $appUrl.'controllers/register.php' ?>" method="post">
+                <form action="<?php echo $appUrl.'register.php' ?>" method="post">
                     <h3>Register</h3>
 
                     <?php echo $success_msg; ?>
