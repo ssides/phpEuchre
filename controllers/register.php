@@ -3,18 +3,11 @@
     // Database connection
     include('config/db.php');
     
-    // Error & success messages
-    global $success_msg, $email_exist, $f_NameErr, $l_NameErr, $_emailErr, $_mobileErr, $_passwordErr;
-    global $fNameEmptyErr, $lNameEmptyErr, $emailEmptyErr, $mobileEmptyErr, $passwordEmptyErr, $email_verify_err, $email_verify_success;
-    
     // Set empty form vars for validation mapping
     $_first_name = $_last_name = $_email = $_mobile_number = $_password = "";
 
     if(isset($_POST["submit"])) {
-      $fNameEmptyErr = "submitted";
-       header("Location: ../signup.php");
 
-      /*
         $firstname     = $_POST["firstname"];
         $lastname      = $_POST["lastname"];
         $email         = $_POST["email"];
@@ -22,8 +15,18 @@
         $password      = $_POST["password"];
 
         // check if email already exist
-        $email_check_query = mysqli_query($connection, "SELECT * FROM users WHERE email = '{$email}' ");
+        $email_check_query = mysqli_query($connection, "select * from `users` where email = '{$email}' ");
         $rowCount = mysqli_num_rows($email_check_query);
+        // check if user email already exist
+        if($rowCount == 0) {
+            $email_exist = '
+                <div class="alert alert-danger" role="alert">
+                    User with email already exist!
+                </div>
+            ';
+            header("Location: ../signup.php");
+        }
+        /*
 
         // PHP validation
         // Verify if form values are not empty
