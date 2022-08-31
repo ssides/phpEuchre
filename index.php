@@ -16,7 +16,7 @@
 
 <?php 
 
-    $hostname = "localhost";
+    $hostname = "35.229.118.28";
     $username = "dbUser";
     $password = "$Password1";
     $dbname = "Euchre";
