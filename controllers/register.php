@@ -3,8 +3,6 @@
     // Database connection
     include('config/db.php');
     
-    // Set empty form vars for validation mapping
-    $_first_name = $_last_name = $_email = $_mobile_number = $_password = "";
 
     if(isset($_POST["submit"])) {
 
@@ -13,6 +11,7 @@
         $email         = $_POST["email"];
         $mobilenumber  = $_POST["mobilenumber"];
         $password      = $_POST["password"];
+        $email_verify_err =  $_POST["firstname"];
 
         // check if email already exist
         $email_check_query = mysqli_query($connection, "select * from `users` where email = '{$email}' ");
