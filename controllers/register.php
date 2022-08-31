@@ -49,8 +49,8 @@
               ){
                 // Generate random activation token
                 $token = md5(rand().time());
-                $playerID = com_create_guid();
-                
+                // $playerID = com_create_guid();
+                $PlayerID = "asdf";
                 // Password hash
                 $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
@@ -68,29 +68,16 @@
                 }
             }
           } else {
-              if(empty($firstname)){
-                $fNameEmptyErr = '<div class="alert alert-danger">
-                    First name can not be blank.
+             
+            if(empty($name)){
+                $nameEmptyErr = '<div class="alert alert-danger">
+                    Name cannot be blank.
                 </div>';
             }
-            if(empty($lastname)){
-                $lNameEmptyErr = '<div class="alert alert-danger">
-                    Last name can not be blank.
-                </div>';
-            }
-            if(empty($email)){
-                $emailEmptyErr = '<div class="alert alert-danger">
-                    Email can not be blank.
-                </div>';
-            }
-            if(empty($mobilenumber)){
-                $mobileEmptyErr = '<div class="alert alert-danger">
-                    Mobile number can not be blank.
-                </div>';
-            }
+           
             if(empty($password)){
                 $passwordEmptyErr = '<div class="alert alert-danger">
-                    Password can not be blank.
+                    Password cannot be blank.
                 </div>';
             }
           }
