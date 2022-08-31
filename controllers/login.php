@@ -20,12 +20,7 @@
             $sqlErr = mysqli_error($connection));
         }
         
-        if(!empty($name_signin) && !empty($password_signin)){
-
-        } else {
         
-
-        }
     }
 
 ?>
