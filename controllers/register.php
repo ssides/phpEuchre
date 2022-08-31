@@ -15,11 +15,12 @@
     
     if(isset($_POST["submit"])) {
 
-        $name          = $_POST["name"];
-        $password      = $_POST["password"];
-        $confirmpassword=$_POST["confirmpassword"];
+        $name            = $_POST["name"];
+        $password        = $_POST["password"];
+        $confirmpassword = $_POST["confirmpassword"];
         
-        $name_check_query = mysqli_query($connection, "select * from `Players` where `Name` = '{$name}' ");
+        $_name = mysqli_real_escape_string($connection, $name);
+        $name_check_query = mysqli_query($connection, "select * from `Players` where `Name` = '{$_name}' ");
         $nameCount = mysqli_num_rows($name_check_query);
         
         if($nameCount > 0) {
@@ -44,11 +45,11 @@
                 $playerID = GUID();
                 
                 // Password hash
-                $password_hash = password_hash($password, PASSWORD_BCRYPT);
+                $password_hash = password_hash($_password, PASSWORD_BCRYPT);
 
                 // Query
                 $sql = "insert into `Players` (`PlayerID`, `Name`, `Password`, `Token`, `IsActive`, `InsertDate`) 
-                  values ('{$playerID}','{$name}', '{$password_hash}', '{$token}', '1', now())";
+                  values ('{$playerID}','{$_name}', '{$password_hash}', '{$token}', '1', now())";
                   
                 // Create mysql query
                 $insertResult = mysqli_query($connection, $sql);
