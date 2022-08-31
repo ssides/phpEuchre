@@ -12,7 +12,7 @@
 
     if(isset($_POST["submit"])) {
       $fNameEmptyErr = "submitted";
-       header("Location: ./signup.php");
+       header("Location: ../signup.php");
 
       /*
         $firstname     = $_POST["firstname"];
