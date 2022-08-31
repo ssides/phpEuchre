@@ -1,4 +1,4 @@
-<?php include('./controllers/register.php'); ?>
+<?php include('controllers/register.php'); ?>
 
 <!doctype html>
 <html lang="en">
@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/style.css">
-    <title>PHP User Registration System Example</title>
+    <title>Register</title>
     <!-- jQuery + Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
@@ -16,12 +16,12 @@
 
 <body>
    
-   <?php include('./header.php'); ?>
+   <?php include('header.php'); ?>
 
     <div class="App">
         <div class="vertical-center">
             <div class="inner-block">
-                <form action="" method="post">
+                <form action="controllers/register.php" method="post">
                     <h3>Register</h3>
 
                     <?php echo $success_msg; ?>
@@ -70,8 +70,7 @@
                         <?php echo $passwordEmptyErr; ?>
                     </div>
 
-                    <button type="submit" name="submit" id="submit" class="btn btn-outline-primary btn-lg btn-block">Sign up
-                    </button>
+                    <button type="submit" name="submit" id="submit" class="btn btn-outline-primary btn-lg btn-block">Sign up</button>
                 </form>
             </div>
         </div>

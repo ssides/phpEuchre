@@ -2,9 +2,6 @@
    
     // Database connection
     include('config/db.php');
-
-    // Swiftmailer lib
-    require_once './lib/vendor/autoload.php';
     
     // Error & success messages
     global $success_msg, $email_exist, $f_NameErr, $l_NameErr, $_emailErr, $_mobileErr, $_passwordErr;
@@ -14,6 +11,8 @@
     $_first_name = $_last_name = $_email = $_mobile_number = $_password = "";
 
     if(isset($_POST["submit"])) {
+      $fNameEmptyErr = "submitted";
+      /*
         $firstname     = $_POST["firstname"];
         $lastname      = $_POST["lastname"];
         $email         = $_POST["email"];
@@ -157,5 +156,6 @@
                 </div>';
             }            
         }
+        */
     }
 ?>
