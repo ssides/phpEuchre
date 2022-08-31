@@ -30,18 +30,13 @@
         $sql = "select `ID`,`Value` from `HelloWorld` ";
         $result = mysqli_query($conn, $sql);
         echo "Row count " . mysqli_num_rows($result);
-        if($result->num_rows>0){
-            //iterating only if the table is not empty
-            while ($row = $result->fetch_object()) {
-                //Here you are iterating each row of the database
-                foreach ($row as $r){
-                    //Here you are iterating each column as $r
-                    //and (trying) adding it again to the $row array
-                    echo $row['ID'] . " " . $row['Value'] . '</br>';
-                }
-            }
+        if(mysqli_num_rows($result) > 0){
+          //iterating only if the table is not empty
+          while($row = mysqli_fetch_array($result)) {
+            echo $row['ID'] . " " . $row['Value'] . '</br>';
+          }
         }
- ?>
+      ?>
     </div>
 
 </body>
