@@ -48,7 +48,7 @@
 
                     <div class="form-group">
                         <label>Name</label>
-                        <input type="text" class="form-control"  id="name" />
+                        <input type="text" class="form-control" name="name" id="name" />
 
                         <?php echo $nameEmptyErr; ?>
                     </div>
