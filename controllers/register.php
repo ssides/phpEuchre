@@ -11,7 +11,8 @@
         $mobilenumber  = $_POST["mobilenumber"];
         $password      = $_POST["password"];
         $email_verify_err =  $_POST["firstname"];
-
+        $postSubmit = 'submitted<br>';
+        
         // check if email already exist
         $email_check_query = mysqli_query($connection, "select * from `users` where email = '{$email}' ");
         $rowCount = mysqli_num_rows($email_check_query);
