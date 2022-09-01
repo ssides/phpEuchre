@@ -1,15 +1,18 @@
 <?php 
-  
   include_once('config/config.php');
   
-  protected function removeCookie()
+  function removeCookie()
   {
     global $cookieName;
     if(isset($_COOKIE[$cookieName])) {
       unset($_COOKIE[$cookieName]);
     }
 
-    return setcookie($cookieName, '', -1, '/');
+    if (setcookie($cookieName, '', -1, '/')) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 ?>
