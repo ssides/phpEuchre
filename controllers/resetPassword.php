@@ -33,16 +33,15 @@
 
                 $smt = mysqli_prepare($connection, 'update `Players` set `Password` = ? where `PlayerID` = ?');
                 mysqli_stmt_bind_param($smt, 's,s', $password_hash, $id);
-                  
-                $updateResult = mysqli_query($connection, $sql);
+                mysqli_stmt_execute($smt);
                 
-                 if(!$updateResult){
+                if(mysqli_stmt_affected_rows($smt) == 0){
                     $errorMsg = mysqli_error($connection);
-                } else if (mysqli_stmt_affected_rows($smt) == 0) {
-                    $errorMsg = 'Password could not be updated.';
                 } else {
                     $successMsg = 'Password successfully reset. Please sign in.';
                 }
+                
+                mysqli_stmt_close($smt);
             } else {
                 $passwordEmptyErr = '<div class="alert alert-danger">
                     Confirm Password does not match Password.

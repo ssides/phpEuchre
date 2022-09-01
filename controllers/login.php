@@ -22,7 +22,7 @@
         $_name = mysqli_real_escape_string($connection, $name_signin);
         $pswd = mysqli_real_escape_string($connection, $password_signin);
 
-        // Query if email exists in db
+        // Query if name exists in db
         $sql = "select * from `Players` where `Name` = '{$_name}' ";
         $query = mysqli_query($connection, $sql);
         
@@ -54,6 +54,10 @@
                       } else {
                         $sqlErr = "Could not log in.";
                       }
+                    } else {
+                      $accountNotExistErr = '<div class="alert alert-danger">
+                          Access denied.
+                      </div>';
                     }
                 } else {
                     if(empty($name_signin)){
