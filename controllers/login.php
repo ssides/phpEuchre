@@ -46,14 +46,13 @@
                     $password = password_verify($pswd, $pass_word);
                     
                     if($pswd == $password) {
-                      $sqlErr = "Credentials match";
-                      /*
+                      // credentials match.
                       if(setLoginCookie($id)) {
                         header("Location: dashboard.php");
                       } else {
                         $sqlErr = "Could not log in.";
                       }
-                      */
+                      
                     }
                 } else {
                     if(empty($name_signin)){
