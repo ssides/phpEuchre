@@ -21,10 +21,11 @@ create table `UserProfile`
   `ContentType` varchar(256) not null,
   `FileSize` int(10) not null,
   `InsertDate` datetime not null,
+  `OriginalScale` decimal null,
   `Thumbnail` longblob null, 
   `HOffset` int null,
   `VOffset` int null,
-  `Scale` decimal null,
+  `DisplayScale` decimal null,
   constraint `FK_UserProfile_Player` foreign key (`PlayerID`) references `Player`(`ID`)
 );
 
