@@ -11,8 +11,11 @@
       
       $contentType = $_FILES['profileImage']['type'];
       $size = $_FILES['profileImage']['size'];
+      $fileName = $_FILES['profileImage']['name'];
+      $escFileName = mysqli_real_escape_string($fileName);
       
       if ($_FILES['profileImage']['error'] == 0) {
+        
         list($width, $height, $_gettype, $_getattr) = getimagesize($_FILES['profileImage']['tmp_name']);
         $_bytes = mysqli_real_escape_string(file_get_contents($_FILES['profileImage']['tmp_name']));
         $_fileName = mysqli_real_escape_string($_FILES['profileImage']['name']);
