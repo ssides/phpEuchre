@@ -1,4 +1,5 @@
 <?php
+    $accountNotExistErr ='';
    
     // Database connection
     include('config/db.php');
@@ -6,7 +7,7 @@
     
     function setLoginCookie($id) {
       $result = false;
-      global $accountNotExistErr = 'setLoginCookie() called. ' . $id;
+      $accountNotExistErr = 'setLoginCookie() called. ' . $id;
       if (function_exists('setcookie') === true)
       {
         if (setcookie($cookieName, $id)) {
