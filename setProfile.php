@@ -23,7 +23,7 @@
       <div class="inner-block">
 
         <form action="" method="post" enctype="multipart/form-data">
-          <?php echo $sqlErr; ?>
+          <?php echo $sqlErr.'<br>'; ?>
           <?php echo $errorMsg; ?>
           <?php echo $successMsg; ?>
       <?php echo 'width: '.$width.'<br>'; ?>
