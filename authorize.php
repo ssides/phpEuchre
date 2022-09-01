@@ -3,6 +3,8 @@
   include_once('config/config.php');
 
   function validUser($id) {
+    global $connection;
+    
     if(empty($id)) {
       return false;
     }

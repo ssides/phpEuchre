@@ -1,4 +1,4 @@
-<!-- <?php include('authorize.php'); ?> -->
+<?php include('authorize.php'); ?>
 <!doctype html>
 <html lang="en">
 
