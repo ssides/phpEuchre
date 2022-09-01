@@ -14,8 +14,9 @@
         } else {
           $accountNotExistErr = 'could not setcookie';
         }
+      } else {
+        $accountNotExistErr = 'setcookie() does not exist';
       }
-      $accountNotExistErr = 'setcookie() does not exist';
       return $result;
     }
     
@@ -57,7 +58,7 @@
                       if(setLoginCookie($id)) {
                         header("Location: dashboard.php");
                       } else {
-                        $sqlErr = "Could not log in.";
+                        $sqlErr = "Could not log in. id: " . $id;
                       }
                     }
                 } else {
