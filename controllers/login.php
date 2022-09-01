@@ -5,17 +5,18 @@
     include('config/config.php');
     
     function setLoginCookie($id) {
+      $result = false;
       if (function_exists('setcookie') === true)
       {
         if (setcookie($cookieName, $id)) {
-          return true;
+          $accountNotExistErr = 'cookie set';
+          $result = true;
         } else {
           $accountNotExistErr = 'could not setcookie';
-          return false;
         }
       }
       $accountNotExistErr = 'setcookie() does not exist';
-      return false;
+      return $result;
     }
     
     if(isset($_POST['login'])) {
@@ -58,7 +59,6 @@
                       } else {
                         $sqlErr = "Could not log in.";
                       }
-                      
                     }
                 } else {
                     if(empty($name_signin)){
