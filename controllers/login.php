@@ -15,7 +15,7 @@
           $accountNotExistErr = 'cookie set';
           $result = true;
         } else {
-          $accountNotExistErr = 'could not setcookie';
+          $accountNotExistErr = 'could not setcookie: '. $cookieName;
         }
       } else {
         $accountNotExistErr = 'setcookie() does not exist';
