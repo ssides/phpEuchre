@@ -31,7 +31,7 @@
             $_fileName = mysqli_real_escape_string($connection, $_FILES['profileImage']['name']);
             $hofs = $vofs = 0;
             
-            $smt = mysqli_prepare($connection, 'insert into `UserProfile` (`ID` , `PlayerID` ,`FileName` , `OriginalImage`,`ContentType` ,`FileSize` ,`Thumbnail`,`HOffset`,`VOffset`,`OriginalScale`,`InsertDate` ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, now())');
+            $smt = mysqli_prepare($connection, 'insert into `UserProfile` (`ID` , `PlayerID` ,`FileName` , `OriginalImage`,`ContentType` ,`FileSize` ,`Thumbnail`,`HOffset`,`VOffset`,`OriginalScale`,`InsertDate` ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())');
             mysqli_stmt_bind_param($smt, 'sssbsibiid', GUID(), $_COOKIE[$cookieName], $_fileName, $_fileBytes, $contentType, $size, $_th, $hofs, $vofs, $scale);
             if (!mysqli_stmt_execute($smt)){
               $sqlErr = mysqli_error($connection);
