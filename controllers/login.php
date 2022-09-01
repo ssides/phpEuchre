@@ -12,7 +12,6 @@
       {
         if (setcookie($cookieName, $id)) {
           $result = true;
-        } else {
         }
       }
       return $result;
