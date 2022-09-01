@@ -2,7 +2,16 @@
    
     // Database connection
     include('config/db.php');
-
+    include('config/config.php');
+    
+    function setCookie($id) {
+      if (function_exists('setcookie') === true)
+      {
+        return setcookie($cookieName, $id);
+      }
+      return false;
+    }
+    
     if(isset($_POST['login'])) {
         $name_signin      = $_POST['name_signin'];
         $password_signin  = $_POST['password_signin'];
@@ -34,14 +43,13 @@
                         $is_active   = $row['IsActive'];
                     }
                     
-                    // Verify password
-                    $password = password_verify($pswd, $pass_word);
-
-                    if($pswd == $password) {
-                       // header("Location: ./dashboard.php");
-                       $sqlErr = "Credentials match";
-                    } else {
-                       $sqlErr = $pswd . "," . $password_signin .",". $password .",". $pass_word;
+                    if($pswd == password_verify($pswd, $pass_word)) {
+                      $sqlErr = "Credentials match";
+                      if(setCookie($id)) {
+                        header("Location: dashboard.php");
+                      } else {
+                        $sqlErr = "Could not log in.";
+                      }
                     }
                 } else {
                     if(empty($name_signin)){
