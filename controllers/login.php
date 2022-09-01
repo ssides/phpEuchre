@@ -7,8 +7,14 @@
     function setLoginCookie($id) {
       if (function_exists('setcookie') === true)
       {
-        return setcookie($cookieName, $id);
+        if (setcookie($cookieName, $id)) {
+          return true;
+        } else {
+          $accountNotExistErr = 'could not setcookie';
+          return false;
+        }
       }
+      $accountNotExistErr = 'setcookie() does not exist';
       return false;
     }
     
