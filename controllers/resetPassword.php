@@ -32,13 +32,14 @@
                 $password_hash = password_hash($_password, PASSWORD_BCRYPT);
 
                 $smt = mysqli_prepare($connection, 'update `Players` set `Password` = ? where `PlayerID` = ?');
-                mysqli_stmt_bind_param($smt, 's,s', $password_hash, trim($id));
+                mysqli_stmt_bind_param($smt, 'ss', $password_hash, trim($id));
                 mysqli_stmt_execute($smt);
+                $dbg1 = $id;
                 
                 if(mysqli_stmt_affected_rows($smt) > 0){
                     $successMsg = 'Password successfully reset. Please sign in.';
                 } else {
-                    $errorMsg = mysqli_error($connection);
+                    $errorMsg = 'Error: '.mysqli_error($connection);
                 }
                 
                 mysqli_stmt_close($smt);
