@@ -9,16 +9,15 @@
         header('Location: index.php');
       }
       
-      $contentType = $_FILES['profileImage']['type'];
-      $size = $_FILES['profileImage']['size'];
-      $fileName = $_FILES['profileImage']['name'];
-      $escFileName = mysqli_real_escape_string($fileName);
-      
       if ($_FILES['profileImage']['error'] == 0) {
+
+        $contentType = $_FILES['profileImage']['type'];
+        $size = $_FILES['profileImage']['size'];
+        $_bytes = mysqli_real_escape_string($connection, file_get_contents($_FILES['profileImage']['tmp_name']));
+        $_fileName = mysqli_real_escape_string($connection, $_FILES['profileImage']['name']);
         
         list($width, $height, $_gettype, $_getattr) = getimagesize($_FILES['profileImage']['tmp_name']);
-        $_bytes = mysqli_real_escape_string(file_get_contents($_FILES['profileImage']['tmp_name']));
-        $_fileName = mysqli_real_escape_string($_FILES['profileImage']['name']);
+
         $smt = mysqli_prepare($connection, 'insert into `UserProfile` (`ID` , `PlayerID` ,`FileName` , `OriginalImage`,`ContentType` ,`FileSize` ,`InsertDate` ) values (?, ?, ?, ?, ?, ?, now())');
         mysqli_stmt_bind_param($smt, 'sssssi', GUID(), $_COOKIE[$cookieName], $_fileName, $_bytes, $contentType, $size);
         if (!mysqli_stmt_execute($smt)){
