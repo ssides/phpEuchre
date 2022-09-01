@@ -3,7 +3,7 @@
     // Database connection
     include('config/db.php');
     include('config/config.php');
-    
+    /*
     function setCookie($id) {
       if (function_exists('setcookie') === true)
       {
@@ -11,7 +11,7 @@
       }
       return false;
     }
-    
+    */
     if(isset($_POST['login'])) {
         $name_signin      = $_POST['name_signin'];
         $password_signin  = $_POST['password_signin'];
