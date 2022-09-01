@@ -23,19 +23,37 @@
       <div class="inner-block">
 
         <form action="" method="post" enctype="multipart/form-data">
-          <?php echo $sqlErr.'<br>'; ?>
+          <?php echo $sqlErr; ?>
           <?php echo $errorMsg; ?>
           <?php echo $successMsg; ?>
-      <?php echo 'width: '.$width.'<br>'; ?>
-      <?php echo 'heigh: '.$height.'<br>'; ?>
-      <?php echo 'fn: '.$fileName.'<br>'; ?>
-      <?php echo 'efn: '.$escFileName.'<br>'; ?>
 
           <div class="form-group padding">
             <label>Profile Image</label>
             <input type="file" class="form-control" accept="image/*" name="profileImage" />
           </div>
           <button type="submit" name="upload" id="upload" class="btn btn-outline-primary btn-lg btn-block">Upload</button>
+        </form>
+        
+        <form action="" method="post">
+          <?php echo $sqlErr2; ?>
+          <?php echo $errorMsg2; ?>
+          <?php echo $successMsg2; ?>
+          
+          <img  src="./controllers/thumbnail.php&r=<?php echo mt_rand(0, 65535) ?>" alt="Thumbnail">
+
+          <div class="form-group">
+              <label>X Offset</label>
+              <input type="number" class="form-control" name="xofs" id="xofs" />
+          </div>
+          <div class="form-group">
+              <label>Y Offset</label>
+              <input type="number" class="form-control" name="yofs" id="yofs" />
+          </div>
+          <div class="form-group">
+              <label>Scale</label>
+              <input type="number" class="form-control" name="scale" id="scale" />
+          </div>
+          <button type="submit" name="adjust" id="adjust" class="btn btn-outline-primary btn-lg btn-block">Adjust</button>
         </form>
         
       </div>
