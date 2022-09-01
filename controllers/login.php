@@ -6,19 +6,14 @@
     include('config/config.php');
     
     function setLoginCookie($id) {
-      global $accountNotExistErr, $cookieName;
+      global $cookieName;
       $result = false;
-      $accountNotExistErr = 'setLoginCookie() called. ' . $id;
       if (function_exists('setcookie') === true)
       {
         if (setcookie($cookieName, $id)) {
-          $accountNotExistErr = 'cookie set';
           $result = true;
         } else {
-          $accountNotExistErr = 'could not setcookie: '. $cookieName;
         }
-      } else {
-        $accountNotExistErr = 'setcookie() does not exist';
       }
       return $result;
     }
@@ -58,6 +53,7 @@
                     if($pswd == $password) {
                       // credentials match.
                       if(setLoginCookie($id) === true) {
+                        $accountNotExistErr = 'credentials match. cookie set'
                         header("Location: ./dashboard.php");
                       } else {
                         $sqlErr = "Could not log in. id: " . $id;
