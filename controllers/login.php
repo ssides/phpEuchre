@@ -43,13 +43,17 @@
                         $is_active   = $row['IsActive'];
                     }
                     
-                    if($pswd == password_verify($pswd, $pass_word)) {
+                    $password = password_verify($pswd, $pass_word);
+                    
+                    if($pswd == $password) {
                       $sqlErr = "Credentials match";
+                      /*
                       if(setCookie($id)) {
                         header("Location: dashboard.php");
                       } else {
                         $sqlErr = "Could not log in.";
                       }
+                      */
                     }
                 } else {
                     if(empty($name_signin)){
