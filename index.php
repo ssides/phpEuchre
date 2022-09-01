@@ -25,12 +25,12 @@
                 <form action="" method="post">
                     <h3>Login</h3>
 
-                    <?php echo $sqlErr; ?>
-                    <?php echo $accountNotExistErr; ?>
-                    <?php echo $namePwdErr; ?>
-                    <?php echo $verificationRequiredErr; ?>
-                    <?php echo $name_empty_err; ?>
-                    <?php echo $pass_empty_err; ?>
+                    <?php echo $sqlErr . '<br>'; ?>
+                    <?php echo $accountNotExistErr . '<br>'; ?>
+                    <?php echo $namePwdErr . '<br>'; ?>
+                    <?php echo $verificationRequiredErr . '<br>'; ?>
+                    <?php echo $name_empty_err . '<br>'; ?>
+                    <?php echo $pass_empty_err . '<br>'; ?>
 
                     <div class="form-group">
                         <label>Name</label>
