@@ -13,7 +13,7 @@
         $confirmpassword = $_POST["confirmpassword"];
         
         $_name = mysqli_real_escape_string($connection, $name);
-        $nameCheckQuery = mysqli_query($connection, "select * from `Players` where `Name` = '{$_name}' ");
+        $nameCheckQuery = mysqli_query($connection, "select * from `Player` where `Name` = '{$_name}' ");
         $nameCount = mysqli_num_rows($nameCheckQuery);
         
         if($nameCount == 0) {
@@ -24,7 +24,7 @@
             ';
         } else {
 
-          $id = ($row = mysqli_fetch_array($nameCheckQuery)) ? $id  = $row['PlayerID'] : '';
+          $id = ($row = mysqli_fetch_array($nameCheckQuery)) ? $id  = $row['ID'] : '';
 
           if(!empty($password) && !empty($confirmpassword)){
             
@@ -34,7 +34,7 @@
                 
                 $password_hash = password_hash($_password, PASSWORD_BCRYPT);
 
-                $smt = mysqli_prepare($connection, 'update `Players` set `Password` = ? where `PlayerID` = ?');
+                $smt = mysqli_prepare($connection, 'update `Player` set `Password` = ? where `ID` = ?');
                 mysqli_stmt_bind_param($smt, 'ss', $password_hash, trim($id));
                 mysqli_stmt_execute($smt);
                 

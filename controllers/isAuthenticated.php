@@ -9,7 +9,7 @@
       return false;
     }
     
-    $nameCheckResult = mysqli_query($connection, "select * from `Players` where `PlayerID` = '{$id}' and `IsActive` = '1'");
+    $nameCheckResult = mysqli_query($connection, "select * from `Player` where `ID` = '{$id}' and `IsActive` = '1'");
     if (!$nameCheckResult) {
       return false;
     }

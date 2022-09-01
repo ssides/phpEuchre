@@ -1,9 +1,7 @@
-DROP TABLE IF EXISTS `users`;
 
-
-drop table if exists `Players`;
-create table `Players` (
-  `PlayerID` char(38) NOT NULL,
+drop table if exists `Player`;
+create table `Player` (
+  `ID` varchar(38) NOT NULL,
   `Name` varchar(100) NOT NULL,
   `Password` varchar(255) NOT NULL,
   `Token` varchar(255) NOT NULL,
@@ -11,6 +9,22 @@ create table `Players` (
   `InsertDate` datetime NOT NULL
 );
 
-create unique index ix_PlayerID on `Players`(`PlayerID`)
+create unique index ix_PlayerID on `Player`(`ID`);
 
+drop table if exists `UserProfile`;
+create table `UserProfile`
+(
+  `ID` varchar(38) not null primary key, 
+  `PlayerID` varchar(38) not null,
+  `FileName` varchar(256) not null, 
+  `OriginalImage` longblob not null,
+  `ContentType` varchar(256) not null,
+  `FileSize` int(10) not null,
+  `InsertDate` datetime not null,
+  `Thumbnail` longblob null, 
+  `HOffset` int null,
+  `VOffset` int null,
+  `Scale` decimal null,
+  constraint `FK_UserProfile_Player` foreign key (`PlayerID`) references `Player`(`ID`)
+);
 
