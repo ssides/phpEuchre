@@ -1,6 +1,4 @@
 <?php
-    $accountNotExistErr = 'default';
-   
     // Database connection
     include('config/db.php');
     include('config/config.php');
@@ -52,10 +50,9 @@
                     if($pswd == $password) {
                       // credentials match.
                       if(setLoginCookie($id) === true) {
-                        $accountNotExistErr = 'credentials match. cookie set'
                         header("Location: ./dashboard.php");
                       } else {
-                        $sqlErr = "Could not log in. id: " . $id;
+                        $sqlErr = "Could not log in.";
                       }
                     }
                 } else {
