@@ -6,7 +6,7 @@
     
     function setLoginCookie($id) {
       $result = false;
-      $accountNotExistErr = 'setLoginCookie() called. ' . $id;
+      global $accountNotExistErr = 'setLoginCookie() called. ' . $id;
       if (function_exists('setcookie') === true)
       {
         if (setcookie($cookieName, $id)) {
