@@ -56,7 +56,7 @@
                     
                     if($pswd == $password) {
                       // credentials match.
-                      if(setLoginCookie($id)) {
+                      if(setLoginCookie($id) === true) {
                         header("Location: dashboard.php");
                       } else {
                         $sqlErr = "Could not log in. id: " . $id;
