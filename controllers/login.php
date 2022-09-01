@@ -1,5 +1,5 @@
 <?php
-    $accountNotExistErr ='';
+    $accountNotExistErr = 'default';
    
     // Database connection
     include('config/db.php');
@@ -28,7 +28,6 @@
 
         $_name = mysqli_real_escape_string($connection, $name_signin);
         $pswd = mysqli_real_escape_string($connection, $password_signin);
-        $sqlErr = "post";
 
         // Query if email exists in db
         $sql = "select * from `Players` where `Name` = '{$_name}' ";
