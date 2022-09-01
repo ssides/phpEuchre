@@ -12,10 +12,10 @@
 
         <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item <?php (!$userIsAuthenticated) ? "hide" : "" ?>">
+                <li class="nav-item <?php echo ($userIsAuthenticated) ? "hide" : ""; ?>">
                     <?php echo '<a class="nav-link" href="'.$appUrl.'index.php">Sign in</a>'; ?>
                 </li>
-                <li class="nav-item <?php ($userIsAuthenticated) ? "hide" : "" ?>">
+                <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">
                     <?php echo '<a class="nav-link" href="'.$appUrl.'logout.php">Sign out</a>'; ?>
                 </li>
                 <li class="nav-item">
