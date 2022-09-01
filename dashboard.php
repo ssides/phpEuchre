@@ -14,8 +14,17 @@
 </head>
 
 <body>
+  <!-- Header -->
+  <?php include('header.php'); ?>
 
-  <div>Organize, or play, or whatever.</div>
+  <div class="App">
+    <div class="vertical-center">
+      <div class="inner-block">
+
+        <div>Organize, or play, or whatever.</div>
+      </div>
+    </div>
+  </div>
 
 </body>
 
