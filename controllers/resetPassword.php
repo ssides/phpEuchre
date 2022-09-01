@@ -33,7 +33,9 @@
 
                 $smt = mysqli_prepare($connection, 'update `Players` set `Password` = ? where `PlayerID` = ?');
                 mysqli_stmt_bind_param($smt, 's,s', $password_hash, $id);
-                mysqli_stmt_execute($smt);
+                $dbg0 = mysqli_stmt_execute($smt);
+                $dbg1 = $id;
+                $dbg2 = mysqli_stmt_affected_rows($smt);
                 
                 if(mysqli_stmt_affected_rows($smt) == 0){
                     $errorMsg = mysqli_error($connection);
