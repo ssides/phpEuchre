@@ -30,9 +30,9 @@
             $_fileBytes = mysqli_real_escape_string($connection, $image);
             $_fileName = mysqli_real_escape_string($connection, $_FILES['profileImage']['name']);
             $hofs = $vofs = 0;
-            
+            deleteExistingImage($_COOKIE[$cookieName]);
             $smt = mysqli_prepare($connection, 'insert into `UserProfile` (`ID` , `PlayerID` ,`FileName` , `OriginalImage`,`ContentType` ,`FileSize` ,`Thumbnail`,`HOffset`,`VOffset`,`OriginalScale`,`InsertDate` ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())');
-            mysqli_stmt_bind_param($smt, 'sssbsibiid', GUID(), $_COOKIE[$cookieName], $_fileName, $_fileBytes, $contentType, $size, $_th, $hofs, $vofs, $scale);
+            mysqli_stmt_bind_param($smt, 'sssssisiid', GUID(), $_COOKIE[$cookieName], $_fileName, $_fileBytes, $contentType, $size, $_th, $hofs, $vofs, $scale);
             if (!mysqli_stmt_execute($smt)){
               $sqlErr = mysqli_error($connection);
             }
@@ -42,8 +42,20 @@
       } else {
         $errorMsg = 'File could not be uploaded.';
       }
+    } else if(isset($_POST['adjust'])) {
+      
     }
     
+    deleteExistingImage($playerID) {
+      global $connection;
+      $smt = mysqli_prepare($connection, 'delete from `UserProfile` where `PlayerID` = ?');
+      mysqli_stmt_bind_param($smt, 's', $playerID);
+      if (!mysqli_stmt_execute($smt)){
+        $sqlErr = mysqli_error($connection);
+      }
+      mysqli_stmt_close($smt);
+    }
+
     function getThumbnailAsString($img, $scale, $width, $height) {
       $simg = imagescale($img, $scale * $width);
       ob_start();
