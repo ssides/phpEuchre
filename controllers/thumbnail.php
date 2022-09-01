@@ -2,6 +2,8 @@
     include_once('config/db.php');
     include_once('config/config.php');
     
+    header("Content-type: {$thumbnailContentType}");
+
     if (empty($_COOKIE[$cookieName])) {
       header('Location: index.php');
     } else {
