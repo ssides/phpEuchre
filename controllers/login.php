@@ -3,15 +3,15 @@
     // Database connection
     include('config/db.php');
     include('config/config.php');
-    /*
-    function setCookie($id) {
+    
+    function setLoginCookie($id) {
       if (function_exists('setcookie') === true)
       {
         return setcookie($cookieName, $id);
       }
       return false;
     }
-    */
+    
     if(isset($_POST['login'])) {
         $name_signin      = $_POST['name_signin'];
         $password_signin  = $_POST['password_signin'];
@@ -48,7 +48,7 @@
                     if($pswd == $password) {
                       $sqlErr = "Credentials match";
                       /*
-                      if(setCookie($id)) {
+                      if(setLoginCookie($id)) {
                         header("Location: dashboard.php");
                       } else {
                         $sqlErr = "Could not log in.";
