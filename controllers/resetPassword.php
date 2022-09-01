@@ -34,7 +34,6 @@
                 $smt = mysqli_prepare($connection, 'update `Players` set `Password` = ? where `PlayerID` = ?');
                 mysqli_stmt_bind_param($smt, 'ss', $password_hash, trim($id));
                 mysqli_stmt_execute($smt);
-                $dbg1 = $id;
                 
                 if(mysqli_stmt_affected_rows($smt) > 0){
                     $successMsg = 'Password successfully reset. Please sign in.';

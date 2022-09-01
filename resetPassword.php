@@ -26,7 +26,6 @@
 
                     <?php echo $successMsg; ?>
                     <?php echo $errorMsg; ?>
-      <?php echo 'id: "'.$dbg1.'"<br>'; ?>
 
                     <div class="form-group">
                         <label>Name</label>
