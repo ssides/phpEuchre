@@ -2,7 +2,10 @@
    
     // Database connection
     include('config/db.php');
-     
+    include('controllers\removeCookie.php');
+    
+    removeCookie();
+    
     if(isset($_POST["submit"])) {
 
         $name            = $_POST["name"];
