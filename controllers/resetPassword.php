@@ -10,8 +10,8 @@
         $confirmpassword = $_POST["confirmpassword"];
         
         $_name = mysqli_real_escape_string($connection, $name);
-        $name_check_query = mysqli_query($connection, "select * from `Players` where `Name` = '{$_name}' ");
-        $nameCount = mysqli_num_rows($name_check_query);
+        $nameCheckQuery = mysqli_query($connection, "select * from `Players` where `Name` = '{$_name}' ");
+        $nameCount = mysqli_num_rows($nameCheckQuery);
         
         if($nameCount == 0) {
             $errorMsg = '
@@ -20,34 +20,28 @@
                 </div>
             ';
         } else {
-          // PHP validation
-          // Verify if form values are not empty
+
+          $id = ($row = mysqli_fetch_array($nameCheckQuery)) ? $id  = $row['PlayerID'] : '';
+
           if(!empty($password) && !empty($confirmpassword)){
             
-            // clean the form data before sending to database
-            $_name = mysqli_real_escape_string($connection, $name);
-            $_password = mysqli_real_escape_string($connection, $password);
-            
             if($confirmpassword == $password){
-                // Generate random activation token
-                $token = md5(rand().time());
+                // always clean the form data before sending to database
+                $_password = mysqli_real_escape_string($connection, $password);
                 
-                $playerID = GUID();
-                
-                // Password hash
                 $password_hash = password_hash($_password, PASSWORD_BCRYPT);
 
-                // Query
-                $sql = "insert into `Players` (`PlayerID`, `Name`, `Password`, `Token`, `IsActive`, `InsertDate`) 
-                  values ('{$playerID}','{$_name}', '{$password_hash}', '{$token}', '1', now())";
+                $smt = mysqli_prepare($connection, 'update `Players` set `Password` = ? where `PlayerID` = ?');
+                mysqli_stmt_bind_param($smt, 's,s', $password_hash, $id);
                   
-                // Create mysql query
-                $insertResult = mysqli_query($connection, $sql);
+                $updateResult = mysqli_query($connection, $sql);
                 
-                 if(!$insertResult){
-                    $success_msg = mysqli_error($connection);
+                 if(!$updateResult){
+                    $errorMsg = mysqli_error($connection);
+                } else if (mysqli_stmt_affected_rows($smt) == 0) {
+                    $errorMsg = 'Password could not be updated.';
                 } else {
-                    $success_msg = 'Registration successful. Please sign in.';
+                    $successMsg = 'Password successfully reset. Please sign in.';
                 }
             } else {
                 $passwordEmptyErr = '<div class="alert alert-danger">
