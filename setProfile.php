@@ -28,6 +28,8 @@
           <?php echo $successMsg; ?>
       <?php echo 'width: '.$width.'<br>'; ?>
       <?php echo 'heigh: '.$height.'<br>'; ?>
+      <?php echo 'fn: '.$fileName.'<br>'; ?>
+      <?php echo 'efn: '.$escFileName.'<br>'; ?>
 
           <div class="form-group padding">
             <label>Profile Image</label>
