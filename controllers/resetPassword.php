@@ -36,6 +36,7 @@
                 $dbg0 = mysqli_stmt_execute($smt);
                 $dbg1 = $id;
                 $dbg2 = mysqli_stmt_affected_rows($smt);
+                $dbg3 = mysqli_stmt_affected_rows($smt);
                 
                 if(mysqli_stmt_affected_rows($smt) == 0){
                     $errorMsg = mysqli_error($connection);
