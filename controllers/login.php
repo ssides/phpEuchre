@@ -6,7 +6,7 @@
     include('config/config.php');
     
     function setLoginCookie($id) {
-      global $accountNotExistErr;
+      global $accountNotExistErr, $cookieName;
       $result = false;
       $accountNotExistErr = 'setLoginCookie() called. ' . $id;
       if (function_exists('setcookie') === true)
