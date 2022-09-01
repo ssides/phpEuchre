@@ -23,7 +23,7 @@
         $pswd = mysqli_real_escape_string($connection, $password_signin);
 
         // Query if name exists in db
-        $sql = "select * from `Players` where `Name` = '{$_name}' ";
+        $sql = "select * from `Player` where `Name` = '{$_name}' ";
         $query = mysqli_query($connection, $sql);
         
         if(!$query){
@@ -38,7 +38,7 @@
             } else {
                 if(!empty($name_signin) && !empty($password_signin)){
                     while($row = mysqli_fetch_array($query)) {
-                        $id          = $row['PlayerID'];
+                        $id          = $row['ID'];
                         $name        = $row['Name'];
                         $pass_word   = $row['Password'];
                         $token       = $row['Token'];

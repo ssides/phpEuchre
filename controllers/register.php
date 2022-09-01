@@ -10,7 +10,7 @@
         $confirmpassword = $_POST["confirmpassword"];
         
         $_name = mysqli_real_escape_string($connection, $name);
-        $name_check_query = mysqli_query($connection, "select * from `Players` where `Name` = '{$_name}' ");
+        $name_check_query = mysqli_query($connection, "select * from `Player` where `Name` = '{$_name}' ");
         $nameCount = mysqli_num_rows($name_check_query);
         
         if($nameCount > 0) {
@@ -38,7 +38,7 @@
                 $password_hash = password_hash($_password, PASSWORD_BCRYPT);
 
                 // Query
-                $sql = "insert into `Players` (`PlayerID`, `Name`, `Password`, `Token`, `IsActive`, `InsertDate`) 
+                $sql = "insert into `Player` (`ID`, `Name`, `Password`, `Token`, `IsActive`, `InsertDate`) 
                   values ('{$playerID}','{$_name}', '{$password_hash}', '{$token}', '1', now())";
                   
                 // Create mysql query

@@ -26,13 +26,8 @@
           <?php echo $sqlErr; ?>
           <?php echo $errorMsg; ?>
           <?php echo $successMsg; ?>
-
-      <?php echo '0: '.$dbg0.'<br>'; ?>
-      <?php echo '1: '.$dbg1.'<br>'; ?>
-      <?php echo '2: '.$dbg2.'<br>'; ?>
-      <?php echo '3: '.$dbg3.'<br>'; ?>
-      <?php echo '4: '.$dbg4.'<br>'; ?>
-      <?php echo '5: '.$dbg5.'<br>'; ?>
+      <?php echo 'width: '.$width.'<br>'; ?>
+      <?php echo 'heigh: '.$height.'<br>'; ?>
 
           <div class="form-group padding">
             <label>Profile Image</label>
