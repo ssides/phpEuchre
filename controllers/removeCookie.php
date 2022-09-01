@@ -8,11 +8,7 @@
       unset($_COOKIE[$cookieName]);
     }
 
-    if (setcookie($cookieName, '', -1, '/')) {
-      return true;
-    } else {
-      return false;
-    }
+    return setcookie($cookieName, '', time() - 3600);
   }
 
 ?>
