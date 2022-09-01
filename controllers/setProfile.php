@@ -46,7 +46,7 @@
       
     }
     
-    deleteExistingImage($playerID) {
+    function deleteExistingImage($playerID) {
       global $connection;
       $smt = mysqli_prepare($connection, 'delete from `UserProfile` where `PlayerID` = ?');
       mysqli_stmt_bind_param($smt, 's', $playerID);
