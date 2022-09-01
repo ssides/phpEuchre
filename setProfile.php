@@ -27,15 +27,16 @@
           <?php echo $errorMsg; ?>
           <?php echo $successMsg; ?>
 
+      <?php echo '0: '.$dbg0.'<br>'; ?>
       <?php echo '1: '.$dbg1.'<br>'; ?>
       <?php echo '2: '.$dbg2.'<br>'; ?>
       <?php echo '3: '.$dbg3.'<br>'; ?>
       <?php echo '4: '.$dbg4.'<br>'; ?>
-      <?php echo '4: '.$dbg5.'<br>'; ?>
+      <?php echo '5: '.$dbg5.'<br>'; ?>
 
           <div class="form-group">
             <label>Profile Image</label>
-            <input type="file" class="form-control" accept="image" name="profileImage" />
+            <input type="file" class="form-control" accept="image/*" name="profileImage" />
           </div>
           <button type="submit" name="upload" id="upload" class="btn btn-outline-primary btn-lg btn-block">Upload</button>
         </form>
