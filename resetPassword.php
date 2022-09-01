@@ -26,9 +26,10 @@
 
                     <?php echo $successMsg; ?>
                     <?php echo $errorMsg; ?>
-                    <?php echo 'execute: '.$dbg0; ?>
-                    <?php echo 'id: '.$dbg1; ?>
-                    <?php echo 'affected rows: '.$dbg2; ?>
+                    <?php echo 'execute: '.$dbg0.'<br>'; ?>
+                    <?php echo 'id: '.$dbg1.'<br>'; ?>
+                    <?php echo 'affected rows: '.$dbg2.'<br>'; ?>
+                    <?php echo 'affected rows again: '.$dbg3.'<br>'; ?>
 
                     <div class="form-group">
                         <label>Name</label>
