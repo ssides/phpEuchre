@@ -34,7 +34,7 @@
       <?php echo '4: '.$dbg4.'<br>'; ?>
       <?php echo '5: '.$dbg5.'<br>'; ?>
 
-          <div class="form-group">
+          <div class="form-group padding">
             <label>Profile Image</label>
             <input type="file" class="form-control" accept="image/*" name="profileImage" />
           </div>
