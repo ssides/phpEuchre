@@ -22,9 +22,7 @@
         $_name = mysqli_real_escape_string($connection, $name_signin);
         $pswd = mysqli_real_escape_string($connection, $password_signin);
 
-        // Query if name exists in db
-        $sql = "select * from `Player` where `Name` = '{$_name}' ";
-        $query = mysqli_query($connection, $sql);
+        $query = mysqli_query($connection, "select * from `Player` where `Name` = '{$_name}'");
         
         if(!$query){
             $sqlErr = mysqli_error($connection);

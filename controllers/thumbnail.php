@@ -2,7 +2,8 @@
     include_once('config/db.php');
     include_once('config/config.php');
     
-    header("Content-type: {$thumbnailContentType}");
+    $dbg0 = 'show thumbnail';
+    header("Content-Type: image/png");
 
     if (empty($_COOKIE[$cookieName])) {
       header('Location: index.php');

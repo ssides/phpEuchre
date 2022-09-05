@@ -22,21 +22,24 @@
           } else {
             $scale = getScale($width, $height);
             $th = getThumbnailAsString($img, $scale, $width, $height);
-            $_th = mysqli_real_escape_string($connection, $th);
             
             $contentType = $_FILES['profileImage']['type'];
             $size = $_FILES['profileImage']['size'];
-            
-            $_fileBytes = mysqli_real_escape_string($connection, $image);
-            $_fileName = mysqli_real_escape_string($connection, $_FILES['profileImage']['name']);
             $hofs = $vofs = 0;
+
             deleteExistingImage($_COOKIE[$cookieName]);
+
             $smt = mysqli_prepare($connection, 'insert into `UserProfile` (`ID` , `PlayerID` ,`FileName` , `OriginalImage`,`ContentType` ,`FileSize` ,`Thumbnail`,`HOffset`,`VOffset`,`OriginalScale`,`InsertDate` ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())');
-            mysqli_stmt_bind_param($smt, 'sssssisiid', GUID(), $_COOKIE[$cookieName], $_fileName, $_fileBytes, $contentType, $size, $_th, $hofs, $vofs, $scale);
+            mysqli_stmt_bind_param($smt, 'sssssisiid', GUID(), $_COOKIE[$cookieName], $_FILES['profileImage']['name'], $image, $contentType, $size, $th, $hofs, $vofs, $scale);
             if (!mysqli_stmt_execute($smt)){
               $sqlErr = mysqli_error($connection);
             }
             mysqli_stmt_close($smt);
+            $org = getOriginalJpgImageAsString($_COOKIE[$cookieName]);
+            $orgStr = getOriginalImageValue($_COOKIE[$cookieName]);
+            $dbg0 = strcmp($org, $image);
+            $dbg1 = strlen($org).' '.strlen($image);
+            $dbg2 = strcmp($orgStr, $image);
           }
         }
       } else {
@@ -65,6 +68,28 @@
       return $imgAsString;
     }
     
+    function getOriginalJpgImageAsString($playerID) {
+      global $connection;
+      $qry = mysqli_query($connection, "select `OriginalImage` from `UserProfile` where `PlayerID` = '{$playerID}'");
+      while($row = mysqli_fetch_array($qry)){
+        $i = imagecreatefromstring($row['OriginalImage']);
+      }
+      ob_start();
+      imagejpeg($i);
+      $imgAsString = ob_get_contents();
+      ob_end_clean();
+      return $imgAsString;
+    }
+    
+    function getOriginalImageValue($playerID) {
+      global $connection;
+      $qry = mysqli_query($connection, "select `OriginalImage` from `UserProfile` where `PlayerID` = '{$playerID}'");
+      while($row = mysqli_fetch_array($qry)){
+        $i = $row['OriginalImage'];
+      }
+      return $i;
+    }
+
     function getScale($width, $height) {
       global $thumbnailDim;
       if ($width / $height < 1) {
