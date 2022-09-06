@@ -16,16 +16,16 @@ create table `UserProfile`
 (
   `ID` varchar(38) not null primary key, 
   `PlayerID` varchar(38) not null,
-  `FileName` varchar(256) not null, 
-  `OriginalImage` longblob not null,
-  `ContentType` varchar(256) not null,
-  `FileSize` int(10) not null,
+  `OriginalName` varchar(256) not null,
+  `OriginalSavedPath` varchar(256) not null,
+  `OriginalContentType` varchar(256) not null,
+  `OriginalFileSize` int(10) not null,
   `InsertDate` datetime not null,
-  `OriginalScale` decimal null,
-  `Thumbnail` longblob null, 
+  `OriginalScale` decimal(15,13) null,
+  `DisplayScale` decimal(15,13) null,
+  `ThumbnailPath` varchar(256) null, 
   `HOffset` int null,
   `VOffset` int null,
-  `DisplayScale` decimal null,
   constraint `FK_UserProfile_Player` foreign key (`PlayerID`) references `Player`(`ID`)
 );
 
