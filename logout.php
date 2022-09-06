@@ -1,5 +1,5 @@
 <?php
-  include('controllers/removeCookie.php');
+  include('svc/removeCookie.php');
   session_start();
   session_destroy();
   

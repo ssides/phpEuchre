@@ -21,39 +21,72 @@
   <div class="App">
     <div class="vertical-center">
       <div class="inner-block">
+        <?php echo $sqlErr; ?>
+        <?php echo $errorMsg; ?>
+        <?php echo $successMsg; ?>
+        <?php echo $dbg0; ?>
+        <?php echo $dbg1; ?>
+        <?php if(empty($thumbnailPath)): ?>
+          <form action="" method="post" enctype="multipart/form-data">
 
-        <form action="" method="post" enctype="multipart/form-data">
-          <?php echo $sqlErr; ?>
-          <?php echo $errorMsg; ?>
-          <?php echo $successMsg; ?>
-
-          <div class="form-group padding">
-            <label>Profile Image</label>
-            <input type="file" class="form-control" accept="image/*" name="profileImage" />
+            <div class="form-group padding">
+              <label>Profile Image</label>
+              <input type="file" class="form-control" accept="image/*" name="profileImage" />
+            </div>
+            <button type="submit" name="upload" id="upload" class="btn btn-outline-primary btn-lg btn-block">Upload</button>
+          </form>
+        <?php else: ?>
+          <div class="row">
+            <div class="col-md-4">
+              &nbsp;
+            </div>
+            <div class="col-md-4">
+              <img src="./thumbnail.php?r=<?php echo mt_rand(0, 65535) ?>" alt="Thumbnail">
+              <br>
+              <br>
+            </div>
           </div>
-          <button type="submit" name="upload" id="upload" class="btn btn-outline-primary btn-lg btn-block">Upload</button>
-        </form>
+        <?php endif; ?>
         
-        <form action="" method="post">
-          <?php echo $sqlErr2; ?>
-          <?php echo $errorMsg2; ?>
-          <?php echo $successMsg2; ?>
-          
-          <img  src="./controllers/thumbnail.php&r=<?php echo mt_rand(0, 65535) ?>" alt="Thumbnail">
-
-          <div class="form-group">
-              <label>X Offset</label>
-              <input type="number" class="form-control" name="xofs" id="xofs" />
+        <div class="row vpad">
+          <div class="col-md-6">
+            <form action="" method="post">
+              <button type="submit" name="zoomin" id="zoomin" class="btn btn-outline-primary btn-lg btn-block">Zoom in</button>
+            </form>
           </div>
-          <div class="form-group">
-              <label>Y Offset</label>
-              <input type="number" class="form-control" name="yofs" id="yofs" />
+          <div class="col-md-6">
+            <form action="" method="post">
+              <button type="submit" name="zoomout" id="zoomout" class="btn btn-outline-primary btn-lg btn-block">Zoom out</button>
+            </form>
           </div>
-          <div class="form-group">
-              <label>Scale</label>
-              <input type="number" class="form-control" name="scale" id="scale" />
+        </div>
+        
+        <div class="row vpad">
+          <div class="col-md-6">
+            <form action="" method="post">
+              <button type="submit" name="left" id="left" class="btn btn-outline-primary btn-lg btn-block">Left</button>
+            </form>
           </div>
-          <button type="submit" name="adjust" id="adjust" class="btn btn-outline-primary btn-lg btn-block">Adjust</button>
+          <div class="col-md-6">
+            <form action="" method="post">
+              <button type="submit" name="right" id="right" class="btn btn-outline-primary btn-lg btn-block">Right</button>
+            </form>
+          </div>
+        </div>
+        <div class="row vpad">
+          <div class="col-md-6">
+            <form action="" method="post">
+              <button type="submit" name="up" id="up" class="btn btn-outline-primary btn-lg btn-block">Up</button>
+            </form>
+          </div>
+          <div class="col-md-6">
+            <form action="" method="post">
+              <button type="submit" name="down" id="down" class="btn btn-outline-primary btn-lg btn-block">Down</button>
+            </form>
+          </div>
+        </div>
+        <form class="vpad" action="" method="post">
+          <button type="submit" name="change" id="change" class="btn btn-outline-primary btn-lg btn-block">Change Picture</button>
         </form>
         
       </div>

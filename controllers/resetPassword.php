@@ -2,7 +2,7 @@
    
     // Database connection
     include('config/db.php');
-    include('controllers/removeCookie.php');
+    include('svc/removeCookie.php');
     
     removeCookie();
     

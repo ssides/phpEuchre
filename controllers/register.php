@@ -1,7 +1,7 @@
 <?php
    
     include('config/db.php');
-    include('controllers/GUID.php');
+    include('svc/GUID.php');
     
     if(isset($_POST["submit"])) {
 

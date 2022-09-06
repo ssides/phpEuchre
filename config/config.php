@@ -1,8 +1,7 @@
 <?php
-
-  $appUrl = 'http://35.229.118.28/phpEuchre/';
-  $cookieName = 'sidesEuchre_cookie';
-  $thumbnailDim = 15;
-  $thumbnailContentType = "image/png";
-  
+  // make sure there is a final path separator paths.
+  $appUrl = 'http://localhost:8080/';
+  $cookieName = 'sidesLocalEuchre_cookie';
+  $thumbnailDim = 25;
+  $uploadsDir = 'C:/src/phpEuchre/images/';
 ?>
