@@ -25,10 +25,10 @@ html,
   color: #1833FF;
 }
 
-.btn-outline-primary:hover {
-  background-color: #1833FF;
-  color: #ffffff;
-}
+  .btn-outline-primary:hover {
+    background-color: #1833FF;
+    color: #ffffff;
+  }
 
 .vertical-center {
   display: flex;
@@ -64,7 +64,7 @@ label {
 }
 
 .hide {
-  display:none;
+  display: none;
 }
 
 .padding {
@@ -84,4 +84,20 @@ label {
 
 .vpad {
   padding-top: 3px;
+}
+
+.helloPadding {
+  padding: 20px;
+}
+
+table.dbgTable td {
+  border-width: 1px;
+  border-spacing: 2px;
+  border-style: solid;
+  border-color: gray;
+  border-collapse: collapse;
+}
+
+.userProfileCell {
+  text-align: center;
 }
