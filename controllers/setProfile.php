@@ -7,7 +7,8 @@
     if (empty($_COOKIE[$cookieName])) {
       header('Location: index.php');
     } else {
-      $thumbnailPath = getThumbnailPath($_COOKIE[$cookieName]);
+      $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+      $thumbnailPath = $userProfile['thumbnailPath'];
       if(isset($_POST['upload'])) {
         if ($_FILES['profileImage']['error'] == 0) {
           list($width, $height, $_gettype, $_getattr) = getimagesize($_FILES['profileImage']['tmp_name']);
@@ -25,7 +26,6 @@
               if ($img === false) {
                 $errorMsg = 'Could not create the thumbnail.';
               } else {
-                
                 $scale = getScale($width, $height);
                 $th = getThumbnailAsString($img, $scale, $width, $height);
                 $thumbnailPath = getDestinationPath();
@@ -51,40 +51,32 @@
         deleteExistingImage($_COOKIE[$cookieName]);
         $thumbnailPath = '';
       } else if(isset($_POST['zoomin'])) {
-        $playerID = $_COOKIE[$cookieName];
-        $smry = new UserProfileSummary();
-        getUserProfileSummary($playerID, $smry);
-        unlink($smry->thumbnailPath);
-        
-        $fileBytes = file_get_contents($smry->originalSavedPath);
-        $image = imagecreatefromstring($fileBytes);
-        list($width, $height, $_gettype, $_getattr) = getimagesize($smry->originalSavedPath);
-
-        $fivepct = $smry->displayScale * 0.1;
-        $smry->displayScale = ($smry->displayScale + $fivepct);
-        
-        $errorMsg = 's: '.$smry->displayScale.' '.$fivepct.' '.(($image === false) ? ' no image' : ' got image');
-        $th = getThumbnailAsString($image, $smry->displayScale, $width, $height);
-        $thumbnailPath = getDestinationPath();
-        file_put_contents($thumbnailPath, $th);
-        updateUserProfile($playerID, $thumbnailPath, $smry);
+        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $fivepct = $userProfile['displayScale'] * 0.05;
+        $userProfile['displayScale'] += $fivepct;
+        updateThumbnail($_COOKIE[$cookieName], $userProfile);
+      } else if(isset($_POST['zoomout'])) {
+        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $fivepct = $userProfile['displayScale'] * 0.05;
+        $userProfile['displayScale'] -= $fivepct;
+        updateThumbnail($_COOKIE[$cookieName], $userProfile);
+      }else if(isset($_POST['right'])) {
+        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $userProfile['hOffset'] -= $positionDistance;
+        updateThumbnail($_COOKIE[$cookieName], $userProfile);
+      } else if(isset($_POST['left'])) {
+        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $userProfile['hOffset'] += $positionDistance;
+        updateThumbnail($_COOKIE[$cookieName], $userProfile);
+      } else if(isset($_POST['up'])) {
+        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $userProfile['vOffset'] += $positionDistance;
+        updateThumbnail($_COOKIE[$cookieName], $userProfile);
+      } else if(isset($_POST['down'])) {
+        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $userProfile['vOffset'] -= $positionDistance;
+        updateThumbnail($_COOKIE[$cookieName], $userProfile);
       }
-    }
-    
-    function updateUserProfile($playerID, $thumbnailPath, $smry) {
-      global $connection;
-      $smt = mysqli_prepare($connection, 'update `UserProfile` set `ThumbnailPath` = ?, `HOffset` = ?,`VOffset` = ?, `DisplayScale` = ? where `PlayerID` = ?');
-      mysqli_stmt_bind_param($smt, 'siids', $thumbnailPath, $smry->hOffset, $smry->vOffset, $smry->displayScale, $playerID);
-      if (!mysqli_stmt_execute($smt)){
-        $sqlErr = mysqli_error($connection);
-      }
-      mysqli_stmt_close($smt);
-    }
-    
-    function getDestinationPath() {
-      global $uploadsDir;
-      $guid = GUID();
-      return $uploadsDir.$guid.'.image';
     }
     
     function getThumbnailAsString($img, $scale, $width, $height) {

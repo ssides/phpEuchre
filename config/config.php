@@ -3,5 +3,6 @@
   $appUrl = 'http://localhost:8080/';
   $cookieName = 'sidesLocalEuchre_cookie';
   $thumbnailDim = 25;
+  $positionDistance = 3;
   $uploadsDir = 'C:/src/phpEuchre/images/';
 ?>
