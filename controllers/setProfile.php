@@ -76,6 +76,8 @@
         $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
         $userProfile['vOffset'] -= $positionDistance;
         updateThumbnail($_COOKIE[$cookieName], $userProfile);
+      }  else if(isset($_POST['close'])) {
+        header('Location: dashboard.php');
       }
     }
     

@@ -1,16 +1,22 @@
-<?php include('authorize.php'); ?>
+<?php
+  include_once('authorize.php');
+  include_once('controllers/organize.php');
+  include_once('config/config.php');
+?>
+
 <!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="./content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="./content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="./content/css/site.css">
-    <title>Organize a Game</title>
-    <!-- jQuery + Bootstrap JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
+  <title>Organize a Game</title>
+  <!-- jQuery + Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
+  <script src="./content/ko/knockout-3.5.1.js"></script>
 </head>
 
 <body>
@@ -21,12 +27,138 @@
     <div class="vertical-center">
       <div class="inner-block gamePlay">
 
-        <div>Organize, or play, or whatever.</div>
-        
+        <p class="text">Select players.</p>
+        <table>
+          <tr>
+            <td></td>
+            <td>
+              <div class="org-border">
+                <span class="text">Partner</span><br />
+                <select data-bind="options: users, optionsText: 'name', value: selectedPartner, optionsCaption:'Select'"></select>
+                <br />
+                <form action="" method="post" data-bind="visible: allPlayers()">
+                  <button type="submit" name="invitePartner" id="invitePartner" class="btn btn-outline-primary btn-sm btn-block">Invite</button>
+                </form>
+                <!--@if (game.PartnerInviteDate == null && game.PartnerJoinDate == null)
+                {
+                <button @onclick="InvitePartner">Invite</button>
+                }
+                else if (game.PartnerInviteDate != null && game.PartnerJoinDate == null)
+                {
+                <span class="text">Invited</span>
+                }
+                else if (game.PartnerInviteDate != null && game.PartnerJoinDate != null)
+                {
+                <span class="text">Joined</span>
+                }-->
+              </div>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="org-border">
+                <span class="text">Opponent Left</span><br />
+                <select data-bind="options: users, optionsText: 'name', value: selectedLeft, optionsCaption:'Select'"></select>
+                <br />
+                <form action="" method="post" data-bind="visible: allPlayers()">
+                  <input type="hidden" id="leftID" name="leftID" data-bind="value: selectedLeft" >
+                  <button type="submit" name="inviteLeft" id="inviteLeft" class="btn btn-outline-primary btn-sm btn-block">Invite</button>
+                </form>
+                <!--@if (game.LeftInviteDate == null && game.LeftJoinDate == null)
+                {
+                <button @onclick="InviteLeft">Invite</button>
+                }
+                else if (game.LeftInviteDate != null && game.LeftJoinDate == null)
+                {
+                <span class="text">Invited</span>
+                }
+                else if (game.LeftInviteDate != null && game.LeftJoinDate != null)
+                {
+                <span class="text">Joined</span>
+                }-->
+              </div>
+            </td>
+            <td></td>
+            <td>
+              <div class="org-border">
+                <span class="text">Opponent Right</span><br />
+                <select data-bind="options: users, optionsText: 'name', value: selectedRight, optionsCaption:'Select'"></select>
+                <br />
+                <form action="" method="post" data-bind="visible: allPlayers()">
+                  <button type="submit" name="inviteRight" id="inviteRight" class="btn btn-outline-primary btn-sm btn-block">Invite</button>
+                </form>
+
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="org-border"><p class="text">Organizer (you)</p></div>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+        <p class="error"><?php echo $errorMsg; ?></p>
+        <p data-bind="visible: allPlayers()">All players are selected. Send invites.</p>
       </div>
     </div>
   </div>
+  <script type="text/javascript">
+    function player(name, id) {
+      this.name = name;
+      this.id = id;
+    }
 
+    function unique(left, right, partner) {
+      const u = [];
+      u.push(left.name);
+      if (u.includes(right.name)) {
+        return false;
+      } else {
+        u.push(right.name);
+        return !u.includes(partner.name);
+      }
+    };
+
+
+    function organizeViewModel() {
+      var self = this;
+
+      self.users = ko.observableArray();
+      self.selectedLeft = ko.observable();
+      self.selectedRight = ko.observable();
+      self.selectedPartner = ko.observable();
+      self.allPlayers = ko.computed(function () {
+        if ((self.selectedLeft() !== undefined)
+          && (self.selectedRight() !== undefined)
+          && (self.selectedPartner() !== undefined)) {
+          return unique(self.selectedLeft(), self.selectedRight(), self.selectedPartner());
+        };
+      });
+
+
+      $.ajax({
+        method: 'POST',
+        url: 'api/getUsers.php',
+        data: { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"?> },
+        success: function (response, b, c, d) {
+          let data = JSON.parse(response);
+          data.forEach(function (i) {
+            self.users.push(new player(i[1], i[0]));
+          });
+        },
+        error: function (xhr, status, error) {
+          console.log(error);
+        }
+          });
+        }
+
+    $(function () {
+      ko.applyBindings(new organizeViewModel());
+    });
+  </script>
 </body>
 
 </html>
