@@ -7,7 +7,7 @@
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
       $ary = array();
-      $results = mysqli_query($connection, 'select `ID`,`Name` from `Player`');
+      $results = mysqli_query($connection, "select `ID`,`Name` from `Player` where `ID` <> '{$_POST[$cookieName]}'");
 
       while ($row = mysqli_fetch_array($results)) {
         array_push($ary, array($row['ID'],$row['Name']));

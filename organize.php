@@ -27,30 +27,21 @@
     <div class="vertical-center">
       <div class="inner-block gamePlay">
 
-        <p class="text">Select players.</p>
+        <p class="text" data-bind="visible: allPlayers() === false && !allPlayersJoined()">Select players.</p>
+        <p class="text" data-bind="visible: allPlayers() && !allPlayersJoined()">Invite players.</p>
+        <p class="text" data-bind="visible: allPlayers() && allPlayersJoined()">Start the game</p>
         <table>
           <tr>
             <td></td>
             <td>
               <div class="org-border">
-                <span class="text">Partner</span><br />
-                <select data-bind="options: users, optionsText: 'name', value: selectedPartner, optionsCaption:'Select'"></select>
-                <br />
-                <form action="" method="post" data-bind="visible: allPlayers()">
-                  <button type="submit" name="invitePartner" id="invitePartner" class="btn btn-outline-primary btn-sm btn-block">Invite</button>
-                </form>
-                <!--@if (game.PartnerInviteDate == null && game.PartnerJoinDate == null)
-                {
-                <button @onclick="InvitePartner">Invite</button>
-                }
-                else if (game.PartnerInviteDate != null && game.PartnerJoinDate == null)
-                {
-                <span class="text">Invited</span>
-                }
-                else if (game.PartnerInviteDate != null && game.PartnerJoinDate != null)
-                {
-                <span class="text">Joined</span>
-                }-->
+                <span>Partner</span><br />
+                <select data-bind="visible: !partnerInvited(), options: users, optionsText: 'name', value: selectedPartner, optionsCaption:'Select'"></select>
+                <p class="notice" data-bind="visible: partnerInvited, text: partnerInvited() ? selectedPartner().name : ''"></p>
+                <div data-bind="visible: allPlayers() & !partnerInvited()">
+                  <button class="uxInvitePartner" >Invite</button>
+                </div>
+                <p class="notice" data-bind="visible: partnerJoined()">Joined</p>
               </div>
             </td>
             <td></td>
@@ -58,36 +49,25 @@
           <tr>
             <td>
               <div class="org-border">
-                <span class="text">Opponent Left</span><br />
-                <select data-bind="options: users, optionsText: 'name', value: selectedLeft, optionsCaption:'Select'"></select>
-                <br />
-                <form action="" method="post" data-bind="visible: allPlayers()">
-                  <input type="hidden" id="leftID" name="leftID" data-bind="value: selectedLeft" >
-                  <button type="submit" name="inviteLeft" id="inviteLeft" class="btn btn-outline-primary btn-sm btn-block">Invite</button>
-                </form>
-                <!--@if (game.LeftInviteDate == null && game.LeftJoinDate == null)
-                {
-                <button @onclick="InviteLeft">Invite</button>
-                }
-                else if (game.LeftInviteDate != null && game.LeftJoinDate == null)
-                {
-                <span class="text">Invited</span>
-                }
-                else if (game.LeftInviteDate != null && game.LeftJoinDate != null)
-                {
-                <span class="text">Joined</span>
-                }-->
+                <span>Opponent Left</span><br />
+                <select data-bind="visible: !leftInvited(), options: users, optionsText: 'name', value: selectedLeft, optionsCaption:'Select'"></select>
+                <p class="notice" data-bind="visible: leftInvited, text: leftInvited() ? selectedLeft().name : ''"></p>
+                <div data-bind="visible: allPlayers() & !leftInvited()">
+                  <button class="uxInviteLeft" >Invite</button>
+                </div>
+                <p class="notice" data-bind="visible: leftJoined()">Joined</p>
               </div>
             </td>
             <td></td>
             <td>
               <div class="org-border">
-                <span class="text">Opponent Right</span><br />
-                <select data-bind="options: users, optionsText: 'name', value: selectedRight, optionsCaption:'Select'"></select>
-                <br />
-                <form action="" method="post" data-bind="visible: allPlayers()">
-                  <button type="submit" name="inviteRight" id="inviteRight" class="btn btn-outline-primary btn-sm btn-block">Invite</button>
-                </form>
+                <span>Opponent Right</span><br />
+                <select data-bind="visible: !rightInvited(), options: users, optionsText: 'name', value: selectedRight, optionsCaption:'Select'"></select>
+                <p class="notice" data-bind="visible: rightInvited, text: rightInvited() ? selectedRight().name : ''"></p>
+                <div data-bind="visible: allPlayers() & !rightInvited()">
+                  <button class="uxInviteRight" >Invite</button>
+                </div>
+                <p class="notice" data-bind="visible: rightJoined()">Joined</p>
 
               </div>
             </td>
@@ -101,64 +81,15 @@
           </tr>
         </table>
         <p class="error"><?php echo $errorMsg; ?></p>
-        <p data-bind="visible: allPlayers()">All players are selected. Send invites.</p>
+        <div data-bind="visible: allPlayers() && allPlayersJoined()">
+          <form action="" method="post">
+            <button type="submit" name="startGame" id="startGame">Start Game</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-  <script type="text/javascript">
-    function player(name, id) {
-      this.name = name;
-      this.id = id;
-    }
-
-    function unique(left, right, partner) {
-      const u = [];
-      u.push(left.name);
-      if (u.includes(right.name)) {
-        return false;
-      } else {
-        u.push(right.name);
-        return !u.includes(partner.name);
-      }
-    };
-
-
-    function organizeViewModel() {
-      var self = this;
-
-      self.users = ko.observableArray();
-      self.selectedLeft = ko.observable();
-      self.selectedRight = ko.observable();
-      self.selectedPartner = ko.observable();
-      self.allPlayers = ko.computed(function () {
-        if ((self.selectedLeft() !== undefined)
-          && (self.selectedRight() !== undefined)
-          && (self.selectedPartner() !== undefined)) {
-          return unique(self.selectedLeft(), self.selectedRight(), self.selectedPartner());
-        };
-      });
-
-
-      $.ajax({
-        method: 'POST',
-        url: 'api/getUsers.php',
-        data: { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"?> },
-        success: function (response, b, c, d) {
-          let data = JSON.parse(response);
-          data.forEach(function (i) {
-            self.users.push(new player(i[1], i[0]));
-          });
-        },
-        error: function (xhr, status, error) {
-          console.log(error);
-        }
-          });
-        }
-
-    $(function () {
-      ko.applyBindings(new organizeViewModel());
-    });
-  </script>
+  <?php include('content/js/organize.php') ?>
 </body>
 
 </html>

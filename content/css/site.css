@@ -102,3 +102,7 @@ table.dbgTable td {
 .userProfileCell {
   text-align: center;
 }
+
+.notice {
+  color: #70b0ea;
+}

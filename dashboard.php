@@ -13,6 +13,7 @@
   <!-- jQuery + Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
+  <script src="./content/ko/knockout-3.5.1.js"></script>
 </head>
 
 <body>
@@ -27,16 +28,16 @@
           <table>
             <tr>
               <td>
-                <button type="submit" name="organize" id="organize" class="btn btn-outline-primary btn-lg btn-block">Start a Game</button>
+                <button type="submit" name="organize" id="organize" class="btn btn-outline-primary btn-md btn-block">Start a Game</button>
               </td>
-              <td>You will be the organizer of the game.</td>
+              <td>&nbsp;&nbsp;You will be the organizer of the game.</td>
             </tr>
           </table>
         </form>
       </div>
     </div>
   </div>
-
+<?php include('content/js/dashboard.php') ?>
 </body>
 
 </html>
