@@ -27,6 +27,9 @@
         <?php echo $successMsg; ?>
         <?php echo $dbg0; ?>
         <?php echo $dbg1; ?>
+        <form action="" method="post">
+          <button type="submit" class="btn-close" aria-label="Close" name="close" id="close"></button>
+        </form>
         <?php if(empty($thumbnailPath)): ?>
         <form action="" method="post" enctype="multipart/form-data">
           <div class="mb-3 padding">

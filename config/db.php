@@ -1,7 +1,8 @@
 <?php 
 
-    // Enable us to use Headers
-    // ob_start();
+    if(!isset($_SESSION)) {
+        session_start();
+    }
 
     $hostname = 'localhost';
     $username = 'dbUser';

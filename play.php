@@ -1,4 +1,4 @@
-<?php include('controllers/helloPHP.php'); ?>
+<?php include('controllers/login.php'); ?>
 <!doctype html>
 <html lang="en">
 
@@ -6,17 +6,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="./content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
   <link rel="stylesheet" href="./content/css/site.css">
-    <title>Hello PHP</title>
+    <title>Sides Family Euchre</title>
+    <!-- jQuery + Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 
-    <div class="helloPadding">
-    <?php echo $_SESSION['gameID'].'<br>'; ?>
+    <!-- Header -->
+    <?php include('header.php'); ?>
+
+    <div class="App">
+        <div class="vertical-center">
+          <div class="inner-block">
+            <p class="notice">Play Euchre</p>
+          </div>
+        </div>
     </div>
 
 </body>

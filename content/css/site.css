@@ -16,19 +16,20 @@ html,
 }
 
 .navbar {
-  background: #1833FF !important;
+  background: #2f4530 !important;
   width: 100%;
 }
 
 .btn-outline-primary {
-  border-color: #1833FF;
-  color: #1833FF;
+  border-color: #2f4530;
+  color: #2f4530;
 }
 
   .btn-outline-primary:hover {
-    background-color: #1833FF;
+    background-color: #2f4530;
     color: #ffffff;
   }
+
 
 .vertical-center {
   display: flex;
@@ -47,8 +48,19 @@ html,
   border-radius: 20px;
 }
 
+.gamePlay {
+  background-color: #07580b !important; 
+  color: #edea3a;
+}
+
+.org-border {
+  border: 1px solid #1c7621;
+  padding: 15px;
+  border-radius: 8px;
+}
+
 .vertical-center .form-control:focus {
-  border-color: #2554FF;
+  border-color: #1c7621;
   box-shadow: none;
 }
 
@@ -71,17 +83,6 @@ label {
   padding: 0px 5px 10px 5px;
 }
 
-.gamePlay {
-  background-color: #07580b;
-  color: #edea3a;
-}
-
-.org-border {
-  border: 1px solid #1c7621;
-  padding: 15px;
-  border-radius: 8px;
-}
-
 .vpad {
   padding-top: 3px;
 }
@@ -100,4 +101,8 @@ table.dbgTable td {
 
 .userProfileCell {
   text-align: center;
+}
+
+.notice {
+  color: #70b0ea;
 }

@@ -6,7 +6,7 @@
     global $connection;
     $userProfile = getUserProfileSummaryArray($playerID);
     unlink($userProfile['thumbnailPath']);
-    $result = mysqli_query($connection, "update `UserProfile` set `ThumbnailPath` = '' where `PlayerID` = '{$playerID}'");
+    mysqli_query($connection, "update `UserProfile` set `ThumbnailPath` = '' where `PlayerID` = '{$playerID}'");
   }
 
   function getUserProfileSummary($playerID, $smry) {
