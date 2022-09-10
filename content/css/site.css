@@ -59,6 +59,10 @@ html,
   border-radius: 8px;
 }
 
+.org-border .no-pad {
+  padding: 2px !important;
+}
+
 .vertical-center .form-control:focus {
   border-color: #1c7621;
   box-shadow: none;
@@ -79,7 +83,7 @@ label {
   display: none;
 }
 
-.padding {
+.profilePadding {
   padding: 0px 5px 10px 5px;
 }
 
@@ -89,6 +93,19 @@ label {
 
 .helloPadding {
   padding: 20px;
+}
+
+.dashboardPadding {
+  padding: 0px 0px 0px 15px;
+}
+
+.dashboardMargin {
+  margin: 3px;
+}
+
+.dashboardRight {
+  width: 100%; 
+  text-align: right;
 }
 
 table.dbgTable td {

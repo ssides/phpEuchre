@@ -21,6 +21,9 @@
                 <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">
                     <?php echo '<a class="nav-link" href="'.$appUrl.'setProfile.php">Profile</a>'; ?>
                 </li>
+                <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">
+                    <?php echo '<a class="nav-link" href="'.$appUrl.'dashboard.php">Start</a>'; ?>
+                </li>
                 <li class="nav-item">
                     <?php echo '<a class="nav-link" href="'.$appUrl.'signup.php">Sign up</a>'; ?>
                 </li>

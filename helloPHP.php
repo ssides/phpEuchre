@@ -17,6 +17,14 @@
 
     <div class="helloPadding">
     <?php echo $_SESSION['gameID'].'<br>'; ?>
+    <?php echo "Today is " . date("Y-m-d").'<br>' ; ?>
+    <?php
+      $now = new DateTime(date("Y-m-d"));
+      $now->sub(new DateInterval('P3D'));
+      $startdate = $now->format('Y-m-d');
+      echo 'three days ago: '.$startdate.'<br>';
+      echo ' done<br>';
+    ?>
     </div>
 
 </body>
