@@ -9,11 +9,46 @@
       if(isset($_POST['organize'])) {
         $gameID = startGame($_COOKIE[$cookieName]);
         if (!empty($gameID)) {
-          header("Location: organize.php");
           $_SESSION['gameID'] = $gameID;
-
+          header("Location: organize.php");
         }
+      } else if (isset($_POST['join']) || isset($_POST['rejoin'])) {
+          $_SESSION['gameID'] = $_POST['gameid'];
+          
+          if (joinGame($_POST['gameid'], $_COOKIE[$cookieName], $_POST['identifier'])) {
+            header("Location: play.php");
+          }
       }
+    }
+    
+    function joinGame($gameID, $playerID, $identifier) {
+      global $connection;
+      
+      $sql = "";
+      switch($identifier) {
+        case 'Partner':
+          $sql = "update `Game` set `PartnerJoinDate` = now() where `Partner` = '{$playerID}' and `ID` = '{$gameID}'";
+          break;
+        case 'Opponent Left':
+          $sql = "update `Game` set `LeftJoinDate` = now() where `Left` = '{$playerID}'and `ID` = '{$gameID}'";
+          break;
+        case 'Opponent Right':
+          $sql = "update `Game` set `RightJoinDate` = now() where `Right` = '{$playerID}' and `ID` = '{$gameID}'";
+          break;
+        case 'Organizer':
+          // there is nothing to do in this case.
+          $sql = "";
+          break;
+        default:
+          $sql = "";
+      };
+      
+      if (strlen($sql) > 0) {
+        return mysqli_query($connection, $sql);
+      } else {
+        return true;
+      }
+
     }
     
     function startGame($playerID) {

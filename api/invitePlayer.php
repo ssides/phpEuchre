@@ -8,14 +8,22 @@
 
       $msg = "updating";
       if (isset($_POST['identifier'])) {
+        
         $sql = '';
-        if ($_POST['identifier'] == 'partner') {
-          $sql = "update `Game` set `Partner` = '{$_POST['player']}', `PartnerInviteDate`=now() where `ID` = '{$_POST['gameID']}'";
-        } else if ($_POST['identifier'] == 'left') {
-          $sql = "update `Game` set `Left` = '{$_POST['player']}', `LeftInviteDate`=now() where `ID` = '{$_POST['gameID']}'";
-        } else {
-          $sql = "update `Game` set `Right` = '{$_POST['player']}', `RightInviteDate`=now() where `ID` = '{$_POST['gameID']}'";
-        }
+        switch($_POST['identifier']) {
+          case 'partner':
+            $sql = "update `Game` set `Partner` = '{$_POST['player']}', `PartnerInviteDate`=now() where `ID` = '{$_POST['gameID']}'";
+            break;
+          case 'left':
+            $sql = "update `Game` set `Left` = '{$_POST['player']}', `LeftInviteDate`=now() where `ID` = '{$_POST['gameID']}'";
+            break;
+          case 'right':
+            $sql = "update `Game` set `Right` = '{$_POST['player']}', `RightInviteDate`=now() where `ID` = '{$_POST['gameID']}'";
+            break;
+          default:
+            $msg = "Invalid identifier";
+        };
+
         $update = mysqli_query($connection, $sql);
         if ($update) {
           $msg = "OK";

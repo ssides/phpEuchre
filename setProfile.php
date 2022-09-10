@@ -32,7 +32,7 @@
         </form>
         <?php if(empty($thumbnailPath)): ?>
         <form action="" method="post" enctype="multipart/form-data">
-          <div class="mb-3 padding">
+          <div class="mb-3 profilePadding">
             <label for="profileImage" class="form-label">Profile Image</label>
             <input class="form-control" type="file" id="profileImage" name="profileImage">
           </div>

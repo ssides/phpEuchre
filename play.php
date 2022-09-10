@@ -1,4 +1,5 @@
-<?php include('controllers/login.php'); ?>
+<?php include('authorize.php'); ?>
+<?php include('controllers/play.php'); ?>
 <!doctype html>
 <html lang="en">
 
@@ -15,16 +16,17 @@
 
 <body>
 
-    <!-- Header -->
-    <?php include('header.php'); ?>
+  <!-- Header -->
+  <?php include('header.php'); ?>
 
-    <div class="App">
-        <div class="vertical-center">
-          <div class="inner-block">
-            <p class="notice">Play Euchre</p>
-          </div>
-        </div>
+  <div class="App">
+    <div class="vertical-center">
+      <div class="inner-block">
+        <p class="notice">Play Euchre</p>
+      </div>
     </div>
+  </div>
+  <?php include('content/js/play.php') ?>
 
 </body>
 
