@@ -62,7 +62,18 @@
               <div class="org-border">
                 <span>Opponent Left</span><br />
                 <select data-bind="visible: !leftInvited(), options: users, optionsText: 'name', value: selectedLeft, optionsCaption:'Select'"></select>
-                <p class="notice" data-bind="visible: leftInvited, text: leftInvited() ? selectedLeft().name : ''"></p>
+                <div data-bind="visible: leftInvited">
+                  <table>
+                    <tr>
+                      <td style="vertical-align: middle;">
+                        <div data-bind="visible: leftInvited() ? selectedLeft().thumbnailpath.length > 0 : false">
+                          <img data-bind="attr: {src: leftInvited() ? selectedLeft().thumbnailpath : ''}" />
+                        </div>
+                      </td>
+                      <td style="vertical-align: middle;">&nbsp;<span class="notice" data-bind="text: leftInvited() ? selectedLeft().name : ''"></span></td>
+                    </tr>
+                  </table>
+                </div>
                 <div data-bind="visible: allPlayers() & !leftInvited()">
                   <button class="uxInviteLeft">Invite</button>
                 </div>
@@ -74,12 +85,22 @@
               <div class="org-border">
                 <span>Opponent Right</span><br />
                 <select data-bind="visible: !rightInvited(), options: users, optionsText: 'name', value: selectedRight, optionsCaption:'Select'"></select>
-                <p class="notice" data-bind="visible: rightInvited, text: rightInvited() ? selectedRight().name : ''"></p>
+                <div data-bind="visible: rightInvited">
+                  <table>
+                    <tr>
+                      <td style="vertical-align: middle;">
+                        <div data-bind="visible: rightInvited() ? selectedRight().thumbnailpath.length > 0 : false">
+                          <img data-bind="attr: {src: rightInvited() ? selectedRight().thumbnailpath : ''}" />
+                        </div>
+                      </td>
+                      <td style="vertical-align: middle;">&nbsp;<span class="notice" data-bind="text: rightInvited() ? selectedRight().name : ''"></span></td>
+                    </tr>
+                  </table>
+                </div>
                 <div data-bind="visible: allPlayers() & !rightInvited()">
                   <button class="uxInviteRight">Invite</button>
                 </div>
                 <p class="notice" data-bind="visible: rightJoined()">Joined</p>
-
               </div>
             </td>
           </tr>
