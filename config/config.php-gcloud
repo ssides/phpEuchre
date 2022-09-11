@@ -6,4 +6,5 @@
   $positionDistance = 3;
   // the images folder must be called images and it must be in root.
   $uploadsDir = '/var/www/html/phpEuchre/images/';
+  
 ?>
