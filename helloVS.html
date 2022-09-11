@@ -1,5 +1,8 @@
-<?php include('authorize.php'); ?>
-<?php include('controllers/dashboard.php'); ?>
+<?php
+  include_once('authorize.php');
+  include_once('controllers/organize.php');
+  include_once('config/config.php');
+?>
 
 <!doctype html>
 <html lang="en">
@@ -9,7 +12,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="./content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="./content/css/site.css">
-  <title>Start or Join a Game</title>
+  <title>Organize a Game</title>
   <!-- jQuery + Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
@@ -22,37 +25,82 @@
 
   <div class="App">
     <div class="vertical-center">
-      <div class="inner-block">
-        <?php echo $sqlErr; ?>
-        <div class="org-border">
-          <table>
-            <tbody data-bind="foreach: invitations">
-              <tr>
-                <td><span data-bind="text: organizerName"></span> is inviting you to play as <span data-bind="text: position"></span></td>
-                <td>
-                  <form action="" method="post">
-                    <input type="hidden" name="gameid" id="gameid" data-bind="value: gameID">
-                    <button type="submit" name="join" id="join">Join</button>
-                  </form>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="inner-block gamePlay">
+
+        <p class="text" data-bind="visible: allPlayers() === false && !allPlayersJoined()">Select players.</p>
+        <p class="text" data-bind="visible: allPlayers() && !allPlayersJoined()">Invite players.</p>
+        <p class="text" data-bind="visible: allPlayers() && allPlayersJoined()">Start the game</p>
+        <table>
+          <tr>
+            <td></td>
+            <td>
+              <div class="org-border">
+                <span>Partner</span><br />
+                <select data-bind="visible: !partnerInvited(), options: users, optionsText: 'name', value: selectedPartner, optionsCaption:'Select'"></select>
+                <div data-bind="visible: partnerInvited">
+                  <table>
+                    <tr style="vertical-align: middle !important;">
+                      <td style="vertical-align: middle !important;">
+                        <div style="display: inline-block" data-bind="visible: partnerInvited() ? selectedPartner().thumbnailpath.length > 0 : false">
+                          <img data-bind="attr: {src: partnerInvited() ? selectedPartner().thumbnailpath : ''}" />
+                        </div>
+                      </td>
+                      <td style="vertical-align: middle !important;">&nbsp;<span class="notice" data-bind="text: partnerInvited() ? selectedPartner().name : ''"></span></td>
+                    </tr>
+                  </table>
+                </div>
+                <div data-bind="visible: allPlayers() & !partnerInvited()">
+                  <button class="uxInvitePartner">Invite</button>
+                </div>
+                <p class="notice" data-bind="visible: partnerJoined()">Joined</p>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="org-border">
+                <span>Opponent Left</span><br />
+                <select data-bind="visible: !leftInvited(), options: users, optionsText: 'name', value: selectedLeft, optionsCaption:'Select'"></select>
+                <p class="notice" data-bind="visible: leftInvited, text: leftInvited() ? selectedLeft().name : ''"></p>
+                <div data-bind="visible: allPlayers() & !leftInvited()">
+                  <button class="uxInviteLeft">Invite</button>
+                </div>
+                <p class="notice" data-bind="visible: leftJoined()">Joined</p>
+              </div>
+            </td>
+            <td></td>
+            <td>
+              <div class="org-border">
+                <span>Opponent Right</span><br />
+                <select data-bind="visible: !rightInvited(), options: users, optionsText: 'name', value: selectedRight, optionsCaption:'Select'"></select>
+                <p class="notice" data-bind="visible: rightInvited, text: rightInvited() ? selectedRight().name : ''"></p>
+                <div data-bind="visible: allPlayers() & !rightInvited()">
+                  <button class="uxInviteRight">Invite</button>
+                </div>
+                <p class="notice" data-bind="visible: rightJoined()">Joined</p>
+
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="org-border"><p class="text">Organizer (you)</p></div>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+        <p class="error"><?php echo $errorMsg; ?></p>
+        <div data-bind="visible: allPlayers() && allPlayersJoined()">
+          <form action="" method="post">
+            <button type="submit" name="startGame" id="startGame">Start Game</button>
+          </form>
         </div>
-        <form action="" method="post">
-          <table>
-            <tr>
-              <td>
-                <button type="submit" name="organize" id="organize" class="btn btn-outline-primary btn-md btn-block">Start a Game</button>
-              </td>
-              <td><div class="dashboardPadding">You will be the organizer of the game.</div></td>
-            </tr>
-          </table>
-        </form>
       </div>
     </div>
   </div>
-  <?php include('content/js/dashboard.php') ?>
+  <?php include('content/js/organize.php') ?>
 </body>
 
 </html>

@@ -38,10 +38,19 @@
                 <span>Partner</span><br />
                 <select data-bind="visible: !partnerInvited(), options: users, optionsText: 'name', value: selectedPartner, optionsCaption:'Select'"></select>
                 <div data-bind="visible: partnerInvited">
-                  <p class="notice" data-bind="text: partnerInvited() ? selectedPartner().name : ''"></p>
+                  <table>
+                    <tr>
+                      <td style="vertical-align: middle;">
+                        <div data-bind="visible: partnerInvited() ? selectedPartner().thumbnailpath.length > 0 : false">
+                          <img data-bind="attr: {src: partnerInvited() ? selectedPartner().thumbnailpath : ''}" />
+                        </div>
+                      </td>
+                      <td style="vertical-align: middle;">&nbsp;<span class="notice" data-bind="text: partnerInvited() ? selectedPartner().name : ''"></span></td>
+                    </tr>
+                  </table>
                 </div>
                 <div data-bind="visible: allPlayers() & !partnerInvited()">
-                  <button class="uxInvitePartner" >Invite</button>
+                  <button class="uxInvitePartner">Invite</button>
                 </div>
                 <p class="notice" data-bind="visible: partnerJoined()">Joined</p>
               </div>
@@ -55,7 +64,7 @@
                 <select data-bind="visible: !leftInvited(), options: users, optionsText: 'name', value: selectedLeft, optionsCaption:'Select'"></select>
                 <p class="notice" data-bind="visible: leftInvited, text: leftInvited() ? selectedLeft().name : ''"></p>
                 <div data-bind="visible: allPlayers() & !leftInvited()">
-                  <button class="uxInviteLeft" >Invite</button>
+                  <button class="uxInviteLeft">Invite</button>
                 </div>
                 <p class="notice" data-bind="visible: leftJoined()">Joined</p>
               </div>
@@ -67,7 +76,7 @@
                 <select data-bind="visible: !rightInvited(), options: users, optionsText: 'name', value: selectedRight, optionsCaption:'Select'"></select>
                 <p class="notice" data-bind="visible: rightInvited, text: rightInvited() ? selectedRight().name : ''"></p>
                 <div data-bind="visible: allPlayers() & !rightInvited()">
-                  <button class="uxInviteRight" >Invite</button>
+                  <button class="uxInviteRight">Invite</button>
                 </div>
                 <p class="notice" data-bind="visible: rightJoined()">Joined</p>
 
