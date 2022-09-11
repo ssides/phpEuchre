@@ -20,11 +20,6 @@
       $smry->originalScale = $row['OriginalScale'];
       $smry->thumbnailPath = $row['ThumbnailPath'];
     }
-    // $smry->$fileBytes = file_get_contents($smry->originalSavedPath);
-    // $smry->$image = imagecreatefromstring($smry->$fileBytes);
-    // list($width, $height, $_gettype, $_getattr) = getimagesize($smry->originalSavedPath);
-    // $smry->originalWidth = $width;
-    // $smry->originalHeight = $height;
   }
   
   function getUserProfileSummaryArray($playerID) {
@@ -76,16 +71,16 @@
     imagepng($cimg);
     $imgAsString = ob_get_contents();
     ob_end_clean();
-    $userProfile['thumbnailPath'] = getDestinationPath();
+    $userProfile['thumbnailPath'] = getDestinationPath('.png');
     file_put_contents($userProfile['thumbnailPath'], $imgAsString);
     $thumbnailPath = $userProfile['thumbnailPath'];
     updateUserProfile($playerID, $userProfile);
   }
   
-  function getDestinationPath() {
+  function getDestinationPath($ext) {
     global $uploadsDir;
     $guid = GUID();
-    return $uploadsDir.$guid.'.image';
+    return $uploadsDir.$guid.$ext;
   }
 
   function updateUserProfile($playerID, $userProfile) {

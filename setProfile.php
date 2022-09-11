@@ -25,8 +25,6 @@
         <?php echo $sqlErr; ?>
         <?php echo $errorMsg; ?>
         <?php echo $successMsg; ?>
-        <?php echo $dbg0; ?>
-        <?php echo $dbg1; ?>
         <form action="" method="post">
           <button type="submit" class="btn-close" aria-label="Close" name="close" id="close"></button>
         </form>

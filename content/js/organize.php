@@ -2,9 +2,10 @@
 
 <script type="text/javascript">
   
-  function player(name, id) {
+  function player(name, id, thumbnailpath) {
     this.name = name;
     this.id = id;
+    this.thumbnailpath = thumbnailpath;
   }
 
   function unique(left, right, partner) {
@@ -130,7 +131,7 @@
         success: function (response) {
           let data = JSON.parse(response);
           data.forEach(function (i) {
-            self.users.push(new player(i[1], i[0]));
+            self.users.push(new player(i[1], i[0], i[2]));
           });
         },
         error: function (xhr, status, error) {

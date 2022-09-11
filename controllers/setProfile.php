@@ -18,7 +18,7 @@
             $errorMsg = 'Could not get the dimensions of the image.';
           } else {
             $fileBytes = file_get_contents($_FILES['profileImage']['tmp_name']);
-            $destPath = getDestinationPath();
+            $destPath = getDestinationPath('.image');
             if (move_uploaded_file($_FILES['profileImage']['tmp_name'], $destPath) !== true) {
               $errorMsg = 'Could not save the uploaded image.';
             } else {
@@ -28,7 +28,7 @@
               } else {
                 $scale = getScale($width, $height);
                 $th = getThumbnailAsString($img, $scale, $width, $height);
-                $thumbnailPath = getDestinationPath();
+                $thumbnailPath = getDestinationPath('.png');
                 file_put_contents($thumbnailPath, $th);
                 
                 $contentType = $_FILES['profileImage']['type'];

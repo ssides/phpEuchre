@@ -37,7 +37,10 @@
               <div class="org-border">
                 <span>Partner</span><br />
                 <select data-bind="visible: !partnerInvited(), options: users, optionsText: 'name', value: selectedPartner, optionsCaption:'Select'"></select>
-                <p class="notice" data-bind="visible: partnerInvited, text: partnerInvited() ? selectedPartner().name : ''"></p>
+                <div data-bind="visible: partnerInvited">
+                  <img data-bind="src: partnerInvited() ? selectedPartner().thumbnailimage : ''">
+                  <p class="notice" data-bind="text: partnerInvited() ? selectedPartner().name : ''"></p>
+                </div>
                 <div data-bind="visible: allPlayers() & !partnerInvited()">
                   <button class="uxInvitePartner" >Invite</button>
                 </div>

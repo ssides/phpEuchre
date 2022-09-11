@@ -7,6 +7,7 @@
     } else {
       $gameID = $_SESSION['gameID'];
       if(isset($_POST['startGame'])) {
+        // todo: set GameStartDate.
         header('Location: play.php');
       }
     }

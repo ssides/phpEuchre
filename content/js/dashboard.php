@@ -49,7 +49,6 @@
           let data = JSON.parse(response);
           if (data.length > 0) {
             self.rejoinGames([]);
-            console.log('found ' + data.length);
             // stop the timer and wait for the player to respond.
             clearInterval(self.rejoinTimer);
             data.forEach(function(i){

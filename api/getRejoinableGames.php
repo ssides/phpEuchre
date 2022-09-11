@@ -7,7 +7,7 @@
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
       $playerID = $_POST[$cookieName];
-      $invitations = array();
+      $ary = array();
       $d = cutoffDate();
       
       $sql = "select
@@ -35,11 +35,11 @@
       $results = mysqli_query($connection, $sql);
       
       while ($row = mysqli_fetch_array($results)) {
-        array_push($invitations, array($row['GameID'],$row['OrganizerName'],$row['Position']));
+        array_push($ary, array($row['GameID'],$row['OrganizerName'],$row['Position']));
       }
 
       http_response_code(200);
-      echo json_encode($invitations);
+      echo json_encode($ary);
       
     } else {
       echo "ID invalid or missing.";
