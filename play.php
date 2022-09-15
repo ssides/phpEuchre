@@ -1,5 +1,8 @@
-<?php include('authorize.php'); ?>
-<?php include('controllers/play.php'); ?>
+<?php
+  include('authorize.php');
+  include('controllers/play.php');
+  include_once('config/config.php');
+ ?>
 <!doctype html>
 <html lang="en">
 
@@ -23,11 +26,94 @@
   <div class="App">
     <div class="vertical-center">
       <div class="inner-block">
-        <p class="notice">The organizer would now be able to play Euchre. The other players would wait for the organizer to start the game.</p>
+        <p class="fs-6">Please be patient ... work in progress.</p>
+        <table>
+          <tr><td></td><td></td><td></td></tr>
+          <tr>
+            <td></td>
+            <td>
+              <table style="width: 200px; height: 200px;">
+                <tr>
+                  <td></td>
+                  <td>
+                    <div id="sfeN" style="display:none" class="flip-container-p">
+                      <div class="flipper-p">
+                        <div class="back-p">
+                          <img src="<?php echo $appUrl; ?>content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                        </div>
+                        <div class="front-p">
+                          <img src="<?php echo $appUrl; ?>content/images/cards/AS.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                        </div>
+                      </div>
+                    </div>
+                    <div id="sfeJN" data-bind="visible: nCardURL().length > 0">
+                      <img data-bind="attr: {src: nCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;" />
+                    </div>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div id="sfeW" style="display:none" class="flip-container-l" ">
+                      <div class="flipper-l">
+                        <div class="back-l">
+                          <img src="<?php echo $appUrl; ?>content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg;">
+                        </div>
+                        <div class="front-l">
+                          <img src="<?php echo $appUrl; ?>content/images/cards/AC.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg; transform: translate(<?php echo $cardImageWidth; ?>px,0);">
+                        </div>
+                      </div>
+                    </div>
+                    <div id="sfeJW" data-bind="visible: wCardURL().length > 0">
+                      <img data-bind="attr: {src: wCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;" />
+                    </div>
+                  </td>
+                  <td></td>
+                  <td>
+                    <div id="sfeE" style="display:none" class="flip-container-l">
+                      <div class="flipper-l">
+                        <div class="back-l">
+                          <img src="<?php echo $appUrl; ?>content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg;">
+                        </div>
+                        <div class="front-l">
+                          <img src="<?php echo $appUrl; ?>content/images/cards/AH.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg; transform: translate(-<?php echo $cardImageWidth; ?>px,0); ">
+                        </div>
+                      </div>
+                    </div>
+                    <div id="sfeJE" data-bind="visible: eCardURL().length > 0">
+                      <img data-bind="attr: {src: eCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;" />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>
+                    <div id="sfeS" style="display:none" class="flip-container-p">
+                      <div class="flipper-p">
+                        <div class="back-p">
+                          <img src="<?php echo $appUrl; ?>content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                        </div>
+                        <div class="front-p">
+                          <img src="<?php echo $appUrl; ?>content/images/cards/AS.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                        </div>
+                      </div>
+                    </div>
+                    <div id="sfeJS" data-bind="visible: sCardURL().length > 0">
+                      <img data-bind="attr: {src: sCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;" />
+                    </div>
+                  </td>
+                  <td></td>
+                </tr>
+              </table>
+            </td>
+            <td></td>
+          </tr>
+          <tr><td></td><td></td><td></td></tr>
+        </table>
       </div>
     </div>
   </div>
-  
+
   <?php include('content/js/play.php') ?>
 
 </body>

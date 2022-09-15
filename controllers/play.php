@@ -6,8 +6,7 @@
       header('Location: index.php');
     } else {
       $gameID = $_SESSION['gameID'];
-      // I may not need this controller. I can't think of
-      // a use for it, but someone might want it.
+      // I may not need this controller. 
       // This is only needed if the user wants to redirect.
       // All actions will be through api and ko.  The start
       // link is already on the nav bar.

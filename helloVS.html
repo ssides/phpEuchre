@@ -1,9 +1,8 @@
 <?php
-  include_once('authorize.php');
-  include_once('controllers/organize.php');
+  include('authorize.php');
+  include('controllers/play.php');
   include_once('config/config.php');
-?>
-
+ ?>
 <!doctype html>
 <html lang="en">
 
@@ -12,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="./content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="./content/css/site.css">
-  <title>Organize a Game</title>
+  <title>Sides Family Euchre - Play</title>
   <!-- jQuery + Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
@@ -20,87 +19,103 @@
 </head>
 
 <body>
+
   <!-- Header -->
   <?php include('header.php'); ?>
 
   <div class="App">
     <div class="vertical-center">
-      <div class="inner-block gamePlay">
-
-        <p class="text" data-bind="visible: allPlayers() === false && !allPlayersJoined()">Select players.</p>
-        <p class="text" data-bind="visible: allPlayers() && !allPlayersJoined()">Invite players.</p>
-        <p class="text" data-bind="visible: allPlayers() && allPlayersJoined()">Start the game</p>
+      <div class="inner-block">
+        <p class="notice">The organizer would now be able to play Euchre. The other players would wait for the organizer to start the game.</p>
         <table>
+          <tr><td></td><td></td><td></td></tr>
           <tr>
             <td></td>
             <td>
-              <div class="org-border">
-                <span>Partner</span><br />
-                <select data-bind="visible: !partnerInvited(), options: users, optionsText: 'name', value: selectedPartner, optionsCaption:'Select'"></select>
-                <div data-bind="visible: partnerInvited">
-                  <table>
-                    <tr style="vertical-align: middle !important;">
-                      <td style="vertical-align: middle !important;">
-                        <div style="display: inline-block" data-bind="visible: partnerInvited() ? selectedPartner().thumbnailpath.length > 0 : false">
-                          <img data-bind="attr: {src: partnerInvited() ? selectedPartner().thumbnailpath : ''}" />
+              <table>
+                <tr>
+                  <td></td>
+                  <td>
+                    <div id="sfeN" style="display:none" class="flip-container-p">
+                      <div class="flipper-p">
+                        <div class="back-p">
+                          <img src="http://localhost:8080/content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
                         </div>
-                      </td>
-                      <td style="vertical-align: middle !important;">&nbsp;<span class="notice" data-bind="text: partnerInvited() ? selectedPartner().name : ''"></span></td>
-                    </tr>
-                  </table>
-                </div>
-                <div data-bind="visible: allPlayers() & !partnerInvited()">
-                  <button class="uxInvitePartner">Invite</button>
-                </div>
-                <p class="notice" data-bind="visible: partnerJoined()">Joined</p>
-              </div>
+                        <div class="front-p">
+                          <img src="http://localhost:8080/content/images/cards/AS.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                        </div>
+                      </div>
+                    </div>
+                    <div id="sfeJN">
+                      <img src="http://localhost:8080/content/images/cards/AS.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                    </div>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div id="sfeW" style="display:none" class="flip-container-l" ">
+                      <div class="flipper-l">
+                        <div class="back-l">
+                          <img src="http://localhost:8080/content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg;">
+                        </div>
+                        <div class="front-l">
+                          <img src="http://localhost:8080/content/images/cards/AC.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg; transform: translate(<?php echo $cardImageWidth; ?>px,0);">
+                        </div>
+                      </div>
+                    </div>
+                    <div id="sfeJW">
+                      <img src="http://localhost:8080/content/images/cards/AS.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                    </div>
+                  </td>
+                  <td></td>
+                  <td>
+                    <div id="sfeE" style="display:none" class="flip-container-l">
+                      <div class="flipper-l">
+                        <div class="back-l">
+                          <img src="http://localhost:8080/content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg;">
+                        </div>
+                        <div class="front-l">
+                          <img src="http://localhost:8080/content/images/cards/AH.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg; transform: translate(-<?php echo $cardImageWidth; ?>px,0); ">
+                        </div>
+                      </div>
+                    </div>
+                    <div id="sfeJE">
+                      <img src="http://localhost:8080/content/images/cards/AS.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>
+                    <div id="sfeS" style="display:none" class="flip-container-p">
+                      <div class="flipper-p">
+                        <div class="back-p">
+                          <img src="http://localhost:8080/content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                        </div>
+                        <div class="front-p">
+                          <img src="http://localhost:8080/content/images/cards/AS.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                        </div>
+                      </div>
+                    </div>
+                    <div id="sfeJS">
+                      <img src="http://localhost:8080/content/images/cards/AS.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                    </div>
+                  </td>
+                  <td></td>
+                </tr>
+              </table>
             </td>
             <td></td>
           </tr>
-          <tr>
-            <td>
-              <div class="org-border">
-                <span>Opponent Left</span><br />
-                <select data-bind="visible: !leftInvited(), options: users, optionsText: 'name', value: selectedLeft, optionsCaption:'Select'"></select>
-                <p class="notice" data-bind="visible: leftInvited, text: leftInvited() ? selectedLeft().name : ''"></p>
-                <div data-bind="visible: allPlayers() & !leftInvited()">
-                  <button class="uxInviteLeft">Invite</button>
-                </div>
-                <p class="notice" data-bind="visible: leftJoined()">Joined</p>
-              </div>
-            </td>
-            <td></td>
-            <td>
-              <div class="org-border">
-                <span>Opponent Right</span><br />
-                <select data-bind="visible: !rightInvited(), options: users, optionsText: 'name', value: selectedRight, optionsCaption:'Select'"></select>
-                <p class="notice" data-bind="visible: rightInvited, text: rightInvited() ? selectedRight().name : ''"></p>
-                <div data-bind="visible: allPlayers() & !rightInvited()">
-                  <button class="uxInviteRight">Invite</button>
-                </div>
-                <p class="notice" data-bind="visible: rightJoined()">Joined</p>
-
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>
-              <div class="org-border"><p class="text">Organizer (you)</p></div>
-            </td>
-            <td></td>
-          </tr>
+          <tr><td></td><td></td><td></td></tr>
         </table>
-        <p class="error"><?php echo $errorMsg; ?></p>
-        <div data-bind="visible: allPlayers() && allPlayersJoined()">
-          <form action="" method="post">
-            <button type="submit" name="startGame" id="startGame">Start Game</button>
-          </form>
-        </div>
       </div>
     </div>
   </div>
-  <?php include('content/js/organize.php') ?>
+
+  <?php include('content/js/play.php') ?>
+
 </body>
 
 </html>
