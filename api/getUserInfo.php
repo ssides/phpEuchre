@@ -3,9 +3,7 @@
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
   include('../svc/getThumbnailURL.php');
-  //C:\src\phpEuchre\svc\getThumbnailURL.php
-  // POST http://localhost:8080/api/getUserInfo.php 500 (Internal Server Error)
-  //           C:\src\phpEuchre\api\getUserInfo.php
+
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
@@ -24,7 +22,7 @@
 
       http_response_code(200);
       echo json_encode($user);
-      echo json_encode('OK');
+
     } else {
       echo "ID invalid or missing.";
     }
