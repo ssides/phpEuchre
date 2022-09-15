@@ -6,4 +6,6 @@
   $positionDistance = 3;
   // the images folder must be called images and it must be in root.
   $uploadsDir = 'C:/src/phpEuchre/images/';
+  $cardImageWidth = 40; // px
+  $cardImageHeight = 56; // px
 ?>

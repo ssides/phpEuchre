@@ -49,7 +49,7 @@ html,
 }
 
 .gamePlay {
-  background-color: #07580b !important; 
+  background-color: #07580b !important;
   color: #edea3a;
 }
 
@@ -59,9 +59,9 @@ html,
   border-radius: 8px;
 }
 
-.org-border .no-pad {
-  padding: 2px !important;
-}
+  .org-border .no-pad {
+    padding: 2px !important;
+  }
 
 .vertical-center .form-control:focus {
   border-color: #1c7621;
@@ -104,7 +104,7 @@ label {
 }
 
 .dashboardRight {
-  width: 100%; 
+  width: 100%;
   text-align: right;
 }
 
@@ -122,4 +122,81 @@ table.dbgTable td {
 
 .notice {
   color: #70b0ea;
+}
+
+.flip-container-p {
+  perspective: 1000px;
+}
+
+  .flip-container-p.hover .flipper-p {
+    transform: rotateY(180deg);
+  }
+
+.flip-container-p,
+.back-p,
+.front-p {
+  /* this needs to match the card image size configured in config.php */
+  width: 50px;
+  height: 70px;
+}
+
+.flipper-p {
+  transition: 0.5s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.back-p,
+.front-p {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.back-p {
+  z-index: 2;
+  transform: rotateY(0deg);
+}
+
+.front-p {
+  transform: rotateY(180deg);
+}
+
+.flip-container-l {
+  perspective: 1000px;
+}
+
+  .flip-container-l.hover .flipper-l {
+    transform: rotateX(180deg);
+  }
+
+.flip-container-l,
+.back-l,
+.front-l {
+  width: 70px;
+  height: 50px;
+}
+
+.flipper-l {
+  transition: 0.5s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.back-l,
+.front-l {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.back-l {
+  z-index: 2;
+  transform: rotateX(0deg);
+}
+
+.front-l {
+  transform: rotateX(180deg);
 }

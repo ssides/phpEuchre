@@ -34,7 +34,7 @@ create table `UserProfile`
 drop table if exists `Deal`;
 create table `Deal`
 (
-  `ID` varchar(38) not null primary key,
+  `ID` int not null primary key,
   `Cards` char(72) not null, 
   `PurposeCode` char not null default 'D'
 );
@@ -45,7 +45,7 @@ drop table if exists `Game`;
 create table `Game`
 (
   `ID` varchar(38) not null primary key, 
-  `Organizer` varchar(450) not null, 
+  `Organizer` varchar(450) not null, --  Organizer, Partner, Left, Right should all be varchar(38) to match PlayerID but we can't change it now.
   `Partner` varchar(450) null, 
   `Left` varchar(450) null, 
   `Right` varchar(450) null,
@@ -60,10 +60,18 @@ create table `Game`
   `LeftJoinDate` datetime null, 
   `RightInviteDate` datetime null, 
   `RightJoinDate` datetime null, 
-  constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`), 
-  constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`), 
-  constraint `FK_GameLeft_Player` foreign key (`Left`) references `Player`(`ID`), 
+  `Dealer` varchar(1) null,  -- update - O)rganizer P)artner, L)eft, R)ight
+  `Trump` varchar(1) null,  -- update - D)iamonds S)pades, H)earts, C)lubs - I need more graphics.
+  `FirstJackIndex` int null,  -- update
+  `FirstJackPosition` varchar(1) null, -- update O)rganizer P)artner, L)eft, R)ight
+  `AJP` varchar(1) null, -- update - Partner acknowledges first Jack
+  `AJR` varchar(1) null, -- update - Right acknowledges first Jack
+  `AJL` varchar(1) null, -- update - Left acknowledges first Jack
+  constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`),
+  constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`),
+  constraint `FK_GameLeft_Player` foreign key (`Left`) references `Player`(`ID`),
   constraint `FK_GameRight_Player` foreign key (`Right`) references `Player`(`ID`)
+  constraint `FK_GameDealer_Player` foreign key (`Dealer`) references `Player`(`ID`)
  );
  
 drop table if exists `GameDeal`;
@@ -71,7 +79,7 @@ create table `GameDeal`
 (
   `ID` varchar(38) not null primary key, 
   `GameID` varchar(38) not null, 
-  `DealID` varchar(38) not null, 
+  `DealID` int not null, 
   `DateInserted` datetime not null,
   constraint `FK_GameDeal_Game` foreign key (`GameID`) references `Game`(`ID`), 
   constraint `FK_GameDeal_Deal` foreign key (`DealID`) references `Deal`(`ID`)
