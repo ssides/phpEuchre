@@ -69,6 +69,13 @@
       },
     ];
     
+    self.clearBoard = function(){
+      self.nCardURL('');
+      self.eCardURL('');
+      self.sCardURL('');
+      self.wCardURL('');
+    };
+    
     self.acknowledgeJack = function(position) {
       var pd = {};
       Object.assign(pd, self.postData);
@@ -101,6 +108,7 @@
               self.placeFirstJack[i](data.ID, data.Position);
               if (data.ID[0] == 'J') {
                 self.acknowledgeJack(self.position);
+                self.clearBoard();
                 clearInterval(self.playerGetCurrentFTimer);
               }
             } else {
@@ -130,11 +138,8 @@
             var i = self.positions.indexOf(self.position);
             self.placeFirstJack[i](data.ID, data.Position);
             if (self.game.AJP == 'A' && self.game.AJR == 'A' && self.game.AJL == 'A') {
+              self.clearBoard();
               clearInterval(self.orgGetNextFTimer);
-              self.nCardURL('');
-              self.eCardURL('');
-              self.sCardURL('');
-              self.wCardURL('');
               // the dealer is given in data.Position;
               // call api setDealer
             }
