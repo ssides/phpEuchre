@@ -67,6 +67,8 @@ create table `Game`
   `AJP` varchar(1) null, -- update - Partner acknowledges first Jack
   `AJR` varchar(1) null, -- update - Right acknowledges first Jack
   `AJL` varchar(1) null, -- update - Left acknowledges first Jack
+  `OrganizerTricks` int null,
+  `OpponentTricks` int null,
   constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`),
   constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`),
   constraint `FK_GameLeft_Player` foreign key (`Left`) references `Player`(`ID`),

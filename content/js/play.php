@@ -94,12 +94,17 @@
         success: function (response) {
           try {
             let data = JSON.parse(response);
-            // if data.ID[0] == 'J', acknowledge the jack, for self.position.
-            console.log(data.ID, data.Position);
-            var i = self.positions.indexOf(self.position);
-            self.placeFirstJack[i](data.ID, data.Position);
-            if (data.ID[0] == 'J') {
-              self.acknowledgeJack(self.position);
+            if (data.ID) {
+              // if data.ID[0] == 'J', acknowledge the jack, for self.position.
+              console.log(data.ID, data.Position);
+              var i = self.positions.indexOf(self.position);
+              self.placeFirstJack[i](data.ID, data.Position);
+              if (data.ID[0] == 'J') {
+                self.acknowledgeJack(self.position);
+                clearInterval(self.playerGetCurrentFTimer);
+              }
+            } else {
+              console.log(data.ErrorMsg);
             }
           } catch (error) {
             console.log('Could not parse response from getCurrentStartCard. ' + error + ': ' + response);
