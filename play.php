@@ -32,7 +32,7 @@
           <tr>
             <td></td>
             <td>
-              <table class="dbgTable" style="width: 175px; height: 168px; background-color: #006F2D">
+              <table style="width: 175px; height: 168px; background-color: #006F2D">
                 <thead>
                   <tr>
                     <td style="width: 65px; text-alight:right;">
