@@ -37,7 +37,7 @@
                         <input type="text" class="form-control" name="name_signin" id="name_signin" />
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group login-margin-bottom">
                         <label>Password</label>
                         <input type="password" class="form-control" name="password_signin" id="password_signin" />
                     </div>

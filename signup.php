@@ -45,7 +45,7 @@
                         <?php echo $passwordEmptyErr; ?>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group login-margin-bottom">
                         <label>Confirm Password</label>
                         <input type="password" class="form-control" name="confirmpassword" id="confirmpassword" />
                     </div>

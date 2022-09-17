@@ -8,7 +8,7 @@
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
       $ary = array();
-      $sql = "select p.`ID`,`Name`,u.`ThumbnailPath`
+      $sql = "select p.`ID`,substr(`Name`,1,8) `Name`,u.`ThumbnailPath`
               from `Player` p
               left join `UserProfile` u on u.`PlayerID` = p.`ID`
               where p.`ID` <> '{$_POST[$cookieName]}'";

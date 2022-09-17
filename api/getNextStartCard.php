@@ -4,7 +4,7 @@
   include('../controllers/isAuthenticated.php');
   include('../svc/GUID.php');
   include('../svc/getNextPosition.php');
-  include('../svc/getDealID.php');
+  include('../svc/getDealServices.php');
   
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
@@ -77,9 +77,6 @@
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
     $fdeal = array();
     $r = mt_rand(1,500);
-    
-    // for debugging:
-    $r = 10;
     
     $sql = "select `ID`,`Cards` from `Deal` where `PurposeCode` = 'J' and `ID`={$r}";
       
