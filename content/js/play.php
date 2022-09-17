@@ -3,16 +3,58 @@
 ?>
 
 <script type="text/javascript">
+
+  // If you don't like this code, if you don't think it's good, don't read it,
+  // don't use it.  I'm not writing to you.  I'm writing to people who have
+  // patience with the way other people think.  -srs
+  
+  const state = {
+    selectFirstJack: 0,
+    waitForAcknowledgements: 1,
+    deal: 2
+  };
+  
+  const times = {
+    firstJackTime: 750,
+    gameTime: 1000
+  };
+  
+  function gameModel(data) {
+    this.Organizer = data.Organizer || '';
+    this.Partner = data.Partner || '';
+    this.Left = data.Left || '';
+    this.Right = data.Right || '';
+    this.OrganizerScore = data.OrganizerScore || '';
+    this.OpponentScore = data.OpponentScore || '';
+    this.GameStartDate = data.GameStartDate || '';
+    this.Dealer = data.Dealer || '';
+    this.Trump = data.Trump || '';
+    this.OrganizerTricks = data.OrganizerTricks || '';
+    this.OpponentTricks = data.OpponentTricks || '';
+    this.AJP = data.AJP || '';
+    this.AJR = data.AJR || '';
+    this.AJL = data.AJL || '';
+    this.OThumbnailPath = data.OThumbnailPath || '';
+    this.OName = data.OName || '';
+    this.PThumbnailPath = data.PThumbnailPath || '';
+    this.PName = data.PName || '';
+    this.LThumbnailPath = data.LThumbnailPath || '';
+    this.LName = data.LName || '';
+    this.RThumbnailPath = data.RThumbnailPath || '';
+    this.RName = data.RName || '';
+  }
   
   function playViewModel() {
     var self = this;
     
+    self.executionPoint = state.selectFirstJack;
     self.appURL = '<?php echo $appUrl; ?>';
     self.playerID = '<?php echo "{$_COOKIE[$cookieName]}"; ?>';
     self.postData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"
                       .",gameID:'{$_SESSION['gameID']}'"   ?>  };
     self.position = null;
-    self.game = {};
+    self.message = ko.observable('Selecting the dealer ...');
+    self.game = new gameModel({});
     self.orgGetNextFTimer = null;
     self.getGameTimer = null;
     self.playerGetCurrentFTimer = null;
@@ -21,8 +63,16 @@
     self.sCardURL = ko.observable('');
     self.wCardURL = ko.observable('');
     
+    // service functions
     self.getFirstJackURL = function(cardID){
       return self.appURL + 'content/images/cards/' + cardID + '.jpg';
+    };
+    
+    self.clearBoard = function(){
+      self.nCardURL('');
+      self.eCardURL('');
+      self.sCardURL('');
+      self.wCardURL('');
     };
     
     self.positions = 'OPLR';
@@ -69,13 +119,61 @@
       },
     ];
     
-    self.clearBoard = function(){
-      self.nCardURL('');
-      self.eCardURL('');
-      self.sCardURL('');
-      self.wCardURL('');
+    self.setThisPlayerPosition = function(){
+      if ((self.playerID === self.game.Organizer)) {
+        self.position = 'O';
+      } else if (self.playerID === self.game.Left) {
+        self.position = 'L';
+      } else if (self.playerID === self.game.Right) {
+        self.position = 'R';
+      } else if (self.playerID === self.game.Partner) {
+        self.position = 'P';
+      }
     };
     
+    // execution point functions
+    self.setExecutionPoint = function(descr, id) {
+      console.log('execution point: ' + descr);
+      self.executionPoint = id;
+    };
+    
+    self.selectFirstJackFn = function(){
+      if (self.position == null)
+        self.setThisPlayerPosition();
+      
+      if (self.game.AJP == 'A' && self.game.AJR == 'A' && self.game.AJL == 'A') {
+        self.setExecutionPoint('deal', state.deal);
+      } else {
+        if ((self.position == 'O') && (self.orgGetNextFTimer === null)) {
+          console.log('Starting the first Jack selection timer.  ');
+          self.orgGetNextFTimer = setInterval(self.getNextStartCard, times.firstJackTime);
+        }
+        
+        if ((self.position != 'O') && (self.playerGetCurrentFTimer === null)) {
+          console.log('Starting the first Jack query timer.  ');
+          self.playerGetCurrentFTimer = setInterval(self.getCurrentStartCard, times.firstJackTime);
+        }
+      }
+    };
+    
+    self.waitForAcknowledgementsFn = function(){
+      if (self.game.AJP == 'A' && self.game.AJR == 'A' && self.game.AJL == 'A') {
+        self.clearBoard();
+        self.message('');
+        self.setExecutionPoint('deal', state.deal);
+      }
+    };
+    
+    self.dealFn = function(){
+    };
+    
+    self.gameExecution = [
+      self.selectFirstJackFn,
+      self.waitForAcknowledgementsFn,
+      self.dealFn
+    ];
+    
+    // api call functions
     self.acknowledgeJack = function(position) {
       var pd = {};
       Object.assign(pd, self.postData);
@@ -108,7 +206,7 @@
               self.placeFirstJack[i](data.ID, data.Position);
               if (data.ID[0] == 'J') {
                 self.acknowledgeJack(self.position);
-                self.clearBoard();
+                self.setExecutionPoint('waitForAcknowledgements', state.waitForAcknowledgements);
                 clearInterval(self.playerGetCurrentFTimer);
               }
             } else {
@@ -138,7 +236,7 @@
             var i = self.positions.indexOf(self.position);
             self.placeFirstJack[i](data.ID, data.Position);
             if (self.game.AJP == 'A' && self.game.AJR == 'A' && self.game.AJL == 'A') {
-              self.clearBoard();
+              self.setExecutionPoint('waitForAcknowledgements', state.waitForAcknowledgements);
               clearInterval(self.orgGetNextFTimer);
               // the dealer is given in data.Position;
               // call api setDealer
@@ -163,26 +261,11 @@
         success: function (response) {
           try {
             let data = JSON.parse(response);
-            if ((self.playerID === data.Organizer)) {
-              self.position = 'O';
-            } else if (self.playerID === data.Left) {
-              self.position = 'L';
-            } else if (self.playerID === data.Right) {
-              self.position = 'R';
-            } else if (self.playerID === data.Partner) {
-              self.position = 'P';
-            }
-            if ((self.position == 'O') && (self.orgGetNextFTimer === null)) {
-              console.log('Starting the first Jack selection timer.  ');
-              self.orgGetNextFTimer = setInterval(self.getNextStartCard, 750);
-            }
-            if ((self.position != 'O') && (self.playerGetCurrentFTimer === null)) {
-              console.log('Starting the first Jack query timer.  ');
-              self.playerGetCurrentFTimer = setInterval(self.getCurrentStartCard, 750);
-            }
-            Object.assign(self.game, data);
+            self.game = new gameModel(data);
+            self.gameExecution[self.executionPoint]();
           } catch (error) {
-            console.log('Could not parse response from getGame. ' + error + ': ' + response);
+            console.log('Error ' + ': ' + error.message);
+            console.log(error.stack);
             clearInterval(self.getGameTimer);
           }
         },
@@ -199,8 +282,8 @@
       // 2) the organizer can call api/getNextStartCard().  Everyone else can call api/getCurrentStartCard().
       // 3) everyone needs to see who got the first jack. Everyone needs to acknowledge that before the dealer is announced.
       //    api/acknowledgeFirstJack()
-      self.getGameTimer = setInterval(self.getGame, 1000);
-      // there needs to be a timer for non-organizer players called getCurrentStartCard. and acknowledgeJack(self.position);
+      self.setExecutionPoint('selectFirstJack', state.selectFirstJack);
+      self.getGameTimer = setInterval(self.getGame, times.gameTime);
     }
     
     self.initialize();

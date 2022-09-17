@@ -108,6 +108,10 @@ label {
   text-align: right;
 }
 
+.login-margin-bottom {
+  margin-bottom: 6px;
+}
+
 table.dbgTable td {
   border-width: 1px;
   border-spacing: 2px;

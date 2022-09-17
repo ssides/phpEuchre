@@ -26,7 +26,7 @@
   <div class="App">
     <div class="vertical-center">
       <div class="inner-block">
-        <p class="fs-6">Please be patient ... work in progress.</p>
+        <p class="fs-6" data-bind="text: message"></p>
         <table>
           <tr><td></td><td></td><td></td></tr>
           <tr>
