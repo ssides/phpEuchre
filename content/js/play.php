@@ -11,7 +11,8 @@
   const state = {
     selectFirstJack: 0,
     waitForAcknowledgements: 1,
-    deal: 2
+    deal: 2,
+    chooseTrump: 3
   };
   
   const times = {
@@ -56,8 +57,8 @@
     self.message = ko.observable('Selecting the dealer ...');
     self.game = new gameModel({});
     self.orgGetNextFTimer = null;
-    self.getGameTimer = null;
     self.playerGetCurrentFTimer = null;
+    self.getGameTimer = null;
     self.nCardURL = ko.observable('');
     self.eCardURL = ko.observable('');
     self.sCardURL = ko.observable('');
@@ -69,15 +70,13 @@
     };
     
     self.clearBoard = function(){
-      self.nCardURL('');
-      self.eCardURL('');
-      self.sCardURL('');
-      self.wCardURL('');
+      self.nCardURL('');  self.eCardURL('');  self.sCardURL('');  self.wCardURL('');
     };
     
     self.positions = 'OPLR';
     self.placeFirstJack = [
       function(cardID, atPosition) { 
+        // todo: use a switch statement here, and in the rest of these functions.
         if (atPosition == 'O') 
           self.sCardURL(self.getFirstJackURL(cardID));
         else if (atPosition == 'P') 
@@ -141,7 +140,10 @@
       if (self.position == null)
         self.setThisPlayerPosition();
       
+      // `Dealer` != 'N' is better than these three checks. startGame in dashboard controller sets `Dealer` to 'N'
       if (self.game.AJP == 'A' && self.game.AJR == 'A' && self.game.AJL == 'A') {
+        // do this if I'm the dealer. Otherwise go to getMyCards.
+        // return to game is going to be tricky.
         self.setExecutionPoint('deal', state.deal);
       } else {
         if ((self.position == 'O') && (self.orgGetNextFTimer === null)) {
@@ -165,12 +167,21 @@
     };
     
     self.dealFn = function(){
+      if (self.position == self.game.Dealer) {
+        self.deal();
+        self.setExecutionPoint('chooseTrump', state.chooseTrump);
+      } else {
+        self.getMyCards();
+      }
     };
+    
+    self.chooseTrumpFn = function(){};
     
     self.gameExecution = [
       self.selectFirstJackFn,
       self.waitForAcknowledgementsFn,
-      self.dealFn
+      self.dealFn,
+      self.chooseTrumpFn
     ];
     
     // api call functions
@@ -236,6 +247,7 @@
             var i = self.positions.indexOf(self.position);
             self.placeFirstJack[i](data.ID, data.Position);
             if (self.game.AJP == 'A' && self.game.AJR == 'A' && self.game.AJL == 'A') {
+              self.setFirstDealPosition(data.Position);
               self.setExecutionPoint('waitForAcknowledgements', state.waitForAcknowledgements);
               clearInterval(self.orgGetNextFTimer);
               // the dealer is given in data.Position;
@@ -253,6 +265,49 @@
       });
     };
     
+    self.setFirstDealPosition = function(position){
+      var pd = {};
+      Object.assign(pd, self.postData);
+      pd.position = position;
+      $.ajax({
+        method: 'POST',
+        url: 'api/setFirstDealPosition.php',
+        data: pd,
+        success: function(response){
+          console.log('setFirstDealPosition: ',response);
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+          clearInterval(self.getGameTimer);
+        }
+      });
+    };
+    
+    // The deal api selects a random deal where `PurposeCode` = 'D' and DealID has not yet been used in this game.
+    // `Game`.`Dealer` was set by setFirstDealPosition.
+    // For each player the deal api inserts into `Play`
+    // In `Game` it updates `CardFaceUp` and `Turn`
+    // While the dealer is dealing, the other players are calling the getMyCards api. which also returns `CardFaceUp` and `Turn`
+    self.deal = function() {
+      $.ajax({
+        method: 'POST',
+        url: 'api/deal.php',
+        data: pd,
+        success: function(response){
+          
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+          clearInterval(self.getGameTimer);
+        }
+      });
+    };
+    
+    self.getMyCards = function(){
+      console.log('get my cards');
+    };
+    
+    // getGame event
     self.getGame = function() {
       $.ajax({
         method: 'POST',

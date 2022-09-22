@@ -10,7 +10,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="./content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="./content/css/site.css">
+  <link rel="stylesheet" href="<?php echo './content/css/site.css?r='.mt_rand() ?>">
   <title>Sides Family Euchre - Play</title>
   <!-- jQuery + Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -79,7 +79,9 @@
                         <img data-bind="attr: {src: wCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg; transform: translate(0,-14px);" />
                       </div>
                     </td>
-                    <td></td>
+                    <td>
+                    <!-- I need four flippers here in every direction for the `CardFaceUp` turned up by the dealer. -->
+                    </td>
                     <td>
                       <div id="sfeE" style="display:none" class="flip-container-l">
                         <div class="flipper-l">

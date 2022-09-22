@@ -1,14 +1,27 @@
-alter table `Game` add (
-  `Dealer` varchar(1) null,  --  O)rganizer P)artner, L)eft, R)ight
-  `Trump` varchar(1) null,  --  D)iamonds S)pades, H)earts, C)lubs
-  `FirstJackIndex` int null, 
-  `FirstJackPosition` varchar(1) null, --  O)rganizer P)artner, L)eft, R)ight
-  `AJP` varchar(1) null, --  Partner acknowledges first Jack
-  `AJR` varchar(1) null, --  Right acknowledges first Jack
-  `AJL` varchar(1) null  --  Left acknowledges first Jack
-);
+
+alter table `GameDeal` drop column `DateInserted`;
+
+alter table `Game` 
+  drop column `DateInserted`,
+  drop column `Trump`;
 
 alter table `Game` add (
-  `OrganizerTricks` int null,
-  `OpponentTricks` int null
+  `Turn` char(1) null, -- positions: 'O'rganizer, 'P'artner, opponent 'L'eft, opponent 'R'ight
+  `Trump` varchar(2) null,  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.jpg, etc. and position who named Trump.
 );
+
+drop table if exists `Play`;
+create table `Play` (
+  `ID` varchar(38) not null,
+  `GameID` varchar(38) not null, 
+  `Position` char(1) not null,
+  `CardID1` char(3) not null, -- card id - third char ' ' means not been played.
+  `CardID2` char(3) not null, -- card id - third char in ('1','2','3','4','5') indicates the order the player played his/her cards.
+  `CardID3` char(3) not null, 
+  `CardID4` char(3) not null, 
+  `CardID5` char(3) not null, 
+  `InsertDate` datetime not null,
+  constraint `FK_Play_Game` foreign key (`GameID`) references `Game`(`ID`)
+);
+
+

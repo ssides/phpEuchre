@@ -52,10 +52,10 @@
     }
     
     function startGame($playerID) {
-      global $connection;
+      global $sqlErr,$connection;
       $gameID = GUID();
       $zero = 0;
-      $smt = mysqli_prepare($connection, 'insert into `Game` (`ID` , `Organizer`, `OrganizerScore`, `OpponentScore`, `OrganizerTricks`,`OpponentTricks`,`DateInserted`) values (?,?,?,?,?,?,now())');
+      $smt = mysqli_prepare($connection, "insert into `Game` (`ID` , `Organizer`, `OrganizerScore`, `OpponentScore`, `OrganizerTricks`,`OpponentTricks`,`InsertDate`,`Dealer`) values (?,?,?,?,?,?,now(),'N')");
       mysqli_stmt_bind_param($smt, 'ssiiii', $gameID, $playerID, $zero,$zero,$zero,$zero);
       if (!mysqli_stmt_execute($smt)){
         $sqlErr = mysqli_error($connection);

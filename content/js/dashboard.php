@@ -23,6 +23,7 @@
         url: 'api/getInvitations.php',
         data: postData,
         success: function (response) {
+          console.log('received getInvitations response');
           let data = JSON.parse(response);
           if (data.length > 0) {
             self.invitations([]);
@@ -34,6 +35,7 @@
           }
         },
         error: function (xhr, status, error) {
+          console.log(xhr.responseText);
           console.log(error);
         }
       });
@@ -46,6 +48,7 @@
         url: 'api/getRejoinableGames.php',
         data: postData,
         success: function (response) {
+          console.log('received getRejoinableGames response');
           let data = JSON.parse(response);
           if (data.length > 0) {
             self.rejoinGames([]);
@@ -57,18 +60,21 @@
           }
         },
         error: function (xhr, status, error) {
+          console.log(xhr.responseText);
           console.log(error);
         }
       });
     };
     
     self.initialize = function() {
-      self.invitationTimer = setInterval(self.getInvitations, 2000);
+      console.log('start timer invitationTimer.');
+      self.invitationTimer = setInterval(self.getInvitations, 1000);
       // start another timer to get games from the last three days 
       // that can be rejoined.
       // everything needs to be stored in the database.  I need a Play table
       // that joins to Game. who is the dealer? what is trump?
-      self.rejoinTimer = setInterval(self.getReJoinGames, 2000);
+      console.log('start timer rejoinTimer.');
+      self.rejoinTimer = setInterval(self.getReJoinGames, 1000);
       
       $('.uxRefreshInvites').click(function(){ self.getInvitations(); });
       $('.uxRefreshReJoins').click(function(){ self.getReJoinGames(); });
