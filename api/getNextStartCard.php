@@ -58,7 +58,7 @@
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
     $ID = GUID();
     
-    $sql = "insert into `GameDeal` (`ID`, `DealID`, `GameID`,`DateInserted`) values ('{$ID}','{$dealID}','{$gameID}',now())";
+    $sql = "insert into `GameDeal` (`ID`, `DealID`, `GameID`,`InsertDate`) values ('{$ID}','{$dealID}','{$gameID}',now())";
     if (mysqli_query($conn, $sql) === false) {
       $errorMsg .= mysqli_error($conn);
     } else {

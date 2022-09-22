@@ -22,7 +22,7 @@
           where (`Partner` = '{$playerID}' and PartnerJoinDate is null)
             or (`Left` = '{$playerID}' and LeftJoinDate is null)
             or (`Right` = '{$playerID}' and RightJoinDate is null)
-          order by g.`DateInserted` desc";
+          order by g.`InsertDate` desc";
 
       $results = mysqli_query($connection, $sql);
       

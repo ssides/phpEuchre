@@ -4,7 +4,7 @@
 <?php include('controllers/header.php'); ?>
 <?php $userIsAuthenticated = isAuthenticated($_COOKIE[$cookieName]); ?>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+  <nav class="navbar navbar-expand navbar-dark bg-primary fixed-top">
     <div class="container">
         <a class="navbar-brand" href="#">Sides Family Euchre</a>
         
@@ -15,7 +15,7 @@
             <?php endif; ?>
               <span  style="color:white"><?php echo 'Hi '.$user['Name'].'!' ?></span>&nbsp;
           <?php endif; ?>
-          <ul class="navbar-nav ml-auto">
+          <ul class="navbar-nav me-auto">
           <li class="nav-item <?php echo ($userIsAuthenticated) ? "hide" : ""; ?>">
           <?php echo '<a class="nav-link" href="'.$appUrl.'index.php">Sign in</a>'; ?>
           </li>

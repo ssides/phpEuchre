@@ -51,7 +51,6 @@ create table `Game`
   `Right` varchar(450) null,
   `OrganizerScore` int not null, 
   `OpponentScore` int not null, 
-  `DateInserted` datetime not null, 
   `DateFinished` datetime null,
   `GameStartDate` datetime null, 
   `PartnerInviteDate` datetime null, 
@@ -60,15 +59,19 @@ create table `Game`
   `LeftJoinDate` datetime null, 
   `RightInviteDate` datetime null, 
   `RightJoinDate` datetime null, 
-  `Dealer` varchar(1) null,  -- update - O)rganizer P)artner, L)eft, R)ight
-  `Trump` varchar(1) null,  -- update - D)iamonds S)pades, H)earts, C)lubs - I need more graphics.
-  `FirstJackIndex` int null,  -- update
-  `FirstJackPosition` varchar(1) null, -- update O)rganizer P)artner, L)eft, R)ight
-  `AJP` varchar(1) null, -- update - Partner acknowledges first Jack
-  `AJR` varchar(1) null, -- update - Right acknowledges first Jack
-  `AJL` varchar(1) null, -- update - Left acknowledges first Jack
+  `Dealer` varchar(1) null,  --  'N' not set.  'O'rganizer 'P'artner, 'L'eft, 'R'ight
+  `Trump` varchar(2) null,  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.jpg, etc. and position who named trump.
+  `FirstJackIndex` int null, 
+  `FirstJackPosition` varchar(1) null, --  'O'rganizer 'P'artner, opponent 'L'eft, opponent 'R'ight
+  `AJP` varchar(1) null, -- Partner 'A'cknowledges first Jack
+  `AJR` varchar(1) null, -- opponent Right 'A'cknowledges first Jack
+  `AJL` varchar(1) null, -- opponent Left 'A'cknowledges first Jack
   `OrganizerTricks` int null,
   `OpponentTricks` int null,
+  `InsertDate` datetime not null,
+  `FirstDealPosition` char(1) null,
+  `CardDiscardedByDealer` char(2) null,
+  `CardFaceUp` char(4) null, -- CardID turned face up at the end of the deal. third char: 'D'eclined or ordered 'U'p. fourth char position who ordered it up or who named trump.
   constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`),
   constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`),
   constraint `FK_GameLeft_Player` foreign key (`Left`) references `Player`(`ID`),
@@ -82,7 +85,8 @@ create table `GameDeal`
   `ID` varchar(38) not null primary key, 
   `GameID` varchar(38) not null, 
   `DealID` int not null, 
-  `DateInserted` datetime not null,
+  `InsertDate` datetime not null,
   constraint `FK_GameDeal_Game` foreign key (`GameID`) references `Game`(`ID`), 
   constraint `FK_GameDeal_Deal` foreign key (`DealID`) references `Deal`(`ID`)
 );
+

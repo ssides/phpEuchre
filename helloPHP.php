@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="./content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="./content/css/site.css">
+  <link rel="stylesheet" href="<?php echo './content/css/site.css?r='.mt_rand() ?>">
   <title>Hello PHP</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
@@ -107,7 +107,34 @@
       } else {
         echo "No jack at index {$c['Index']}: {$cards[0]} {$cards[$c['Index']]}<br>";
       }
+      
+      $deal = array();
+      if (isset($deal['DealID']))
+        echo 'dealid is set: <br>';
+      else
+        echo 'dealid is not set: <br>';
+      
+      $cards = '1C KH KS QC QH 1D 1S 9C 9S KD 1H 9D AS JC QD 9H AC AD KC QS JS JH AH JD ';
+      //  POS   0123456789012345678901234567890123456789012345678901234567890
+      //        0         1         2         3         4         5         6
+      //  LEN   123456789012345
+      echo 'O: '.substr($cards,0,15) .'<br>';
+      echo 'P: '.substr($cards,15,15).'<br>';
+      echo 'L: '.substr($cards,30,15).'<br>';
+      echo 'R: '.substr($cards,45,15).'<br>';
+      echo 'turn up:'.substr($cards,60,3).'<br>';
+      
+      function auto_version($file)
+      {
+        if(strpos($file, '/') !== 0 || !file_exists($_SERVER['DOCUMENT_ROOT'] . $file))
+          return $file;
 
+        $mtime = filemtime($_SERVER['DOCUMENT_ROOT'] . $file);
+        return preg_replace('{\\.([^./]+)$}', ".$mtime.\$1", $file);
+      }
+
+      echo auto_version('/content/css/site.css');
+      
       ?>
     <?php
     ?>

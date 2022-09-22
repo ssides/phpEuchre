@@ -66,6 +66,7 @@
           }
         },
         error: function (xhr, status, error) {
+          console.log(xhr.responseText);
           console.log(error);
         }
       });
@@ -118,6 +119,7 @@
             self.partnerJoined(false);
         },
         error: function (xhr, status, error) {
+          console.log(xhr.responseText);
           console.log(error);
         }
       });
