@@ -76,9 +76,14 @@
     global $errorMsg, $hostname, $username, $password, $dbname;
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
     $fdeal = array();
-    $r = mt_rand(1,500);
+    $r = mt_rand(0,499);  // put 499 in config.php somehow
     
-    $sql = "select `ID`,`Cards` from `Deal` where `PurposeCode` = 'J' and `ID`={$r}";
+    $sql = "
+      select `ID`,`Cards` 
+      from `Deal` 
+      where `PurposeCode` = 'J' 
+      order by `ID`
+      limit 1 offset {$r}";
       
     $results = mysqli_query($conn, $sql);
     while ($row = mysqli_fetch_array($results)) {
