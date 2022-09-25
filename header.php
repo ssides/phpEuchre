@@ -1,4 +1,3 @@
-
 <?php include_once('config/config.php'); ?>
 <?php include_once('controllers/isAuthenticated.php'); ?>
 <?php include('controllers/header.php'); ?>
@@ -16,21 +15,21 @@
               <span  style="color:white"><?php echo 'Hi '.$user['Name'].'!' ?></span>&nbsp;
           <?php endif; ?>
           <ul class="navbar-nav me-auto">
-          <li class="nav-item <?php echo ($userIsAuthenticated) ? "hide" : ""; ?>">
-          <?php echo '<a class="nav-link" href="'.$appUrl.'index.php">Sign in</a>'; ?>
-          </li>
-          <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">
-          <?php echo '<a class="nav-link" href="'.$appUrl.'logout.php">Sign out</a>'; ?>
-          </li>
-          <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">
-          <?php echo '<a class="nav-link" href="'.$appUrl.'setProfile.php">Profile</a>'; ?>
-          </li>
-          <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">
-          <?php echo '<a class="nav-link" href="'.$appUrl.'dashboard.php">Start</a>'; ?>
-          </li>
-          <li class="nav-item">
-          <?php echo '<a class="nav-link" href="'.$appUrl.'signup.php">Sign up</a>'; ?>
-          </li>
+            <li class="nav-item <?php echo ($userIsAuthenticated) ? "hide" : ""; ?>">
+            <?php echo '<a class="nav-link" href="'.$appUrl.'index.php">Sign in</a>'; ?>
+            </li>
+            <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">
+            <?php echo '<a class="nav-link" href="'.$appUrl.'logout.php">Sign out</a>'; ?>
+            </li>
+            <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">
+            <?php echo '<a class="nav-link" href="'.$appUrl.'setProfile.php">Profile</a>'; ?>
+            </li>
+            <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">
+            <?php echo '<a class="nav-link" href="'.$appUrl.'dashboard.php">Start</a>'; ?>
+            </li>
+            <li class="nav-item">
+            <?php echo '<a class="nav-link" href="'.$appUrl.'signup.php">Sign up</a>'; ?>
+            </li>
           </ul>
       </div>
     </div>
