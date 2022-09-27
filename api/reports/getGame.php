@@ -5,7 +5,8 @@
   
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
-      
+      $gameID = $_POST['gameID'];
+
     } else {
       echo "ID invalid or missing.";
     }

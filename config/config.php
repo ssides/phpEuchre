@@ -8,4 +8,6 @@
   $uploadsDir = 'C:/src/phpEuchre/images/';
   $cardImageWidth = 40; // px
   $cardImageHeight = 56; // px
+  $firstJackChoices = 500;
+  $dealChoices = 1000;
 ?>

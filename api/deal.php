@@ -37,20 +37,25 @@
     
   }
   
-  // selects a deal at random. does not deal the same cards twice.
-  function getRandomDeal() {
-    global $hostname, $username, $password, $dbname;
-    $conn = mysqli_connect($hostname, $username, $password, $dbname);
+  // selects a deal at random. does not deal the same cards twice in the same game.
+  function getRandomDeal($gameID) {
+    global $hostname, $username, $password, $dbname, $dealChoices;
+    $conn = mysqli_connect($hostname, $username, $password, $dbname);  // todo use $connection.
     $deal = array();
-    $r = mt_rand(1000,1999);  // todo: make the 1999 configurable.
+    // each time a hand is dealt, the offset available will reduce from ($dealChoices - 1)
+    // by one.  I'm not taking the time here to count the number of available choices.  
+    // If mt_rand selects a number beyond the max offset, just call it again, until mt_rand()
+    // chooses an acceptable offset.
+    $r = mt_rand(0, $dealChoices - 1);
     
     $sql = "
-      select `ID`,`Cards` 
+      select d.`ID`,d.`Cards` 
       from `Deal` d
-      left join `GameDeal` gd on d.`ID` = gd.`DealID`
+      left join `GameDeal` gd on d.`ID` = gd.`DealID` and gd.`GameID` = '{$gameID}'
       where `PurposeCode` = 'D' 
       and gd.`DealID` is null
-      and d.`ID`={$r}";
+      order by d.`ID`
+      limit 1 offset {$r};";
       
     $results = mysqli_query($conn, $sql);
     while ($row = mysqli_fetch_array($results)) {

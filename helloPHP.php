@@ -84,6 +84,7 @@
 <body>
 
   <div class="helloPadding">
+    <p>Server Document Root: <?php echo $_SERVER['DOCUMENT_ROOT'] ?></p>
     <?php echo $_SESSION['gameID'].'<br>'; ?>
     <?php 
       echo "Today is " . date("Y-m-d").'<br>' ; 
