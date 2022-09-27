@@ -73,10 +73,10 @@
   }
   
   function getRandomFDeal() {
-    global $errorMsg, $hostname, $username, $password, $dbname;
+    global $errorMsg, $hostname, $username, $password, $dbname, $firstJackChoices;
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
     $fdeal = array();
-    $r = mt_rand(0,499);  // put 499 in config.php somehow
+    $r = mt_rand(0, $firstJackChoices - 1);
     
     $sql = "
       select `ID`,`Cards` 
