@@ -2,7 +2,7 @@
   include_once('../config/db.php');
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
-  include('../svc/GUID.php');
+  include('../svc/services.php');
   include('../svc/getNextPosition.php');
   include('../svc/getDealServices.php');
   

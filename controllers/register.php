@@ -1,6 +1,6 @@
 <?php
   include('config/db.php');
-  include('svc/GUID.php');
+  include('svc/services.php');
   
   if(isset($_POST["submit"])) {
 

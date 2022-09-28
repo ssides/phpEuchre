@@ -1,7 +1,7 @@
 <?php  
     include_once('config/db.php');
     include_once('config/config.php');
-    include_once('svc/GUID.php');
+    include_once('svc/services.php');
     include_once('svc/thumbnailServices.php');
     
     if (empty($_COOKIE[$cookieName])) {

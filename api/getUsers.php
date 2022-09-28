@@ -7,7 +7,7 @@
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
-      $ary = array();
+      $users = array();
       $sql = "select p.`ID`,substr(`Name`,1,8) `Name`,u.`ThumbnailPath`
               from `Player` p
               left join `UserProfile` u on u.`PlayerID` = p.`ID`
@@ -16,11 +16,11 @@
 
       while ($row = mysqli_fetch_array($results)) {
         $tnURL = is_null($row['ThumbnailPath']) ? '' : getThumbnailURL($row['ThumbnailPath']);
-        array_push($ary, array($row['ID'],$row['Name'],$tnURL));
+        array_push($users, array($row['ID'],$row['Name'],$tnURL));
       }
 
       http_response_code(200);
-      echo json_encode($ary);
+      echo json_encode($users);
 
     } else {
       echo "ID invalid or missing.";

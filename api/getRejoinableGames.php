@@ -2,12 +2,13 @@
   include_once('../config/db.php');
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
+  include('../svc/services.php');
   
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
       $playerID = $_POST[$cookieName];
-      $ary = array();
+      $games = array();
       $d = cutoffDate();
       
       $sql = "select
@@ -35,23 +36,17 @@
       $results = mysqli_query($connection, $sql);
       
       while ($row = mysqli_fetch_array($results)) {
-        array_push($ary, array($row['GameID'],$row['OrganizerName'],$row['Position']));
+        array_push($games, array($row['GameID'],$row['OrganizerName'],$row['Position']));
       }
 
       http_response_code(200);
-      echo json_encode($ary);
+      echo json_encode($games);
       
     } else {
       echo "ID invalid or missing.";
     }
   } else {
     echo "Expecting request method: POST";
-  }
-  
-  function cutoffDate() {
-    $now = new DateTime(date("Y-m-d"));
-    $now->sub(new DateInterval('P3D'));
-    return $now->format('Y-m-d');
   }
   
 ?>
