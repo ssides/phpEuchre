@@ -50,10 +50,10 @@
                       <div id="sfeN" style="display:none" class="flip-container-p">
                         <div class="flipper-p">
                           <div class="back-p">
-                            <img src="<?php echo $appUrl; ?>content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                            <img src="<?php echo $appUrl; ?>content/images/cards/cardback.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
                           </div>
                           <div class="front-p">
-                            <img src="<?php echo $appUrl; ?>content/images/cards/AS.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                            <img src="<?php echo $appUrl; ?>content/images/cards/AS.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
                           </div>
                         </div>
                       </div>
@@ -68,10 +68,10 @@
                       <div id="sfeW" style="display:none" class="flip-container-l" ">
                         <div class="flipper-l">
                           <div class="back-l">
-                            <img src="<?php echo $appUrl; ?>content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg;">
+                            <img src="<?php echo $appUrl; ?>content/images/cards/cardback.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg;">
                           </div>
                           <div class="front-l">
-                            <img src="<?php echo $appUrl; ?>content/images/cards/AC.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg; transform: translate(<?php echo $cardImageWidth; ?>px,0);">
+                            <img src="<?php echo $appUrl; ?>content/images/cards/AC.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg; transform: translate(<?php echo $cardImageWidth; ?>px,0);">
                           </div>
                         </div>
                       </div>
@@ -86,10 +86,10 @@
                       <div id="sfeE" style="display:none" class="flip-container-l">
                         <div class="flipper-l">
                           <div class="back-l">
-                            <img src="<?php echo $appUrl; ?>content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg;">
+                            <img src="<?php echo $appUrl; ?>content/images/cards/cardback.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg;">
                           </div>
                           <div class="front-l">
-                            <img src="<?php echo $appUrl; ?>content/images/cards/AH.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg; transform: translate(-<?php echo $cardImageWidth; ?>px,0); ">
+                            <img src="<?php echo $appUrl; ?>content/images/cards/AH.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg; transform: translate(-<?php echo $cardImageWidth; ?>px,0); ">
                           </div>
                         </div>
                       </div>
@@ -104,10 +104,10 @@
                       <div id="sfeS" style="display:none" class="flip-container-p">
                         <div class="flipper-p">
                           <div class="back-p">
-                            <img src="<?php echo $appUrl; ?>content/images/cards/cardback.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                            <img src="<?php echo $appUrl; ?>content/images/cards/cardback.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
                           </div>
                           <div class="front-p">
-                            <img src="<?php echo $appUrl; ?>content/images/cards/AS.jpg" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                            <img src="<?php echo $appUrl; ?>content/images/cards/AS.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
                           </div>
                         </div>
                       </div>

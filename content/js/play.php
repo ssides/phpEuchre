@@ -4,10 +4,6 @@
 
 <script type="text/javascript">
 
-  // If you don't like this code, if you don't think it's good, don't read it,
-  // don't use it.  I'm not writing to you.  I'm writing to people who have
-  // patience with the way other people think.  -srs
-  
   const state = {
     selectFirstJack: 0,
     waitForAcknowledgements: 1,
@@ -66,7 +62,7 @@
     
     // service functions
     self.getFirstJackURL = function(cardID){
-      return self.appURL + 'content/images/cards/' + cardID + '.jpg';
+      return self.appURL + 'content/images/cards/' + cardID + '.png';
     };
     
     self.clearBoard = function(){

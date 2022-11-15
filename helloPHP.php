@@ -142,10 +142,10 @@
     <div class="flip-container-p">
       <div class="flipper-p">
         <div class="back-p">
-          <img src="http://localhost:8080/content/images/cards/cardback.jpg"  style="width:50px;height:70px;">
+          <img src="http://localhost:8080/content/images/cards/cardback.png"  style="width:50px;height:70px;">
         </div>
         <div class="front-p">
-          <img src="http://localhost:8080/content/images/cards/AS.jpg"  style="width:50px;height:70px;">
+          <img src="http://localhost:8080/content/images/cards/AS.png"  style="width:50px;height:70px;">
         </div>
       </div>
     </div>
@@ -153,10 +153,10 @@
     <div  id="as" class="flip-container-l"">
       <div class="flipper-l">
         <div class="back-l">
-          <img src="http://localhost:8080/content/images/cards/cardback.jpg"  style="width:50px;height:70px; rotate: 90deg;">
+          <img src="http://localhost:8080/content/images/cards/cardback.png"  style="width:50px;height:70px; rotate: 90deg;">
         </div>
         <div class="front-l">
-          <img src="http://localhost:8080/content/images/cards/AC.jpg"  style="width:50px;height:70px; rotate: 90deg; transform: translate(50px,0);">
+          <img src="http://localhost:8080/content/images/cards/AC.png"  style="width:50px;height:70px; rotate: 90deg; transform: translate(50px,0);">
         </div>
       </div>
     </div>
@@ -164,10 +164,10 @@
     <div id="ah" class="flip-container-l"">
       <div class="flipper-l">
         <div class="back-l">
-          <img src="http://localhost:8080/content/images/cards/cardback.jpg"  style="width:50px;height:70px; rotate: -90deg;">
+          <img src="http://localhost:8080/content/images/cards/cardback.png"  style="width:50px;height:70px; rotate: -90deg;">
         </div>
         <div class="front-l">
-          <img src="http://localhost:8080/content/images/cards/AH.jpg"  style="width:50px;height:70px; rotate: -90deg; transform: translate(-50px,0); ">
+          <img src="http://localhost:8080/content/images/cards/AH.png"  style="width:50px;height:70px; rotate: -90deg; transform: translate(-50px,0); ">
         </div>
       </div>
     </div>
