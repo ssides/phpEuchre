@@ -47,7 +47,7 @@
                         <input type="password" class="form-control" name="confirmpassword" id="confirmpassword" />
                     </div>
 
-                    <button type="submit" name="submit" id="submit" class="btn btn-outline-primary btn-lg btn-block">Sign up</button>
+                    <button type="submit" name="submit" id="submit" class="btn btn-outline-primary btn-lg btn-block">Reset</button>
                 </form>
             </div>
         </div>

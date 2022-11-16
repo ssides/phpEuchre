@@ -14,11 +14,26 @@
       
       $sql = 
         "select 
-          `Organizer`,`Partner`,`Left`,`Right`,`OrganizerScore`,`OpponentScore`,`GameStartDate`,`Dealer`,`Trump`,`OrganizerTricks`,`OpponentTricks`,`AJP`,`AJR`,`AJL`
-          ,ou.`ThumbnailPath` `OThumbnailPath`,op.`Name` `OName`
-          ,pu.`ThumbnailPath` `PThumbnailPath`,pp.`Name` `PName`
-          ,lu.`ThumbnailPath` `LThumbnailPath`,lp.`Name` `LName`
-          ,ru.`ThumbnailPath` `RThumbnailPath`,rp.`Name` `RName`
+          `Organizer`
+          ,`Partner`
+          ,`Left`
+          ,`Right`
+          ,`OrganizerTrump`
+          ,`OrganizerTricks`
+          ,`OrganizerScore`
+          ,`OpponentTrump`
+          ,`OpponentTricks`
+          ,`OpponentScore`
+          ,`GameStartDate`
+          ,`Dealer`
+          ,`Turn`
+          ,`AJP`
+          ,`AJR`
+          ,`AJL`
+          ,ou.`ThumbnailPath` `OThumbnailPath`,substr(op.`Name`,1,8) `OName`
+          ,pu.`ThumbnailPath` `PThumbnailPath`,substr(pp.`Name`,1,8) `PName`
+          ,lu.`ThumbnailPath` `LThumbnailPath`,substr(lp.`Name`,1,8) `LName`
+          ,ru.`ThumbnailPath` `RThumbnailPath`,substr(rp.`Name`,1,8) `RName`
          from `Game` g
          left join `UserProfile` ou on g.`Organizer` = ou.`PlayerID`
          join `Player` op on g.`Organizer` = op.`ID`
@@ -39,13 +54,16 @@
           $game['Partner'] = $row['Partner'];
           $game['Left'] = $row['Left'];
           $game['Right'] = $row['Right'];
+          $game['OrganizerTrump']  = is_null($row['OrganizerTrump']) ? '' : $row['OrganizerTrump'];
+          $game['OrganizerTricks'] = is_null($row['OrganizerTricks']) ? '' : $row['OrganizerTricks'];
           $game['OrganizerScore'] = $row['OrganizerScore'];
+          $game['OpponentTrump']   = is_null($row['OpponentTrump']) ? '' : $row['OpponentTrump'];
+          $game['OpponentTricks']  = is_null($row['OpponentTricks']) ? '' : $row['OpponentTricks'];
           $game['OpponentScore'] = $row['OpponentScore'];
           $game['GameStartDate'] = $row['GameStartDate'];
           $game['Dealer'] = $row['Dealer'];
-          $game['Trump'] = $row['Trump'];
-          $game['OrganizerTricks'] = $row['OrganizerTricks'];
-          $game['OpponentTricks'] = $row['OpponentTricks'];
+          $game['Turn'] = is_null($row['Turn']) ? '' : $row['Turn'];
+          $game['OThumbnailPath'] = $row['OThumbnailPath'];
           $game['OThumbnailURL'] = is_null($row['OThumbnailPath']) ? '' : getThumbnailURL($row['OThumbnailPath']);
           $game['OName'] = $row['OName'];
           $game['PThumbnailURL'] =  is_null($row['PThumbnailPath']) ? '' : getThumbnailURL($row['PThumbnailPath']);
@@ -54,9 +72,10 @@
           $game['LName'] = $row['LName'];
           $game['RThumbnailURL'] =  is_null($row['RThumbnailPath']) ? '' : getThumbnailURL($row['RThumbnailPath']);
           $game['RName'] = $row['RName'];
+          // AJP, AJR, and AJR are set when the associated player acknowledges (automatically) seeing the first Jack.  This is how game state is determined.
           $game['AJP'] = is_null($row['AJP']) ? '' : $row['AJP'];
           $game['AJR'] = is_null($row['AJR']) ? '' : $row['AJR'];
-          $game['AJL'] = is_null($row['AJL']) ? '' : $row['AJL'];
+          $game['AJR'] = is_null($row['AJL']) ? '' : $row['AJL'];
         }
       }
 

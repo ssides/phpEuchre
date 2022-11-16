@@ -60,13 +60,14 @@ create table `Game`
   `RightInviteDate` datetime null, 
   `RightJoinDate` datetime null, 
   `Dealer` varchar(1) null,  --  'N' not set.  'O'rganizer 'P'artner, 'L'eft, 'R'ight
-  `Trump` varchar(2) null,  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.jpg, etc. and position who named trump.
+  `OrganizerTrump` varchar(2) null,  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.png, etc. and 'A'lone or 'N'ot.
+  `OpponentTrump` varchar(2) null,  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.png, etc. and 'A'lone or 'N'ot.
   `FirstJackIndex` int null, 
   `FirstJackPosition` varchar(1) null, --  'O'rganizer 'P'artner, opponent 'L'eft, opponent 'R'ight
   `AJP` varchar(1) null, -- Partner 'A'cknowledges first Jack
   `AJR` varchar(1) null, -- opponent Right 'A'cknowledges first Jack
   `AJL` varchar(1) null, -- opponent Left 'A'cknowledges first Jack
-  `OrganizerTricks` int null,
+  `OrganizerTricks` int null, -- Score
   `OpponentTricks` int null,
   `InsertDate` datetime not null,
   `FirstDealPosition` char(1) null,
