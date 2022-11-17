@@ -206,7 +206,7 @@ table.dbgTable td {
 }
 
 .infoBorder {
-  border: 2px solid #3b453b;
+  border: 1px solid #c1d0c1;
   border-radius: 5px;
 }
 
@@ -266,3 +266,8 @@ table.dbgTable td {
   line-height: 17px;
 }
 
+.playTable {
+  width: 175px; 
+  height: 168px; 
+  background-color: #006F2D;
+}
