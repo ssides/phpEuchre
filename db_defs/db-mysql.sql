@@ -91,3 +91,18 @@ create table `GameDeal`
   constraint `FK_GameDeal_Deal` foreign key (`DealID`) references `Deal`(`ID`)
 );
 
+drop table if exists `Play`;
+create table `Play` (
+  `ID` varchar(38) not null,
+  `GameID` varchar(38) not null, 
+  `Position` char(1) not null,
+  `CardID1` char(3) not null, -- card id - third char ' ' means not been played.
+  `CardID2` char(3) not null, -- card id - third char in ('1','2','3','4','5') indicates the order the player played his/her cards.
+  `CardID3` char(3) not null, 
+  `CardID4` char(3) not null, 
+  `CardID5` char(3) not null, 
+  `InsertDate` datetime not null,
+  constraint `FK_Play_Game` foreign key (`GameID`) references `Game`(`ID`)
+);
+
+

@@ -1,7 +1,6 @@
 <?php
   // no includes for now until I set it up to use $_SERVER['DOCUMENT_ROOT']
-  // todo add: GUID() 
-  //      add: cutoffDate()
+
   function GUID()
   {
     if (function_exists('com_create_guid') === true)

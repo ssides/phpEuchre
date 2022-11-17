@@ -140,8 +140,8 @@ table.dbgTable td {
 .back-p,
 .front-p {
   /* this needs to match the card image size configured in config.php */
-  width: 50px;
-  height: 70px;
+  width: 33px;
+  height: 45px;
 }
 
 .flipper-p {

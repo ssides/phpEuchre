@@ -27,6 +27,7 @@
           ,`GameStartDate`
           ,`Dealer`
           ,`Turn`
+          ,`CardFaceUp`
           ,`AJP`
           ,`AJR`
           ,`AJL`
@@ -63,6 +64,7 @@
           $game['GameStartDate'] = $row['GameStartDate'];
           $game['Dealer'] = $row['Dealer'];
           $game['Turn'] = is_null($row['Turn']) ? '' : $row['Turn'];
+          $game['CardFaceUp'] = is_null($row['CardFaceUp']) ? '    ' : $row['CardFaceUp'];
           $game['OThumbnailPath'] = $row['OThumbnailPath'];
           $game['OThumbnailURL'] = is_null($row['OThumbnailPath']) ? '' : getThumbnailURL($row['OThumbnailPath']);
           $game['OName'] = $row['OName'];

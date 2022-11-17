@@ -93,7 +93,16 @@
                         </div>
                       </td>
                       <td>
-                        <!-- I need four flippers here in every direction for the `CardFaceUp` turned up by the dealer. -->
+                        <div id="cardFaceUp" style="display:none" class="flip-container-p">
+                          <div class="flipper-p">
+                            <div class="back-p">
+                              <img src="<?php echo $appUrl; ?>content/images/cards/cardback.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                            </div>
+                            <div class="front-p">
+                              <img data-bind="attr: {src: faceupCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
+                            </div>
+                          </div>
+                        </div>
                       </td>
                       <td>
                         <div id="sfeE" style="display:none" class="flip-container-l">
