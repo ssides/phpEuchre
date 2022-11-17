@@ -9,9 +9,16 @@
       $errorMsg = "";
       $gameID = $_POST['gameID'];
       $position = $_POST['position'];
+      $isFirst = isset($_POST['isFirst']);
       $turn = getTurn($position);
-
-      $sql = "update `Game` set `FirstDealPosition`='{$position}',`Dealer`='{$position}', `Turn`='{$turn}' where `ID`='{$gameID}'";
+      $sql = "";
+      
+      if ($isFirst) {
+        $sql = "update `Game` set `FirstDealPosition`='{$position}',`Dealer`='{$position}', `Turn`='{$turn}', `CardFaceUp`='    ' where `ID`='{$gameID}'";
+      } else {
+        $sql = "update `Game` set `Dealer`='{$position}', `Turn`='{$turn}', `CardFaceUp`='    ' where `ID`='{$gameID}'";
+      }
+      
       $result = mysqli_query($connection, $sql);
       if ($result === false)
         $errorMsg = mysqli_error($connection);
