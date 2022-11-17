@@ -2,6 +2,7 @@
   include_once('../config/db.php');
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
+  include('../svc/services.php'); // for GUID
 
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
@@ -10,18 +11,20 @@
       $gameID = $_POST['gameID'];
       $playerID = $_POST[$cookieName];
       $deal = array();
+      $response = array();
       
-      $deal= getRandomDeal();
+      $deal= getRandomDeal($gameID);
       while (!isset($deal['DealID'])) {
-        $deal = getRandomDeal();
+        $deal = getRandomDeal($gameID);
       }
       
-      distributeCards($deal);
+      $response['ErrorMsg'] = insertDeal($gameID, $deal['DealID']);
+      $response['ErrorMsg'] .= distributeCards($gameID, $deal);
+      $response['ErrorMsg'] .= setCardFaceUp($gameID, $deal);
       
-      $deal['ErrorMsg'] = $errorMsg;
       http_response_code(200);
       
-      echo json_encode($deal);
+      echo json_encode($response);
 
     } else {
       echo "ID invalid or missing.";
@@ -30,13 +33,73 @@
     echo "Expecting request method: POST";
   }
 
-  function distributeCards($deal) {
+  function distributeCards($gameID, $deal) {
+    $result = "";
+    
+    $result .= distributeCardsToPosition('O', substr($deal['Cards'],0,15), $gameID);
+    $result .= distributeCardsToPosition('P', substr($deal['Cards'],15,15), $gameID);
+    $result .= distributeCardsToPosition('L', substr($deal['Cards'],30,15), $gameID);
+    $result .= distributeCardsToPosition('R', substr($deal['Cards'],45,15), $gameID);
+    
+    return $result;
+  }
+
+  function distributeCardsToPosition($position, $cards, $gameID) {
     global $hostname, $username, $password, $dbname;
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
+    $errorMsg = "";
     
+    $ID = GUID();
+    $c1 = substr($cards,0,3);
+    $c2 = substr($cards,3,3);
+    $c3 = substr($cards,6,3);
+    $c4 = substr($cards,9,3);
+    $c5 = substr($cards,12,3);
     
+    $sql = "
+      insert into `Play` (`ID`,`GameID`,`Position`,`CardID1`,`CardID2`,`CardID3`,`CardID4`,`CardID5`,`InsertDate`) 
+      values ('{$ID}','{$gameID}','{$position}','{$c1}','{$c2}','{$c3}','{$c4}','{$c5}',now())
+    ";
+    
+    if (mysqli_query($conn, $sql) === false) {
+      $errorMsg = mysqli_error($conn);
+    }
+    
+    mysqli_close($conn);
+    return $errorMsg;
   }
   
+  function setCardFaceUp($gameID, $deal) {
+    global $hostname, $username, $password, $dbname;
+    $conn = mysqli_connect($hostname, $username, $password, $dbname);
+    $errorMsg = "";
+    
+    $up = substr($deal['Cards'],60,2);
+    $sql = "update `Game` set `CardFaceUp`='{$up}' where `ID`='{$gameID}'";
+    
+    if (mysqli_query($conn, $sql) === false) {
+      $errorMsg = mysqli_error($conn);
+    }
+
+    mysqli_close($conn);
+    return $errorMsg;
+  }
+  
+    function insertDeal($gameID, $dealID) {
+    global $hostname, $username, $password, $dbname;
+    $conn = mysqli_connect($hostname, $username, $password, $dbname);
+    $ID = GUID();
+    $errorMsg = "";
+    
+    $sql = "insert into `GameDeal` (`ID`, `DealID`, `GameID`,`InsertDate`) values ('{$ID}','{$dealID}','{$gameID}',now())";
+    if (mysqli_query($conn, $sql) === false) {
+      $errorMsg = mysqli_error($conn);
+    } 
+    
+    mysqli_close($conn);
+    return $result;
+  }
+
   // selects a deal at random. does not deal the same cards twice in the same game.
   function getRandomDeal($gameID) {
     global $hostname, $username, $password, $dbname, $dealChoices;

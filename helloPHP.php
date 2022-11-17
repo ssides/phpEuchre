@@ -123,7 +123,12 @@
       echo 'P: '.substr($cards,15,15).'<br>';
       echo 'L: '.substr($cards,30,15).'<br>';
       echo 'R: '.substr($cards,45,15).'<br>';
-      echo 'turn up:'.substr($cards,60,3).'<br>';
+      echo 'turn up: '.substr($cards,60,3).'<br>';
+      
+      ?> <div style="font-family: Courier, monospace; font-weight: bold">  <?php
+      $c = substr($cards,0,15);
+      echo '"'.substr($c,0,3).'"'
+      ?> </div>  <?php
       
       function auto_version($file)
       {

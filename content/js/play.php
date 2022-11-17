@@ -22,6 +22,7 @@
     this.GameStartDate = data.GameStartDate || '';
     this.Dealer = data.Dealer || '';
     this.Turn = data.Turn || '';
+    this.CardFaceUp = data.CardFaceUp || '    ';
     this.OrganizerTrump = data.OrganizerTrump || '';
     this.OrganizerTricks = data.OrganizerTricks || '';
     this.OrganizerScore = data.OrganizerScore || '';
@@ -189,6 +190,7 @@
     self.eCardURL = ko.observable('');
     self.sCardURL = ko.observable('');
     self.wCardURL = ko.observable('');
+    self.faceupCardURL = ko.observable('');
     
   }
   
@@ -201,14 +203,15 @@
     play: 5,
     getMyCards: 6,
     idle: 7,
-    waitForCardFaceUp: 8
+    dealOrWaitForCardFaceUp: 8,
+    getMyCards: 9,
+    waitForCardFaceUp: 10
   };
 
   function gameController() {
     var self = this;
     
     self.game = new gameModel({});
-    self.getGameInterval = null;
     self.executionPoint = state.selectFirstJack;
     self.position = null;
     self.playerID = '<?php echo "{$_COOKIE[$cookieName]}"; ?>';
@@ -221,8 +224,9 @@
     self.myScoreVM = new scoreViewModel();
     self.opponentScoreVM = new scoreViewModel();
     self.playVM = new playViewModel();
-    self.orgGetNextFTimer = null;
-    self.playerGetCurrentFTimer = null;
+    self.getGameInterval = null;
+    self.orgGetNextFInterval = null;
+    self.playerGetCurrentFInterval = null;
     self.firstDealer = ' ';
     
     self.setThisPlayerPosition = function(gameData){
@@ -245,23 +249,6 @@
       self.executionPoint = id;
     };
     
-    // At this time, game Turn and Dealer has been set.  The deal api selects a random deal where `PurposeCode` = 'D' and DealID has not yet been used in this game.
-    // 
-    self.deal = function() {
-      $.ajax({
-        method: 'POST',
-        url: 'api/deal.php',
-        data: pd,
-        success: function(response){
-          
-        },
-        error: function (xhr, status, error) {
-          console.log(xhr.responseText);
-          clearInterval(self.getGameTimer);
-        }
-      });
-    };
-
     self.updateScores = function() {
       self.nPlayerInfoVM.update(self.game);
       self.sPlayerInfoVM.update(self.game);
@@ -271,7 +258,7 @@
       self.opponentScoreVM.update(self.game);
     };
     
-    self.getFirstJackURL = function(cardID){
+    self.getCardURL = function(cardID){
       return appURL + 'content/images/cards/' + cardID + '.png';
     };
 
@@ -306,19 +293,19 @@
               if (data.ID[0] == 'J') {
                 self.acknowledgeJack(self.position);
                 self.setExecutionPoint('waitForAcknowledgements', state.waitForAcknowledgements);
-                clearInterval(self.playerGetCurrentFTimer);
+                clearInterval(self.playerGetCurrentFInterval);
               }
             } else {
               console.log(data.ErrorMsg);
             }
           } catch (error) {
             console.log('Could not parse response from getCurrentStartCard. ' + error + ': ' + response);
-            clearInterval(self.playerGetCurrentFTimer);
+            clearInterval(self.playerGetCurrentFInterval);
           }
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
-          clearInterval(self.playerGetCurrentFTimer);
+          clearInterval(self.playerGetCurrentFInterval);
         }
       });
     };
@@ -336,16 +323,42 @@
             if (data.ID[0] == 'J') {
               self.firstDealer = data.Position;
               self.setExecutionPoint('waitForAcknowledgements', state.waitForAcknowledgements);
-              clearInterval(self.orgGetNextFTimer);
+              clearInterval(self.orgGetNextFInterval);
             }
           } catch (error) {
             console.log('Could not parse response from getNextStartCard. ' + error + ': ' + response);
-            clearInterval(self.orgGetNextFTimer);
+            clearInterval(self.orgGetNextFInterval);
           }
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
-          clearInterval(self.orgGetNextFTimer);
+          clearInterval(self.orgGetNextFInterval);
+        }
+      });
+    };
+
+    // Turn and Dealer has been set in self.game.  self.position is the dealer. 
+    // The deal api selects a random deal where `PurposeCode` = 'D' and DealID has not yet been used in this game.
+    // It distributes cards to players in table `Play`.
+    self.deal = function() {
+      console.log('deal');
+      $.ajax({
+        method: 'POST',
+        url: 'api/deal.php',
+        data: self.postData,
+        success: function(response) {
+          try {
+            let data = JSON.parse(response);
+            if (data.ErrorMsg) console.log(data.ErrorMsg);
+            self.setExecutionPoint('waitForCardFaceUp', state.waitForCardFaceUp);
+          } catch (error) {
+            console.log('Could not parse response from deal. ' + error + ': ' + response);
+            clearInterval(self.getGameInterval);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+          clearInterval(self.getGameInterval);
         }
       });
     };
@@ -362,12 +375,12 @@
         url: 'api/setDealPosition.php',
         data: pd,
         success: function(response){
-          // There is nothing to do here.  The turn has been set. CardFaceUp is cleared.
-          // let dealFn() deal.
+          // wait for the dealer to deal.
+          self.setExecutionPoint('dealOrWaitForCardFaceUp', state.dealOrWaitForCardFaceUp);
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
-          clearInterval(self.getGameTimer);
+          clearInterval(self.getGameInterval);
         }
       });
     };
@@ -376,98 +389,50 @@
       function(cardID, atPosition) { 
         // todo: use a switch statement here, and in the rest of these functions.
         if (atPosition == 'O') 
-          self.playVM.sCardURL(self.getFirstJackURL(cardID));
+          self.playVM.sCardURL(self.getCardURL(cardID));
         else if (atPosition == 'P') 
-          self.playVM.nCardURL(self.getFirstJackURL(cardID));
+          self.playVM.nCardURL(self.getCardURL(cardID));
         else if (atPosition == 'L') 
-          self.playVM.wCardURL(self.getFirstJackURL(cardID));
+          self.playVM.wCardURL(self.getCardURL(cardID));
         else
-          self.playVM.eCardURL(self.getFirstJackURL(cardID));
+          self.playVM.eCardURL(self.getCardURL(cardID));
       },
       function(cardID, atPosition) { 
         if (atPosition == 'O') 
-          self.playVM.nCardURL(self.getFirstJackURL(cardID));
+          self.playVM.nCardURL(self.getCardURL(cardID));
         else if (atPosition == 'P') 
-          self.playVM.sCardURL(self.getFirstJackURL(cardID));
+          self.playVM.sCardURL(self.getCardURL(cardID));
         else if (atPosition == 'L') 
-          self.playVM.eCardURL(self.getFirstJackURL(cardID));
+          self.playVM.eCardURL(self.getCardURL(cardID));
         else
-          self.playVM.wCardURL(self.getFirstJackURL(cardID));
+          self.playVM.wCardURL(self.getCardURL(cardID));
       },
       function(cardID, atPosition) { 
         if (atPosition == 'O') 
-          self.playVM.eCardURL(self.getFirstJackURL(cardID));
+          self.playVM.eCardURL(self.getCardURL(cardID));
         else if (atPosition == 'P') 
-          self.playVM.wCardURL(self.getFirstJackURL(cardID));
+          self.playVM.wCardURL(self.getCardURL(cardID));
         else if (atPosition == 'L') 
-          self.playVM.sCardURL(self.getFirstJackURL(cardID));
+          self.playVM.sCardURL(self.getCardURL(cardID));
         else
-          self.playVM.nCardURL(self.getFirstJackURL(cardID));
+          self.playVM.nCardURL(self.getCardURL(cardID));
       },
       function(cardID, atPosition) { 
         if (atPosition == 'O') 
-          self.playVM.wCardURL(self.getFirstJackURL(cardID));
+          self.playVM.wCardURL(self.getCardURL(cardID));
         else if (atPosition == 'P') 
-          self.playVM.eCardURL(self.getFirstJackURL(cardID));
+          self.playVM.eCardURL(self.getCardURL(cardID));
         else if (atPosition == 'L') 
-          self.playVM.nCardURL(self.getFirstJackURL(cardID));
+          self.playVM.nCardURL(self.getCardURL(cardID));
         else
-          self.playVM.sCardURL(self.getFirstJackURL(cardID));
-      },
+          self.playVM.sCardURL(self.getCardURL(cardID));
+      }
     ];
 
-    self.initializeFn = function(){
-      self.setThisPlayerPosition(self.game);
-      self.nPlayerInfoVM.initialize('N', self.position, self.game);
-      self.sPlayerInfoVM.initialize('S', self.position, self.game);
-      self.ePlayerInfoVM.initialize('E', self.position, self.game);
-      self.wPlayerInfoVM.initialize('W', self.position, self.game);
-      self.myScoreVM.initialize('M', self.position, self.game);
-      self.opponentScoreVM.initialize('O', self.position, self.game);
-      
-      if (self.game.Dealer == 'N') {
-        self.setExecutionPoint('selectFirstJack', state.selectFirstJack);
-      } else {
-        self.setExecutionPoint('idle', state.idle);
-      }
+    self.clearBoard = function(){
+      self.playVM.nCardURL('');  self.playVM.eCardURL('');  self.playVM.sCardURL('');  self.playVM.wCardURL('');
     };
     
-    self.selectFirstJackFn = function(){
-      if (!self.position)
-        throw "self.position is null";
-      
-      if (self.game.Dealer != 'N') {
-        // do this if I'm the dealer. Otherwise go to getMyCards.
-        // return to game is going to be tricky.
-        self.setExecutionPoint('idle', state.idle);
-      } else {
-        if ((self.position == 'O') && (self.orgGetNextFTimer === null)) {
-          console.log('Starting the first Jack selection timer.  ');
-          self.orgGetNextFTimer = setInterval(self.getNextStartCard, times.firstJackTime);
-        }
-        
-        if ((self.position != 'O') && (self.playerGetCurrentFTimer === null)) {
-          console.log('Starting the first Jack query timer.  ');
-          self.playerGetCurrentFTimer = setInterval(self.getCurrentStartCard, times.firstJackTime);
-        }
-      }
-    };
-
-    self.playFn = function() {
-      console.log('play');
-      self.updateScores();
-    };
-    
-    self.idleFn = function() {
-      console.log('idle');
-      self.updateScores();
-    };
-    
-    self.waitForCardFaceUpFn = function() {
-      
-    }
-    // todo: organize gameController
-
     self.getGame = function() {
       $.ajax({
         method: 'POST',
@@ -476,6 +441,7 @@
         success: function (response) {
           try {
             self.game = new gameModel(JSON.parse(response));
+            self.updateScores();
             self.gameExecution[self.executionPoint]();
           } catch (error) {
             console.log('Error ' + ': ' + error.message);
@@ -489,22 +455,79 @@
         }
       });
     };
+
+    self.initializeFn = function(){
+      self.setThisPlayerPosition(self.game);
+      self.nPlayerInfoVM.initialize('N', self.position, self.game);
+      self.sPlayerInfoVM.initialize('S', self.position, self.game);
+      self.ePlayerInfoVM.initialize('E', self.position, self.game);
+      self.wPlayerInfoVM.initialize('W', self.position, self.game);
+      self.myScoreVM.initialize('M', self.position, self.game);
+      self.opponentScoreVM.initialize('O', self.position, self.game);
+      
+      // todo: figure out the game state, and figure out where to go from here.
+      self.setExecutionPoint('selectFirstJack', state.selectFirstJack);
+    };
     
-    self.clearBoard = function(){
-      self.playVM.nCardURL('');  self.playVM.eCardURL('');  self.playVM.sCardURL('');  self.playVM.wCardURL('');
+    self.selectFirstJackFn = function(){
+      if (!self.position)
+        throw "self.position is null";
+      
+      if (self.game.Dealer != 'N')
+        throw "selectFirstJackFn(): dealer is already set.";
+      
+      if ((self.position == 'O') && (self.orgGetNextFInterval === null)) {
+        console.log('Starting the first Jack selection timer.  ');
+        self.orgGetNextFInterval = setInterval(self.getNextStartCard, times.firstJackTime);
+      }
+      
+      if ((self.position != 'O') && (self.playerGetCurrentFInterval === null)) {
+        console.log('Starting the first Jack query timer.  ');
+        self.playerGetCurrentFInterval = setInterval(self.getCurrentStartCard, times.firstJackTime);
+      }
     };
 
+    self.playFn = function() {
+      console.log('play');
+    };
+    
+    self.idleFn = function() {
+      console.log('idle');
+    };
+    
+    self.dealOrWaitForCardFaceUpFn = function() {
+      if (self.game.Dealer === self.position) {
+        self.deal();
+      } else {
+        self.setExecutionPoint('waitForCardFaceUp', state.waitForCardFaceUp);
+      }
+    }
+    
     self.waitForAcknowledgementsFn = function(){
       if (self.game.AJP == 'A' && self.game.AJR == 'A' && self.game.AJL == 'A') {
+        // all the players have acknowledged seeing the first Jack.
         self.clearBoard();
         if (self.position == 'O') {
           self.setDealPosition(self.firstDealer, 'isFirst');
         } else {
-          self.setExecutionPoint('waitForCardFaceUp', state.waitForCardFaceUp);
+          self.setExecutionPoint('dealOrWaitForCardFaceUp', state.dealOrWaitForCardFaceUp);
         }
       }
     };
 
+    self.getMyCardsFn = function(){
+      
+    };
+
+    self.waitForCardFaceUpFn = function(){
+      if (self.game.CardFaceUp[0] != ' ') {
+        self.playVM.faceupCardURL(self.getCardURL(self.game.CardFaceUp.substr(0,2)));
+        $('#cardFaceUp').show();
+        $('#cardFaceUp').toggleClass('hover');
+        self.setExecutionPoint('idle', state.idle);
+      }
+    };
+    
     // this has to be parallel to const state {}.  so confusing.
     self.gameExecution = [
       self.initializeFn,       // 0
@@ -514,8 +537,10 @@
       self.chooseTrumpFn,      // 4
       self.playFn,             // 5
       self.getMyCardsFn,       // 6
-      self.idleFn              // 7
-      self.waitForCardFaceUpFn // 8
+      self.idleFn,             // 7
+      self.dealOrWaitForCardFaceUpFn, // 8
+      self.getMyCardsFn,       // 9
+      self.waitForCardFaceUpFn // 10
     ];
 
     self.initialize = function() {
