@@ -24,7 +24,6 @@
   <div class="App">
     <div class="vertical-center">
       <div class="inner-block">
-        <p class="fs-6" data-bind="text: message"></p>
         <table>
           <tr>
             <td></td>
@@ -49,7 +48,7 @@
             </td>
             <td>
               <div id="PlayTable">
-                <table style="width: 175px; height: 168px; background-color: #006F2D">
+                <table class="playTable">
                   <thead>
                     <tr>
                       <td style="width: 65px; text-alight:right;"></td>

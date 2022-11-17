@@ -6,7 +6,7 @@
 
 // todo: put these in their own object.
   const times = {
-    firstJackTime: 750,
+    firstJackTime: 600,
     gameTime: 1000
   };
   
@@ -185,7 +185,6 @@
   function playViewModel() {
     var self = this;
     
-    self.message = ko.observable('Selecting the dealer ...');
     self.nCardURL = ko.observable('');
     self.eCardURL = ko.observable('');
     self.sCardURL = ko.observable('');
@@ -199,7 +198,9 @@
     waitForAcknowledgements: 2,
     deal: 3,
     chooseTrump: 4,
-    play: 5
+    play: 5,
+    getMyCards: 6,
+    idle: 7
   };
 
   function gameController() {
@@ -219,6 +220,9 @@
     self.myScoreVM = new scoreViewModel();
     self.opponentScoreVM = new scoreViewModel();
     self.playVM = new playViewModel();
+    self.orgGetNextFTimer = null;
+    self.playerGetCurrentFTimer = null;
+    self.firstDealer = ' ';
     
     self.setThisPlayerPosition = function(gameData){
       if ((self.playerID === gameData.Organizer)) {
@@ -248,18 +252,22 @@
       self.wPlayerInfoVM.initialize('W', self.position, self.game);
       self.myScoreVM.initialize('M', self.position, self.game);
       self.opponentScoreVM.initialize('O', self.position, self.game);
-      self.setExecutionPoint('play', state.play);
+      
+      if (self.game.Dealer == 'N') {
+        self.setExecutionPoint('selectFirstJack', state.selectFirstJack);
+      } else {
+        self.setExecutionPoint('idle', state.idle);
+      }
     };
     
     self.selectFirstJackFn = function(){
       if (!self.position)
         throw "self.position is null";
       
-      // `Dealer` != 'N' is better than these three checks. startGame in dashboard controller sets `Dealer` to 'N'
-      if (self.game.AJP == 'A' && self.game.AJR == 'A' && self.game.AJL == 'A') {
+      if (self.game.Dealer != 'N') {
         // do this if I'm the dealer. Otherwise go to getMyCards.
         // return to game is going to be tricky.
-        self.setExecutionPoint('deal', state.deal);
+        self.setExecutionPoint('idle', state.idle);
       } else {
         if ((self.position == 'O') && (self.orgGetNextFTimer === null)) {
           console.log('Starting the first Jack selection timer.  ');
@@ -273,8 +281,7 @@
       }
     };
 
-    self.playFn = function() {
-      console.log('play');
+    self.updateScores = function() {
       self.nPlayerInfoVM.update(self.game);
       self.sPlayerInfoVM.update(self.game);
       self.ePlayerInfoVM.update(self.game);
@@ -283,16 +290,159 @@
       self.opponentScoreVM.update(self.game);
     };
     
-    self.gameExecution = [
-      self.initializeFn,
-      self.selectFirstJackFn,
-      self.waitForAcknowledgementsFn,
-      self.dealFn,
-      self.chooseTrumpFn,
-      self.playFn
+    self.playFn = function() {
+      console.log('play');
+      self.updateScores();
+    };
+    
+    self.idleFn = function() {
+      console.log('idle');
+      self.updateScores();
+    };
+    
+    self.getFirstJackURL = function(cardID){
+      return appURL + 'content/images/cards/' + cardID + '.png';
+    };
+
+    self.setFirstDealPosition = function(position){
+      var pd = {};
+      Object.assign(pd, self.postData);
+      pd.position = position;
+      $.ajax({
+        method: 'POST',
+        url: 'api/setFirstDealPosition.php',
+        data: pd,
+        success: function(response){
+          // There is nothing to do here.  The turn has been set.
+          // let dealFn() deal.
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+          clearInterval(self.getGameTimer);
+        }
+      });
+    };
+
+    self.placeFirstJack = [
+      function(cardID, atPosition) { 
+        // todo: use a switch statement here, and in the rest of these functions.
+        if (atPosition == 'O') 
+          self.playVM.sCardURL(self.getFirstJackURL(cardID));
+        else if (atPosition == 'P') 
+          self.playVM.nCardURL(self.getFirstJackURL(cardID));
+        else if (atPosition == 'L') 
+          self.playVM.wCardURL(self.getFirstJackURL(cardID));
+        else
+          self.playVM.eCardURL(self.getFirstJackURL(cardID));
+      },
+      function(cardID, atPosition) { 
+        if (atPosition == 'O') 
+          self.playVM.nCardURL(self.getFirstJackURL(cardID));
+        else if (atPosition == 'P') 
+          self.playVM.sCardURL(self.getFirstJackURL(cardID));
+        else if (atPosition == 'L') 
+          self.playVM.eCardURL(self.getFirstJackURL(cardID));
+        else
+          self.playVM.wCardURL(self.getFirstJackURL(cardID));
+      },
+      function(cardID, atPosition) { 
+        if (atPosition == 'O') 
+          self.playVM.eCardURL(self.getFirstJackURL(cardID));
+        else if (atPosition == 'P') 
+          self.playVM.wCardURL(self.getFirstJackURL(cardID));
+        else if (atPosition == 'L') 
+          self.playVM.sCardURL(self.getFirstJackURL(cardID));
+        else
+          self.playVM.nCardURL(self.getFirstJackURL(cardID));
+      },
+      function(cardID, atPosition) { 
+        if (atPosition == 'O') 
+          self.playVM.wCardURL(self.getFirstJackURL(cardID));
+        else if (atPosition == 'P') 
+          self.playVM.eCardURL(self.getFirstJackURL(cardID));
+        else if (atPosition == 'L') 
+          self.playVM.nCardURL(self.getFirstJackURL(cardID));
+        else
+          self.playVM.sCardURL(self.getFirstJackURL(cardID));
+      },
     ];
 
     // getGame event
+    self.acknowledgeJack = function(position) {
+      var pd = {};
+      Object.assign(pd, self.postData);
+      pd.position = position;
+      $.ajax({
+        method: 'POST',
+        url: 'api/acknowledgeJack.php',
+        data: pd,
+        success: function (response) {
+          console.log('acknowledgeJack response', response);
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+        }
+      });
+    };
+
+    self.getCurrentStartCard = function(){
+      $.ajax({
+        method: 'POST',
+        url: 'api/getCurrentStartCard.php',
+        data: self.postData,
+        success: function (response) {
+          try {
+            let data = JSON.parse(response);
+            if (data.ID) {
+              var i = positions.indexOf(self.position);
+              self.placeFirstJack[i](data.ID, data.Position);
+              if (data.ID[0] == 'J') {
+                self.acknowledgeJack(self.position);
+                self.setExecutionPoint('waitForAcknowledgements', state.waitForAcknowledgements);
+                clearInterval(self.playerGetCurrentFTimer);
+              }
+            } else {
+              console.log(data.ErrorMsg);
+            }
+          } catch (error) {
+            console.log('Could not parse response from getCurrentStartCard. ' + error + ': ' + response);
+            clearInterval(self.playerGetCurrentFTimer);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+          clearInterval(self.playerGetCurrentFTimer);
+        }
+      });
+    };
+    
+    self.getNextStartCard = function() {
+      $.ajax({
+        method: 'POST',
+        url: 'api/getNextStartCard.php',
+        data: self.postData,
+        success: function (response) {
+          try {
+            let data = JSON.parse(response);
+            var i = positions.indexOf(self.position);
+            self.placeFirstJack[i](data.ID, data.Position);
+            if (data.ID[0] == 'J') {
+              self.firstDealer = data.Position;
+              self.setExecutionPoint('waitForAcknowledgements', state.waitForAcknowledgements);
+              clearInterval(self.orgGetNextFTimer);
+            }
+          } catch (error) {
+            console.log('Could not parse response from getNextStartCard. ' + error + ': ' + response);
+            clearInterval(self.orgGetNextFTimer);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+          clearInterval(self.orgGetNextFTimer);
+        }
+      });
+    };
+
     self.getGame = function() {
       $.ajax({
         method: 'POST',
@@ -314,6 +464,32 @@
         }
       });
     };
+    
+    self.clearBoard = function(){
+      self.playVM.nCardURL('');  self.playVM.eCardURL('');  self.playVM.sCardURL('');  self.playVM.wCardURL('');
+    };
+
+    self.waitForAcknowledgementsFn = function(){
+      if (self.game.AJP == 'A' && self.game.AJR == 'A' && self.game.AJL == 'A') {
+        self.clearBoard();
+        if (self.position == 'O') {
+          self.setFirstDealPosition(self.firstDealer);
+        }
+        self.setExecutionPoint('idle', state.idle);
+      }
+    };
+
+    // this has to be parallel to const state {}.  so confusing.
+    self.gameExecution = [
+      self.initializeFn,      // 0
+      self.selectFirstJackFn, // 1
+      self.waitForAcknowledgementsFn, // 2
+      self.dealFn,            // 3
+      self.chooseTrumpFn,     // 4
+      self.playFn,            // 5
+      self.getMyCardsFn,      // 6
+      self.idleFn             // 7
+    ];
 
     self.initialize = function() {
       // todo: before doing any of these things, make sure it is not already done. where is game state saved? 

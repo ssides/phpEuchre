@@ -9,8 +9,9 @@
       $errorMsg = "";
       $gameID = $_POST['gameID'];
       $position = $_POST['position'];
+      $turn = getTurn($position);
 
-      $sql = "update `Game` set `FirstDealPosition`='{$position}',`Dealer`='{$position}' where `ID`='{$gameID}'";
+      $sql = "update `Game` set `FirstDealPosition`='{$position}',`Dealer`='{$position}', `Turn`='{$turn}' where `ID`='{$gameID}'";
       $result = mysqli_query($connection, $sql);
       if ($result === false)
         $errorMsg = mysqli_error($connection);
@@ -26,5 +27,20 @@
   } else {
     echo "Expecting request method: POST";
   }
+
+  function getTurn($position) {
+    $turn = ' ';
+    if ($position == 'O') {
+      $turn = 'L';
+    } else if ($position == 'L') {
+      $turn = 'P';
+    } else if ($position == 'P') {
+      $turn = 'R';
+    } else if ($position == 'R') {
+      $turn = 'O';
+    } 
+    return $turn;
+  }
+
 
 ?>

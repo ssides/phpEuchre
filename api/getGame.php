@@ -75,7 +75,7 @@
           // AJP, AJR, and AJR are set when the associated player acknowledges (automatically) seeing the first Jack.  This is how game state is determined.
           $game['AJP'] = is_null($row['AJP']) ? '' : $row['AJP'];
           $game['AJR'] = is_null($row['AJR']) ? '' : $row['AJR'];
-          $game['AJR'] = is_null($row['AJL']) ? '' : $row['AJL'];
+          $game['AJL'] = is_null($row['AJL']) ? '' : $row['AJL'];
         }
       }
 
