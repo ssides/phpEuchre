@@ -23,10 +23,11 @@
 
   <div class="App">
     <div class="vertical-center">
-      <div class="inner-block">
+      <div class="inner-block justify-content-center">
         <table>
           <tr>
-            <td></td>
+            <td>
+            </td>
             <td>
               <div id="NorthInfo">
                 <?php include('partials/playerInfo.php'); ?>
@@ -51,14 +52,15 @@
                 <table class="playTable">
                   <thead>
                     <tr>
-                      <td style="width: 65px; text-alight:right;"></td>
-                      <td style="width: 44px;"></td>
-                      <td style="widht: 65px; text-alight:left"></td>
+                      <td style="width: 75px; text-alight:right;"></td>
+                      <td style="width: 54px;"></td>
+                      <td style="width: 75px; text-alight:left"></td>
                     </tr>
                   </thead>
                   <tbody>
                     <tr style="height: 58px">
-                      <td></td>
+                      <td>
+                      </td>
                       <td>
                         <div id="sfeN" style="display:none" class="flip-container-p">
                           <div class="flipper-p">
@@ -93,6 +95,11 @@
                         </div>
                       </td>
                       <td>
+                        <div id="cardFaceUp" style="display:none" data-bind="visible: faceupCardURL().length > 0">
+                          <img data-bind="attr: {src: faceupCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;" />
+                        </div>
+
+                        <!-- this works on every device except iPad.  :-(
                         <div id="cardFaceUp" style="display:none" class="flip-container-p">
                           <div class="flipper-p">
                             <div class="back-p">
@@ -103,6 +110,8 @@
                             </div>
                           </div>
                         </div>
+                        -->
+                      
                       </td>
                       <td>
                         <div id="sfeE" style="display:none" class="flip-container-l">
@@ -155,15 +164,37 @@
                 <div class="scoreBorder">
                   <?php include('partials/score.php'); ?>
                 </div>
-
               </div>
             </td>
-            <td>
+            <td colspan=2>
               <div id="SouthInfo">
-                <?php include('partials/playerInfo.php'); ?>
+                <div class="info container" data-bind="class: infoStatus">
+                  <div class="row">
+                    <div class="col">
+                      <div class="dealerBorder" data-bind="visible: dealer() != ' '">
+                        &nbsp;<span class="dealer" data-bind="text: dealer"></span>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <ul class="list-group list-group-horizontal" data-bind="foreach: sortedCards">
+                        <li class="list-group-item mr-1 p-0 cardListItemSize" data-bind="class: isSelected() === true ? 'cardSelected' : '', click: $parent.selectCard">
+                          <div class="cardContainer" data-bind="class: isPlayable() === true ? '' : 'cardNotPlayable'"> <img class="clipCard" data-bind="attr: {src: url}" /> </div>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col">
+                        <button id="discard" type="button" style="display:none" data-bind="click: discard">Discard</button>
+                        <button id="play" type="button" style="display:none" data-bind="click: play">Play</button></div>
+                  </div>
+                  <div class="row">
+                    <div class="col pt-1">
+                      <button id="pass" type="button" style="display:none" data-bind="click: pass">Pass</button> 
+                      <button id="pickitup" type="button" style="display:none" data-bind="click: pickItUp" >Pick it up</button>&nbsp;<input id="alone" type="checkbox" style="display:none" name="alone" value="alone" data-bind="checked: alone" /><label id="lblAlone" style="display:none" for="alone">&nbsp;Alone</label>
+                    </div>
+                  </div>
+                </div>
               </div>
             </td>
-            <td></td>
           </tr>
         </table>
 
@@ -171,7 +202,16 @@
     </div>
   </div>
 
-  <?php include('content/js/play.php') ?>
+  <?php 
+    include('content/js/partials/app.php');
+    include('content/js/partials/gameModel.php');
+    include('content/js/partials/currentPlayerInfoViewModel.php');
+    include('content/js/partials/playerInfoViewModel.php');
+    include('content/js/partials/scoreViewModel.php');
+    include('content/js/partials/playViewModel.php');
+    
+    include('content/js/play.php') 
+  ?>
 
 </body>
 

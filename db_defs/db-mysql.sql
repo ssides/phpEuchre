@@ -34,7 +34,7 @@ create table `UserProfile`
 drop table if exists `Deal`;
 create table `Deal`
 (
-  `ID` int not null primary key,
+  `ID` varchar(38) not null primary key,
   `Cards` char(72) not null, 
   `PurposeCode` char not null default 'D'
 );
@@ -59,33 +59,34 @@ create table `Game`
   `LeftJoinDate` datetime null, 
   `RightInviteDate` datetime null, 
   `RightJoinDate` datetime null, 
-  `Dealer` varchar(1) null,  --  'N' not set.  'O'rganizer 'P'artner, 'L'eft, 'R'ight
+  `Dealer` varchar(1) null,  --  'O'rganizer 'P'artner, 'L'eft, 'R'ight
   `OrganizerTrump` varchar(2) null,  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.png, etc. and 'A'lone or 'N'ot.
   `OpponentTrump` varchar(2) null,  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.png, etc. and 'A'lone or 'N'ot.
   `FirstJackIndex` int null, 
   `FirstJackPosition` varchar(1) null, --  'O'rganizer 'P'artner, opponent 'L'eft, opponent 'R'ight
-  `AJP` varchar(1) null, -- Partner 'A'cknowledges first Jack
-  `AJR` varchar(1) null, -- opponent Right 'A'cknowledges first Jack
-  `AJL` varchar(1) null, -- opponent Left 'A'cknowledges first Jack
+  `ACO` varchar(1) null, -- Organizer 'A'cknowledges a card played
+  `ACP` varchar(1) null, -- Partner 'A'cknowledges first Jack or any card played
+  `ACL` varchar(1) null, -- Left 'A'cknowledges first Jack or any card played
+  `ACR` varchar(1) null, -- Right 'A'cknowledges first Jack or any card played
   `OrganizerTricks` int null, -- Score
   `OpponentTricks` int null,
   `InsertDate` datetime not null,
   `FirstDealPosition` char(1) null,
   `CardDiscardedByDealer` char(2) null,
-  `CardFaceUp` char(4) null, -- CardID turned face up at the end of the deal. third char: 'D'eclined or ordered 'U'p. fourth char position who ordered it up or who named trump.
+  `CardFaceUp` char(4) null, -- CardID turned face up at the end of the deal. third char: 'D'eclined or ordered 'U'p. Fourth char position who ordered it up or who declared trump (OPLR). Stick the dealer is hard coded everywhere. (CardFaceUp.length tells the gameController what to display).
   constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`),
   constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`),
   constraint `FK_GameLeft_Player` foreign key (`Left`) references `Player`(`ID`),
   constraint `FK_GameRight_Player` foreign key (`Right`) references `Player`(`ID`)
   constraint `FK_GameDealer_Player` foreign key (`Dealer`) references `Player`(`ID`)
  );
- 
+
 drop table if exists `GameDeal`;
 create table `GameDeal`
 (
   `ID` varchar(38) not null primary key, 
   `GameID` varchar(38) not null, 
-  `DealID` int not null, 
+  `DealID` varchar(38) not null, 
   `InsertDate` datetime not null,
   constraint `FK_GameDeal_Game` foreign key (`GameID`) references `Game`(`ID`), 
   constraint `FK_GameDeal_Deal` foreign key (`DealID`) references `Deal`(`ID`)
@@ -96,8 +97,8 @@ create table `Play` (
   `ID` varchar(38) not null,
   `GameID` varchar(38) not null, 
   `Position` char(1) not null,
-  `CardID1` char(3) not null, -- card id - third char ' ' means not been played.
-  `CardID2` char(3) not null, -- card id - third char in ('1','2','3','4','5') indicates the order the player played his/her cards.
+  `CardID1` char(3) not null, -- card id - length == 2 means not been played.
+  `CardID2` char(3) not null, -- card id - third char == 'P' indicates the card has been played.
   `CardID3` char(3) not null, 
   `CardID4` char(3) not null, 
   `CardID5` char(3) not null, 
@@ -105,4 +106,19 @@ create table `Play` (
   constraint `FK_Play_Game` foreign key (`GameID`) references `Game`(`ID`)
 );
 
-
+-- could let the organizer replay the hand or game.
+drop table if exists `GamePlay`;
+create table `GamePlay`
+(
+  `ID` varchar(38) not null primary key, 
+  `GameID` varchar(38) not null, 
+  `DealID` varchar(38) not null, 
+  `Lead` char(1) not null, -- 'OPLR'
+  `CardO` char(2) not null, -- card id played by organizer.
+  `CardP` char(2) not null, -- card id played by partner.
+  `CardL` char(2) not null, -- card id played by left.
+  `CardR` char(2) not null, -- card id played by right.
+  `InsertDate` datetime not null,
+  constraint `FK_GamePlay_Game` foreign key (`GameID`) references `Game`(`ID`),
+  constraint `FK_GamePlay_Deal` foreign key (`DealID`) references `Deal`(`ID`)
+);
