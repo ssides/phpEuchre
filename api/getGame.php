@@ -27,10 +27,12 @@
           ,`GameStartDate`
           ,`Dealer`
           ,`Turn`
+          ,`Lead`
           ,`CardFaceUp`
-          ,`AJP`
-          ,`AJR`
-          ,`AJL`
+          ,`ACO`
+          ,`ACP`
+          ,`ACR`
+          ,`ACL`
           ,ou.`ThumbnailPath` `OThumbnailPath`,substr(op.`Name`,1,8) `OName`
           ,pu.`ThumbnailPath` `PThumbnailPath`,substr(pp.`Name`,1,8) `PName`
           ,lu.`ThumbnailPath` `LThumbnailPath`,substr(lp.`Name`,1,8) `LName`
@@ -64,7 +66,8 @@
           $game['GameStartDate'] = $row['GameStartDate'];
           $game['Dealer'] = $row['Dealer'];
           $game['Turn'] = is_null($row['Turn']) ? '' : $row['Turn'];
-          $game['CardFaceUp'] = is_null($row['CardFaceUp']) ? '    ' : $row['CardFaceUp'];
+          $game['Lead'] = is_null($row['Lead']) ? '' : $row['Lead'];
+          $game['CardFaceUp'] = is_null($row['CardFaceUp']) ? '' : $row['CardFaceUp'];
           $game['OThumbnailPath'] = $row['OThumbnailPath'];
           $game['OThumbnailURL'] = is_null($row['OThumbnailPath']) ? '' : getThumbnailURL($row['OThumbnailPath']);
           $game['OName'] = $row['OName'];
@@ -74,10 +77,13 @@
           $game['LName'] = $row['LName'];
           $game['RThumbnailURL'] =  is_null($row['RThumbnailPath']) ? '' : getThumbnailURL($row['RThumbnailPath']);
           $game['RName'] = $row['RName'];
-          // AJP, AJR, and AJR are set when the associated player acknowledges (automatically) seeing the first Jack.  This is how game state is determined.
-          $game['AJP'] = is_null($row['AJP']) ? '' : $row['AJP'];
-          $game['AJR'] = is_null($row['AJR']) ? '' : $row['AJR'];
-          $game['AJL'] = is_null($row['AJL']) ? '' : $row['AJL'];
+          // ACP, ACR, and ACL are set to 'A' when the associated player acknowledges (automatically) seeing the first Jack.  
+          // This is how game state is determined.  These columns are also used during play to make sure all players
+          // have seen the card played.
+          $game['ACO'] = is_null($row['ACO']) ? '' : $row['ACO'];
+          $game['ACP'] = is_null($row['ACP']) ? '' : $row['ACP'];
+          $game['ACR'] = is_null($row['ACR']) ? '' : $row['ACR'];
+          $game['ACL'] = is_null($row['ACL']) ? '' : $row['ACL'];
         }
       }
 

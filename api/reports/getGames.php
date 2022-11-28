@@ -11,7 +11,7 @@
       
       $sql = "  select 
         g.`ID` GameID
-        ,AJP,AJR,AJL
+        ,ACP,ACR,ACL
         ,g.`GameStartDate`
         ,g.`PartnerJoinDate`
         ,g.`LeftJoinDate`

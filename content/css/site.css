@@ -43,7 +43,7 @@ html,
   margin: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  padding: 40px 55px 45px 55px;
+  padding: 15px 15px 15px 15px;
   transition: all .3s;
   border-radius: 20px;
 }
@@ -140,8 +140,8 @@ table.dbgTable td {
 .back-p,
 .front-p {
   /* this needs to match the card image size configured in config.php */
-  width: 33px;
-  height: 45px;
+  width: 40px;
+  height: 55px;
 }
 
 .flipper-p {
@@ -223,7 +223,7 @@ table.dbgTable td {
 .score {
   font-size: 11px;
   font-weight:700;
-  color: white;
+  color: #646e57;
   height: 60px;
   width: 78px;
 }
@@ -232,7 +232,7 @@ table.dbgTable td {
   border: 1px solid #b9bdf6;
   padding: 6px;
   border-radius: 5px;
-  background: #60735c;
+  background: #f0fae3;
 }
 
 .tricksBorder {
@@ -267,7 +267,32 @@ table.dbgTable td {
 }
 
 .playTable {
-  width: 175px; 
+  width: 200px; 
   height: 168px; 
   background-color: #006F2D;
 }
+
+.clipCard {
+  position: absolute;
+  transform: scale(80%);
+  clip: rect(1px, 30px, 30px, 1px);
+}
+
+.cardContainer {
+  position: absolute; top: -11px; left: -9px;
+}
+
+.cardListItemSize {
+  width:28px;height:28px;
+}
+
+.cardSelected {
+  border: 2px solid #f96940;
+  border-radius: 2px;
+}
+
+.cardNotPlayable {
+  background: #050505;
+  opacity: 0.2;
+}
+

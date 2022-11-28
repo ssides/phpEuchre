@@ -10,7 +10,7 @@
       $gameID = $_POST['gameID'];
       $position = $_POST['position'];
 
-      $sql = "update `Game` set `AJ{$position}`='A' where `ID`='{$gameID}'";
+      $sql = "update `Game` set `AC{$position}`='A' where `ID`='{$gameID}'";
       $result = mysqli_query($connection, $sql);
       if ($result === false)
         $errorMsg = mysqli_error($connection);
