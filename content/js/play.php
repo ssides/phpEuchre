@@ -10,7 +10,7 @@
     var self = this;
     
     self.game = new gameModel({});
-    self.executionPoint = app.state.selectFirstJack;
+    self.executionPoint = 0;
     self.position = null;
     self.playerID = '<?php echo "{$_COOKIE[$cookieName]}"; ?>';
     self.dealID = null;
@@ -47,9 +47,18 @@
     };
 
     // todo: organize gameController. can it be modularized?
-    self.setExecutionPoint = function(descr, id) {
-      console.log('execution point: ' + descr);
-      self.executionPoint = id;
+    self.getEPIX = function(id) {
+      for(var i = 0; i < self.gameExecution.length; i++) {
+        if (self.gameExecution[i].id === id) {
+          return i;
+        }
+      }
+      return 0;
+    };
+    
+    self.setExecutionPoint = function(id) {
+      console.log('execution point: ' + id);
+      self.executionPoint = self.getEPIX(id);
     };
 
     self.getAllCards = function(){
@@ -67,7 +76,9 @@
       self.playerInfoVM.update(self.game, self.dealID);
       self.myScoreVM.update(self.game);
       self.opponentScoreVM.update(self.game);
-      if (self.game.CardFaceUp.length == 2) {
+      if (self.game.OpponentTrump || self.game.OrganizerTrump) {
+        $('#cardFaceUp').hide();
+      } else if (self.game.CardFaceUp.length == 2) {
         self.playVM.faceupCardURL(app.getCardURL(self.game.CardFaceUp.substr(0,2)));
         $('#cardFaceUp').show();
       } else if (self.game.CardFaceUp.length > 3 && self.game.CardFaceUp[2] == 'U' || self.game.CardFaceUp[2] == 'D') {
@@ -169,7 +180,7 @@
               self.placeCard[i](data.ID, data.Position);
               if (data.ID[0] == 'J') {
                 self.acknowledgeJack(self.position);
-                self.setExecutionPoint('waitForAcknowledgments', app.state.waitForAcknowledgments);
+                self.setExecutionPoint('waitForAcknowledgments');
                 clearInterval(self.playerGetCurrentFInterval);
               }
             } else {
@@ -199,7 +210,7 @@
             self.placeCard[i](data.ID, data.Position);
             if (data.ID[0] == 'J') {
               self.firstDealer = data.Position;
-              self.setExecutionPoint('waitForAcknowledgments', app.state.waitForAcknowledgments);
+              self.setExecutionPoint('waitForAcknowledgments');
               clearInterval(self.orgGetNextFInterval);
             }
           } catch (error) {
@@ -228,7 +239,7 @@
             if (data.ErrorMsg) 
               console.log(data.ErrorMsg);
             self.dealID = data.DealID;
-            self.setExecutionPoint('waitForCardFaceUp', app.state.waitForCardFaceUp);
+            self.setExecutionPoint('waitForCardFaceUp');
           } catch (error) {
             console.log('Could not parse response from deal. ' + error + ': ' + response);
             clearInterval(self.getGameInterval);
@@ -255,7 +266,7 @@
         data: pd,
         success: function(response){
           // wait for the dealer to deal.
-          self.setExecutionPoint('dealOrWaitForCardFaceUp', app.state.dealOrWaitForCardFaceUp);
+          self.setExecutionPoint('dealOrWaitForCardFaceUp');
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
@@ -346,7 +357,7 @@
           try {
             self.game = new gameModel(JSON.parse(response));
             self.updateScoresAndInfo();
-            self.gameExecution[self.executionPoint]();
+            self.gameExecution[self.executionPoint].fn();
           } catch (error) {
             console.log('Error ' + ': ' + error.message || error);
             console.log(error.stack);
@@ -395,13 +406,13 @@
           // need to go back and query for the DealID.
           self.getDealID();
         }
-        self.setExecutionPoint('waitForTrump', app.state.waitForTrump);
+        self.setExecutionPoint('waitForTrump');
       } else {
-        self.setExecutionPoint('selectFirstJack', app.state.selectFirstJack);
+        self.setExecutionPoint('selectFirstJack');
       }
       
       // for debugging:
-      // self.setExecutionPoint('popUpBidDialog', app.state.popUpBidDialog);
+      // self.setExecutionPoint('popUpBidDialog');
     };
     
     self.selectFirstJackFn = function(){
@@ -429,7 +440,7 @@
       if (self.position === self.game.Dealer) {
         self.deal();
       } else {
-        self.setExecutionPoint('waitForCardFaceUp', app.state.waitForCardFaceUp);
+        self.setExecutionPoint('waitForCardFaceUp');
       }
     }
     
@@ -441,7 +452,7 @@
           self.setDealPosition(self.firstDealer, 'isFirst');
           // self.setDealPosition('O', 'isFirst');  // the first dealer is always the organizer for debugging.
         } else {
-          self.setExecutionPoint('dealOrWaitForCardFaceUp', app.state.dealOrWaitForCardFaceUp);
+          self.setExecutionPoint('dealOrWaitForCardFaceUp');
         }
       }
     };
@@ -452,10 +463,7 @@
           // If I'm not the dealer, I need to get the dealID.
           self.getDealID();
         }
-        self.playVM.faceupCardURL(app.getCardURL(self.game.CardFaceUp.substr(0,2)));
-        $('#cardFaceUp').show();
-        // $('#cardFaceUp').toggleClass('hover'); // doesn't work on iPad.
-        self.setExecutionPoint('waitForTrump', app.state.waitForTrump);
+        self.setExecutionPoint('waitForTrump');
       }
     };
     
@@ -471,21 +479,20 @@
       if (!trump && self.game.CardFaceUp.length > 2 && self.game.CardFaceUp[2] == 'D' && self.game.Turn == self.position) {
         self.bidDialogVM.update(self.position, self.game);
         self.bidModal.show();
-        self.setExecutionPoint('waitForBidDialog', app.state.waitForBidDialog);
+        self.setExecutionPoint('waitForBidDialog');
       }
       if (!trump && self.game.CardFaceUp.length > 2 && self.game.CardFaceUp[2] == 'U') {
-        self.setExecutionPoint('waitForDiscard', app.state.waitForDiscard);
+        self.setExecutionPoint('waitForDiscard');
       }
       if (trump) {
-        $('#cardFaceUp').hide();
-        self.setExecutionPoint('waitForPlay', app.state.waitForPlay);
+        self.setExecutionPoint('waitForPlay');
       }
     };
     
     self.waitForBidDialogFn = function(){
       if (self.bidDialogVM.submitted) {
         self.bidModal.hide();
-        self.setExecutionPoint('waitForTrump', app.state.waitForTrump);
+        self.setExecutionPoint('waitForTrump');
       }
     };
     
@@ -514,9 +521,9 @@
       
       if (self.getAllCards().length == 8 && self.getAllAcknowledgments().length == 12) {
         if (self.position == 'O') {
-          self.setExecutionPoint('scoreHand', app.state.scoreHand);
+          self.setExecutionPoint('scoreHand');
         } else {
-          self.setExecutionPoint('clearBoard', app.state.clearBoard);
+          self.setExecutionPoint('clearBoard');
         }
       }
     };
@@ -526,16 +533,16 @@
       var winner = self.playerInfoVM.getWinnerOfHand();
       var newScore = self.playerInfoVM.getNewScore(winner);
       self.updateScoreAfterHand(winner, newScore);
-      self.setExecutionPoint('clearBoard', app.state.clearBoard);
+      self.setExecutionPoint('clearBoard');
     };
     
     self.waitForScoreFn = function(){
       // What if the game is over?
       if (self.getAllCards().length == 0 && self.getAllAcknowledgments().length == 0) {
         if (self.game.OpponentTricks == 0 && self.game.OrganizerTricks == 0) {
-          self.setExecutionPoint('dealOrWaitForCardFaceUp', app.state.dealOrWaitForCardFaceUp);
+          self.setExecutionPoint('dealOrWaitForCardFaceUp');
         } else {
-          self.setExecutionPoint('waitForPlay', app.state.waitForPlay);
+          self.setExecutionPoint('waitForPlay');
         }
       }
     };
@@ -543,30 +550,33 @@
     self.clearBoardFn = function() {
       self.clearBoard();
       self.previousPO = ''; self.previousPP = ''; self.previousPL = ''; self.previousPR = '';
-      self.setExecutionPoint('waitForScore', app.state.waitForScore);
+      self.setExecutionPoint('waitForScore');
     };
     
-    self.waitForDiscardFn = function(){};
+    self.waitForDiscardFn = function(){
+      if (self.game.CardFaceUp.length > 3 && self.game.CardFaceUp[2] == 'S') {
+          self.setExecutionPoint('waitForPlay');
+      }
+    };
     
-    // this has to be parallel to const state {}.  so cumbersome.
     self.gameExecution = [
-      self.initializeFn,              //  0
-      self.selectFirstJackFn,         //  1
-      self.waitForAcknowledgmentsFn,  //  2
-      self.idleFn,                    //  3
-      self.dealOrWaitForCardFaceUpFn, //  4
-      self.waitForCardFaceUpFn,       //  5
-      self.waitForTrumpFn,            //  6
-      self.waitForBidDialogFn,        //  7
-      self.waitForPlayFn,             //  8
-      self.scoreHandFn,               //  9
-      self.waitForScoreFn,            // 10
-      self.clearBoardFn,              // 11
-      self.waitForDiscardFn           // 12
+      { id: 'initialize', fn: self.initializeFn },
+      { id: 'selectFirstJack', fn: self.selectFirstJackFn },
+      { id: 'waitForAcknowledgments', fn: self.waitForAcknowledgmentsFn },
+      { id: 'idle', fn: self.idleFn },
+      { id: 'dealOrWaitForCardFaceUp', fn: self.dealOrWaitForCardFaceUpFn },
+      { id: 'waitForCardFaceUp', fn: self.waitForCardFaceUpFn },
+      { id: 'waitForTrump', fn: self.waitForTrumpFn },
+      { id: 'waitForBidDialog', fn: self.waitForBidDialogFn },
+      { id: 'waitForPlay', fn: self.waitForPlayFn },
+      { id: 'scoreHand', fn: self.scoreHandFn },
+      { id: 'waitForScore', fn: self.waitForScoreFn },
+      { id: 'clearBoard', fn: self.clearBoardFn },
+      { id: 'waitForDiscard', fn: self.waitForDiscardFn },
     ];
-
+    
     self.initialize = function() {
-      self.setExecutionPoint('initialize', app.state.initialize);
+      self.setExecutionPoint('initialize');
       self.getGameInterval = setInterval(self.getGame, app.times.gameTime);
     }
     

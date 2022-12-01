@@ -12,6 +12,19 @@
     self.suits = ko.observableArray();
     self.alone = ko.observable();
     
+    self.update = function(myPosition, gameInfo) {
+      self.submitted = false;
+      self.showPassBtn(myPosition != gameInfo.Dealer);
+      self.enablePassBtn(true);
+      self.showSubmitBtn(true);
+      self.enableSubmitBtn(true);
+      self.myPosition = myPosition;
+      self.suits().forEach(function(s){
+        s.isPlayable(s.id != gameInfo.CardFaceUp[1]);
+        s.isSelected(false);
+      });
+    };
+    
     // this is almost completely duplicated from currentPlayerInfoViewModel.  todo: only have one copy.
     self.setNextTurn = function() {
       var pd = {};
@@ -67,15 +80,6 @@
       });
     };
 
-    self.update = function(myPosition, gameInfo) {
-      self.myPosition = myPosition;
-      self.suits().forEach(function(s){
-        s.isPlayable(s.id != gameInfo.CardFaceUp[1]);
-        s.isSelected(false);
-      });
-      self.showPassBtn(myPosition != gameInfo.Dealer);
-    };
-    
     self.pass = function(){
       self.enablePassBtn(false);
       self.showSubmitBtn(false);

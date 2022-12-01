@@ -38,7 +38,8 @@
         
         if (strlen($dealer) == 1) {
           $dealer = getNextTurn($dealer);
-          $sql = "update `Game` set `Dealer` = '{$dealer}',`Lead` = null,`Turn` = null,`OrganizerTrump` = null,`OpponentTrump` = null where `ID`='{$gameID}'";
+          $turn = getNextTurn($dealer);
+          $sql = "update `Game` set `Dealer` = '{$dealer}',`Lead` = null,`Turn` = '{$turn}',`OrganizerTrump` = null,`OpponentTrump` = null where `ID`='{$gameID}'";
           $result = mysqli_query($connection, $sql);
           if ($result === false) {
             $response['ErrorMsg'] .= mysqli_error($connection);

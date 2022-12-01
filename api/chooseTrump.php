@@ -37,7 +37,7 @@
         $cardFaceUp = getCardFaceUp($cardFaceUp, $positionID, $alone);
         $turn = getTurn($cardFaceUp, $alone, $dealer);
 
-        $sqlTail = ",`CardFaceUp` = '{$cardFaceUp}',`Turn` = '{$turn}',`Lead` = '{$turn}' where `ID`='{$gameID}'";
+        $sqlTail = ",`CardFaceUp` = '{$cardFaceUp}',`Turn` = '{$turn}',`Lead` = null where `ID`='{$gameID}'";
         
         if ($positionID == 'O' || $positionID == 'P') {
           $sql = "update `Game` set `OrganizerTrump` = '{$trumpID}'".$sqlTail;

@@ -15,6 +15,7 @@
     self.previousDealID = '';
     self.previousTurn = '';
     self.previousCardFaceUp = '';
+    self.previousCards = '';
     self.pickingItUp = false;
     self.discarded = false;
     self.gameData = new gameModel({});
@@ -73,6 +74,11 @@
         self.previousCardFaceUp = gameData.CardFaceUp;
         getmycards = true;
         actaccordingtorules = true;
+      }
+      
+      if (self.getAllCards() != self.previousCards) {
+        self.previousCards = self.getAllCards();
+        actaccordingtorules =  actaccordingtorules || self.isMyTurn();
       }
       
       if (getmycards || self.cards().length == 0) {
@@ -212,13 +218,54 @@
       return o;
     };
     
+    self.getLeadCard = function(){
+      switch (self.gameData.Lead) {
+        case 'O':
+          return self.gameData.PO;
+        case 'P':
+          return self.gameData.PP;
+        case 'L':
+          return self.gameData.PL;
+        case 'R':
+          return self.gameData.PR;
+      }
+    };
+    
+    self.getSuit = function(c) {
+      if (c[0] == 'J') {
+        switch (self.trump) {
+          case 'H':
+          case 'D':
+            return c[1] == 'H' || c[1] == 'D' ? self.trump : c[1]; 
+          case 'S':
+          case 'C':
+            return c[1] == 'S' || c[1] == 'C' ? self.trump : c[1]; 
+        }
+      } else {
+        return c[1];
+      }
+    };
+    
+    self.followsSuit = function(lead, card) {
+      var leadSuit = self.getSuit(lead);
+      var cardSuit = self.getSuit(card);
+      return (leadSuit == cardSuit) || (cardSuit == self.trump);
+    };
+    
     self.getWinnerOfHand = function() {
       var cards = [];
+      var leadCard = self.getLeadCard();
+      cards.push(self.getCardObjectForScoring(leadCard, self.gameData.Lead));
       
-      cards.push(self.getCardObjectForScoring(self.gameData.PO, 'O'));
-      cards.push(self.getCardObjectForScoring(self.gameData.PP, 'P'));
-      cards.push(self.getCardObjectForScoring(self.gameData.PL, 'L'));
-      cards.push(self.getCardObjectForScoring(self.gameData.PR, 'R'));
+      if (self.gameData.Lead != 'O' && self.followsSuit(leadCard, self.gameData.PO))
+        cards.push(self.getCardObjectForScoring(self.gameData.PO, 'O'));
+      if (self.gameData.Lead != 'P' && self.followsSuit(leadCard, self.gameData.PP))
+        cards.push(self.getCardObjectForScoring(self.gameData.PP, 'P'));
+      if (self.gameData.Lead != 'L' && self.followsSuit(leadCard, self.gameData.PL))
+        cards.push(self.getCardObjectForScoring(self.gameData.PL, 'L'));
+      if (self.gameData.Lead != 'R' && self.followsSuit(leadCard, self.gameData.PR))
+        cards.push(self.getCardObjectForScoring(self.gameData.PR, 'R'));
+      
       cards.sort(self.sortCardsCompareFn);
       
       return cards[0].positionID;
@@ -363,6 +410,10 @@
       }
     };
     
+    self.getAllCards = function(){
+      return self.gameData.PO + self.gameData.PP + self.gameData.PL + self.gameData.PR;
+    };
+    
     self.getSelectedCard = function(){
       var card = '';
       self.cards().forEach(function(c){
@@ -495,9 +546,9 @@
     };
     
     self.play = function() {
-      self.enablePlayBtn(false);
       var cardID = self.cards().length == 1 ?  self.cards()[0].id : self.getSelectedCard();
       if (cardID) {
+        self.enablePlayBtn(false);
         self.playCard(cardID);
       }
     }
@@ -505,6 +556,7 @@
     self.discard = function() {
       var cardID = self.getSelectedCard();
       if (cardID) {
+        self.enableDiscardBtn(false);
         self.discardCard(cardID);
       }
     }
