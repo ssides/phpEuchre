@@ -8,6 +8,12 @@ alter table `Game`
   drop column `AJR`,
   drop column `AJL`
 ;
+
+alter table `Game`
+  drop column `CardDiscardedByDealer`,
+  drop column `CardFaceUp`
+;
+
 alter table `Game` 
   drop column `ACO`,
   drop column `ACP`,
@@ -21,6 +27,9 @@ alter table `Game` add (
   `OpponentTrump` varchar(2) null  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.png, etc. and 'A'lone or 'N'ot.
 );
 
+alter table `Game` add (
+`CardFaceUp` varchar (5) null  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined or ordered 'U'p. [3]: who ordered it up or who declared trump ('O','P','L','R'). Stick the dealer is hard coded everywhere. [4]: Alone, the player who is skipped: ('O','P','L','R'). (CardFaceUp.length tells the js code what to display).
+);
 
 -- alter table `Game` add (
   -- `ACO` varchar(1) null, -- Organizer 'A'cknowledges a card played
@@ -58,4 +67,19 @@ create table `Play` (
   constraint `FK_Play_Game` foreign key (`GameID`) references `Game`(`ID`)
 );
 
+drop table if exists `GamePlay`;
+create table `GamePlay`
+(
+  `ID` varchar(38) not null primary key, 
+  `GameID` varchar(38) not null, 
+  `DealID` varchar(38) not null, 
+  `Lead` char(1) not null, -- 'OPLR'
+  `CardO` char(2) not null, -- card id played by organizer.
+  `CardP` char(2) not null, -- card id played by partner.
+  `CardL` char(2) not null, -- card id played by left.
+  `CardR` char(2) not null, -- card id played by right.
+  `InsertDate` datetime not null,
+  constraint `FK_GamePlay_Game` foreign key (`GameID`) references `Game`(`ID`),
+  constraint `FK_GamePlay_Deal` foreign key (`DealID`) references `Deal`(`ID`)
+);
 

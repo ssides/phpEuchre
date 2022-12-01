@@ -18,7 +18,6 @@
         url: '../api/reports/getGames.php',
         data: postData,
         success: function (response) {
-          debugger;
           try {
             let data = JSON.parse(response);
             if (data.length > 0) {
@@ -28,7 +27,7 @@
               });
             }
           } catch (error) {
-            console.log('Error ' + ': ' + error.message);
+            console.log('Error ' + ': ' + error.message || error);
             console.log(error.stack);
           }
         },

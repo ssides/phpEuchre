@@ -1,5 +1,5 @@
 <?php 
-// relative to phpEuchre\api
+  // relative to phpEuchre\api
   include_once('../config/db.php');
   include_once('../config/config.php');
 

@@ -95,6 +95,11 @@
                         </div>
                       </td>
                       <td>
+                        <div id="cardFaceUp" style="display:none" data-bind="visible: faceupCardURL().length > 0">
+                          <img data-bind="attr: {src: faceupCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;" />
+                        </div>
+
+                        <!-- this works on every device except iPad.  :-(
                         <div id="cardFaceUp" style="display:none" class="flip-container-p">
                           <div class="flipper-p">
                             <div class="back-p">
@@ -105,6 +110,8 @@
                             </div>
                           </div>
                         </div>
+                        -->
+
                       </td>
                       <td>
                         <div id="sfeE" style="display:none" class="flip-container-l">
@@ -169,17 +176,21 @@
                       </div>
                     </div>
                     <div class="col">
-                      <ul class="list-group list-group-horizontal" data-bind="foreach: cards">
-                        <li class="list-group-item m-0 p-0 cardListItemSize" data-bind="class: selected">
-                          <div class="cardContainer"> <img class="clipCard" data-bind="attr: {src: url}" /> </div>
+                      <ul class="list-group list-group-horizontal" data-bind="foreach: sortedCards">
+                        <li class="list-group-item mr-1 p-0 cardListItemSize" data-bind="class: isSelected() === true ? 'cardSelected' : '', click: $parent.selectCard">
+                          <div class="cardContainer" data-bind="class: isPlayable() === true ? '' : 'cardNotPlayable'"> <img class="clipCard" data-bind="attr: {src: url}" /> </div>
                         </li>
                       </ul>
                     </div>
-                    <div class="col">buttons</div>
+                    <div class="col">
+                      <button id="discard" type="button" style="display:none" data-bind="click: discard">Discard</button>
+                      <button id="play" type="button" style="display:none" data-bind="click: play">Play</button>
+                    </div>
                   </div>
                   <div class="row">
-                    <div class="col">
-                      more buttons
+                    <div class="col pt-1">
+                      <button id="pass" type="button" style="display:none" data-bind="click: pass">Pass</button>
+                      <button id="pickitup" type="button" style="display:none" data-bind="click: pickItUp">Pick it up</button>&nbsp;<input id="alone" type="checkbox" style="display:none" name="alone" value="alone" data-bind="checked: alone" /><label id="lblAlone" style="display:none" for="alone">&nbsp;Alone</label>
                     </div>
                   </div>
                 </div>
@@ -192,7 +203,44 @@
     </div>
   </div>
 
-  <?php include('content/js/play.php') ?>
+  <!-- Modal -->
+  <div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Choose Trump</h1>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+              <ul class="list-group list-group-horizontal" data-bind="foreach: suits">
+                <li class="list-group-item mr-1 p-0" data-bind="class: isSelected() ? 'cardSelected' : '', click: $parent.selectSuit">
+                  <div class="suitContainer" data-bind="class: isPlayable() ? '' : 'cardNotPlayable'"> <img class="suitSize" data-bind="attr: {src: url}" /> </div>
+                </li>
+              </ul>
+              &nbsp;&nbsp;&nbsp;<input id="alone" type="checkbox" name="alone" value="alone" data-bind="checked: alone" /><label id="lblAlone" for="alone">&nbsp;Alone</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bind="visible: showPassBtn, click: pass, enable: enablePassBtn">Pass</button>
+            <button type="button" class="btn btn-primary" data-bind="visible: showSubmitBtn, click: submit, enable: enableSubmitBtn">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <?php
+    include('content/js/partials/app.php');
+    include('content/js/partials/gameModel.php');
+    include('content/js/partials/currentPlayerInfoViewModel.php');
+    include('content/js/partials/playerInfoViewModel.php');
+    include('content/js/partials/scoreViewModel.php');
+    include('content/js/partials/playViewModel.php');
+    include('content/js/partials/bidDialogViewModel.php');
+
+    include('content/js/play.php')
+    ?>
 
 </body>
 

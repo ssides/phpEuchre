@@ -8,6 +8,7 @@
     self.score = ko.observable(0);
     self.trumpURL = ko.observable('');
     self.tricks = ko.observable('');
+    self.showScoreGroup = ko.observable(false);
     
     self.getTricks = function(t){
       var tricks = '';
@@ -45,8 +46,10 @@
         self.score(gameData.OpponentScore);
       },
     ];
+    
     self.update = function(gameData){
       self.aUpdate[self.ix](gameData);
+      self.showScoreGroup(true);
     };
     
     self.initialize = function(iam, selfPosition, gameData){

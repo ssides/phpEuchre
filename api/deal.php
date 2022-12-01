@@ -7,11 +7,10 @@
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
-      $errorMsg = "";
+      $response = array();
       $gameID = $_POST['gameID'];
       $playerID = $_POST[$cookieName];
       $deal = array();
-      $response = array();
       
       $deal= getRandomDeal($gameID);
       while (!isset($deal['DealID'])) {
@@ -21,6 +20,7 @@
       $response['ErrorMsg'] = insertDeal($gameID, $deal['DealID']);
       $response['ErrorMsg'] .= distributeCards($gameID, $deal);
       $response['ErrorMsg'] .= setCardFaceUp($gameID, $deal);
+      $response['DealID'] = $deal['DealID'];
       
       http_response_code(200);
       
@@ -75,7 +75,7 @@
     $errorMsg = "";
     
     $up = substr($deal['Cards'],60,2);
-    $sql = "update `Game` set `CardFaceUp`='{$up}' where `ID`='{$gameID}'";
+    $sql = "update `Game` set `CardFaceUp`='{$up}',`OrganizerTrump` = null,`OpponentTrump` = null,`Lead` = null,`ACO` = null,`ACP` = null,`ACL` = null,`ACR` = null where `ID`='{$gameID}'";
     
     if (mysqli_query($conn, $sql) === false) {
       $errorMsg = mysqli_error($conn);
@@ -103,7 +103,7 @@
   // selects a deal at random. does not deal the same cards twice in the same game.
   function getRandomDeal($gameID) {
     global $hostname, $username, $password, $dbname, $dealChoices;
-    $conn = mysqli_connect($hostname, $username, $password, $dbname);  // todo use $connection.
+    $conn = mysqli_connect($hostname, $username, $password, $dbname);  // todo: use $connection.
     $deal = array();
     // each time a hand is dealt, the offset available will reduce from ($dealChoices - 1)
     // by one.  I'm not taking the time here to count the number of available choices.  

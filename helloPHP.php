@@ -13,72 +13,7 @@
   <title>Hello PHP</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
-  <style>
-    .flip-container-p {
-      perspective: 1000px;
-    }
-    .flip-container-p.hover .flipper-p {
-      transform: rotateY(180deg);
-    }
-    .flip-container-p,
-    .back-p,
-    .front-p {
-      width: 50px;
-      height: 70px;
-    }
-    .flipper-p {
-      transition: 0.5s;
-      transform-style: preserve-3d;
-      position: relative;
-    }
-    .back-p,
-    .front-p {
-      backface-visibility: hidden;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-    .back-p {
-      z-index: 2;
-      transform: rotateY(0deg);
-    }
-    .front-p {
-      transform: rotateY(180deg);
-    }
-    
-    .flip-container-l {
-      perspective: 1000px;
-    }
-    .flip-container-l.hover .flipper-l {
-      transform: rotateX(180deg);
-    }
-    .flip-container-l,
-    .back-l,
-    .front-l {
-      width: 70px;
-      height: 50px;
-    }
-    .flipper-l {
-      transition: 0.5s;
-      transform-style: preserve-3d;
-      position: relative;
-    }
-    .back-l,
-    .front-l {
-      backface-visibility: hidden;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-    .back-l {
-      z-index: 2;
-      transform:  rotateX(0deg) ;
-    }
-    .front-l {
-      transform: rotateX(180deg) ;
-    }
-
-  </style>
+  
 </head>
 
 <body>
@@ -142,65 +77,39 @@
       echo auto_version('/content/css/site.css');
       
       ?>
-    <?php
-    ?>
-    <div class="flip-container-p">
-      <div class="flipper-p">
-        <div class="back-p">
-          <img src="http://localhost:8080/content/images/cards/cardback.png"  style="width:50px;height:70px;">
-        </div>
-        <div class="front-p">
-          <img src="http://localhost:8080/content/images/cards/AS.png"  style="width:50px;height:70px;">
-        </div>
-      </div>
-    </div>
-    
-    <div  id="as" class="flip-container-l"">
-      <div class="flipper-l">
-        <div class="back-l">
-          <img src="http://localhost:8080/content/images/cards/cardback.png"  style="width:50px;height:70px; rotate: 90deg;">
-        </div>
-        <div class="front-l">
-          <img src="http://localhost:8080/content/images/cards/AC.png"  style="width:50px;height:70px; rotate: 90deg; transform: translate(50px,0);">
-        </div>
-      </div>
-    </div>
   
-    <div id="ah" class="flip-container-l"">
-      <div class="flipper-l">
-        <div class="back-l">
-          <img src="http://localhost:8080/content/images/cards/cardback.png"  style="width:50px;height:70px; rotate: -90deg;">
-        </div>
-        <div class="front-l">
-          <img src="http://localhost:8080/content/images/cards/AH.png"  style="width:50px;height:70px; rotate: -90deg; transform: translate(-50px,0); ">
-        </div>
+<br><br><br>
+  
+<!-- Modal -->
+<div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Choose Trump</h1>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Pass</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
-  
+</div>
 
+  <button id="play-k">Show the modal</button>
   
-<br><br><br>
-  <button id="play">Play a card</button>
-  <button id="play-l">Play other card</button>
-  <button id="play-k">Play the card</button>
+  
 <script type="text/javascript">
 
   $(function(){
-    // $(document).on("click", ".flip-container-p", function () {
-        // $(this).toggleClass('hover');
-    // });
-    $('#play').click(function(){
-      console.log('button click');
-      $('.flip-container-p').toggleClass('hover');
-    });
-    $('#play-l').click(function(){
-      console.log('button click');
-      $('#as').toggleClass('hover');
-    });
+    
+    var bidModal = new bootstrap.Modal($('#bidModal'));
+    
     $('#play-k').click(function(){
       console.log('button click');
-      $('#ah').toggleClass('hover');
+      bidModal.show();
     });
   });
   
