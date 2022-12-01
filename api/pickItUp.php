@@ -11,42 +11,35 @@
       $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
       $playerID = $_POST[$cookieName];
-      $positionID = $_POST['positionID'];
-      $dealer = '';
+      $positionID = $_POST['positionID']; // who ordered it up.
+      $alone = $_POST['alone']; 
       $cardFaceUp = '';
       
-      $sql = "select `Dealer`,`CardFaceUp`
-        from `Game` 
-        where `ID`='{$gameID}'";
+      $sql = "select `CardFaceUp` from `Game` where `ID`='{$gameID}'";
 
       $results = mysqli_query($connection, $sql);
       if ($results === false) {
         $response['ErrorMsg'] .= mysqli_error($connection);
       } else {
         while ($row = mysqli_fetch_array($results)) {
-          $dealer = is_null($row['Dealer']) ? '' : $row['Dealer'];
           $cardFaceUp = is_null($row['CardFaceUp']) ? '' : $row['CardFaceUp'];
         }
       }
       
-      if (strlen($dealer) > 0 && strlen($cardFaceUp) > 0) {
-        if ($dealer != $positionID) {
-          $response['ErrorMsg'] .= "Dealer: {$dealer} PositionID: {$positionID}. ";
-        } else {
-          $cardFaceUp .= 'D';
-          $turn = getNextTurn($positionID);
-
-          $sql = "update `Game` 
-            set `CardFaceUp` = '{$cardFaceUp}', `Turn` = '{$turn}'
-            where `ID`='{$gameID}'";
-            
-          $results = mysqli_query($connection, $sql);
-          if ($results === false) {
-            $response['ErrorMsg'] .= mysqli_error($connection);
-          }
+      if (strlen($cardFaceUp) == 2) {
+        $cardFaceUp .= "U{$positionID}";
+        if ($alone) {
+          $cardFaceUp .= "A";
         }
+        $sql = "update `Game` set `CardFaceUp` = '{$cardFaceUp}' where `ID`='{$gameID}'";
+          
+        $results = mysqli_query($connection, $sql);
+        if ($results === false) {
+          $response['ErrorMsg'] .= mysqli_error($connection);
+        }
+        
       } else {
-        $response['ErrorMsg'] .= "Wrong state error. ";
+        $response['ErrorMsg'] .= "Wrong state error. CardFaceUp: {$cardFaceUp} ";
       }
 
       http_response_code(200);

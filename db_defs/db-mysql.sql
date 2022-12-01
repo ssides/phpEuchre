@@ -72,8 +72,7 @@ create table `Game`
   `OpponentTricks` int null,
   `InsertDate` datetime not null,
   `FirstDealPosition` char(1) null,
-  `CardDiscardedByDealer` char(2) null,
-  `CardFaceUp` char(4) null, -- CardID turned face up at the end of the deal. third char: 'D'eclined or ordered 'U'p. Fourth char position who ordered it up or who declared trump (OPLR). Stick the dealer is hard coded everywhere. (CardFaceUp.length tells the gameController what to display).
+  `CardFaceUp` char(5) null,  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined, ordered 'U'p, or u'S'ed by dealer. [3]: who ordered it up or who declared trump ('O','P','L','R').  [4]: 'A'lone. (Stick the dealer is hard coded everywhere. CardFaceUp.length tells the js code what to display).
   constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`),
   constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`),
   constraint `FK_GameLeft_Player` foreign key (`Left`) references `Player`(`ID`),
@@ -106,7 +105,7 @@ create table `Play` (
   constraint `FK_Play_Game` foreign key (`GameID`) references `Game`(`ID`)
 );
 
--- could let the organizer replay the hand or game.
+-- could let the organizer replay the hand or game someday.
 drop table if exists `GamePlay`;
 create table `GamePlay`
 (

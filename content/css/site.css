@@ -222,7 +222,7 @@ table.dbgTable td {
 
 .score {
   font-size: 11px;
-  font-weight:700;
+  font-weight: 700;
   color: #646e57;
   height: 60px;
   width: 78px;
@@ -237,11 +237,11 @@ table.dbgTable td {
 
 .tricksBorder {
   border: 1px solid #b9bdf6;
+  background: #f0fae3;
   padding: 0px 0px 0px 3px;
   height: 18px;
   width: 40px;
-  font-size: 10px;
-  color: #edea3a;
+  font-size: 12px;
 }
 
 .trump {
@@ -250,7 +250,7 @@ table.dbgTable td {
 }
 
 .dealer {
-  font-weight:bold;
+  font-weight: bold;
   font-size: 18px;
   color: #f64b3c;
   margin: 0px 0px 0px 0px;
@@ -267,8 +267,8 @@ table.dbgTable td {
 }
 
 .playTable {
-  width: 200px; 
-  height: 168px; 
+  width: 200px;
+  height: 168px;
   background-color: #006F2D;
 }
 
@@ -279,11 +279,14 @@ table.dbgTable td {
 }
 
 .cardContainer {
-  position: absolute; top: -11px; left: -9px;
+  position: absolute;
+  top: -11px;
+  left: -9px;
 }
 
 .cardListItemSize {
-  width:28px;height:28px;
+  width: 28px;
+  height: 28px;
 }
 
 .cardSelected {
@@ -296,3 +299,11 @@ table.dbgTable td {
   opacity: 0.2;
 }
 
+.suitContainer {
+  margin: 3px;
+}
+
+.suitSize {
+  width: 28px;
+  height: 28px;
+}

@@ -17,13 +17,17 @@
   app.state = {
     initialize: 0,
     selectFirstJack: 1,
-    waitForAcknowledgements: 2,
-    deal: 3,
-    chooseTrump: 4,
-    idle: 5,
-    dealOrWaitForCardFaceUp: 6,
-    waitForCardFaceUp: 7,
-    waitForMyTurn: 8
+    waitForAcknowledgments: 2,
+    idle: 3,
+    dealOrWaitForCardFaceUp: 4,
+    waitForCardFaceUp: 5,
+    waitForTrump: 6,
+    waitForBidDialog: 7,
+    waitForPlay:  8,
+    scoreHand:  9,
+    waitForScore: 10,
+    clearBoard: 11,
+    waitForDiscard: 12
   };
 
   app.apiPostData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"
