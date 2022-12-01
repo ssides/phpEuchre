@@ -132,7 +132,7 @@
       });
     };
     
-    self.logHand = function() {
+    self.logHand = function(newScore) {
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.dealID = self.dealID;
@@ -141,6 +141,12 @@
       pd.cardP = self.game.PP;
       pd.cardL = self.game.PL;
       pd.cardR = self.game.PR;
+      pd.organizerTrump = self.game.OrganizerTrump || '-';
+      pd.opponentTrump = self.game.OpponentTrump || '-';
+      pd.organizerScore = newScore.organizerScore;
+      pd.organizerTricks = newScore.organizerTricks;
+      pd.opponentScore = newScore.opponentScore;
+      pd.opponentTricks = newScore.opponentTricks;
       
       $.ajax({
         method: 'POST',
@@ -529,9 +535,9 @@
     };
     
     self.scoreHandFn = function(){
-      self.logHand();
       var winner = self.playerInfoVM.getWinnerOfHand();
       var newScore = self.playerInfoVM.getNewScore(winner);
+      self.logHand(newScore);
       self.updateScoreAfterHand(winner, newScore);
       self.setExecutionPoint('clearBoard');
     };
