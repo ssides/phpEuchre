@@ -105,7 +105,7 @@ create table `Play` (
   constraint `FK_Play_Game` foreign key (`GameID`) references `Game`(`ID`)
 );
 
--- could let the organizer replay the hand or game someday.
+-- could let the organizer replay the hand or game someday. also helps with verifying that scoring is correct.
 drop table if exists `GamePlay`;
 create table `GamePlay`
 (
@@ -117,6 +117,12 @@ create table `GamePlay`
   `CardP` char(2) not null, -- card id played by partner.
   `CardL` char(2) not null, -- card id played by left.
   `CardR` char(2) not null, -- card id played by right.
+  `OrganizerTrump` char(1) not null,
+  `OpponentTrump` char(1) not null,
+  `OrganizerScore` int not null,
+  `OpponentScore` int not null,
+  `OrganizerTricks` int not null,
+  `OpponentTricks` int not null,
   `InsertDate` datetime not null,
   constraint `FK_GamePlay_Game` foreign key (`GameID`) references `Game`(`ID`),
   constraint `FK_GamePlay_Deal` foreign key (`DealID`) references `Deal`(`ID`)

@@ -88,8 +88,10 @@
       if (self.previousTurn != gameData.Turn) {
         self.previousTurn = gameData.Turn;
         if (self.isMyTurn()) {
+          self.markNotPlayable(self.cards());
           actaccordingtorules = true;
         } else {
+          self.markAllCardsPlayable(self.cards());
           self.hideButtons();
         }
       }
@@ -328,6 +330,36 @@
       return newScore;
     };
     
+    self.markNotPlayable = function(cards) {
+      if (self.gameData.Lead) {
+        var inSuitCount = 0;
+        var leadSuit = self.getSuit(self.getLeadCard());
+        
+        cards.forEach(function(c){
+          var cardSuit = self.getSuit(c.id);
+          if (cardSuit == leadSuit)
+            inSuitCount += 1;
+        });
+        
+        if (inSuitCount > 0) {
+          cards.forEach(function(c){
+            var cardSuit = self.getSuit(c.id);
+            if (cardSuit != leadSuit) {
+              if (c.isPlayable()) {
+                c.isPlayable(false);
+              }
+            }
+          });
+        }
+      }
+    }
+    
+    self.markAllCardsPlayable = function(cards) {
+      cards.forEach(function(c){
+        c.isPlayable(true);
+      });
+    }
+    
     self.getMyCards = function() {
       console.log('getMyCards()');
       var pd = {};
@@ -344,6 +376,7 @@
               console.log(data.ErrorMsg);
             } else {
               var c = [];
+              
               if (data.CardID1.length == 2)
                 c.push(self.getCardObject(data.CardID1.substr(0,2)));
               if (data.CardID2.length == 2)
@@ -356,7 +389,9 @@
                 c.push(self.getCardObject(data.CardID5.substr(0,2)));
               
               if (self.pickingItUp) {
-                c.push(self.getCardObject(self.gameData.CardFaceUp.substr(0,2)));
+                var card = self.getCardObject(self.gameData.CardFaceUp.substr(0,2));
+                card.isPlayable(false);
+                c.push(card);
               }
               
               self.cards(c);
@@ -592,7 +627,7 @@
         self.enableBid();
       }
       
-      if (self.trump && self.isMyTurn()) {
+      if (self.trump && self.isMyTurn() && self.getAllCards().length < 8) {
         self.showPlayBtn(true);
       }
       
