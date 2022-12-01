@@ -15,7 +15,21 @@
       
       $hand = getHand($gameID, $positionID);
       $cardNumber = getCardNumber($hand, $cardID);
+      $cards = "";
       
+      $sql = "select `PO`,`PP`,`PL`,`PR` from `Game` where `ID`='{$gameID}'";
+      $results = mysqli_query($connection, $sql);
+      if ($results === false) {
+        $response['ErrorMsg'] .= mysqli_error($connection);
+      } else {
+        while ($row = mysqli_fetch_array($results)) {
+          $cards .= is_null($row['PO']) ? '' : $row['PO'];
+          $cards .= is_null($row['PP']) ? '' : $row['PP'];
+          $cards .= is_null($row['PL']) ? '' : $row['PL'];
+          $cards .= is_null($row['PR']) ? '' : $row['PR'];
+        }
+      }
+
       if (strlen($hand['PlayID']) > 0 && $cardNumber != '0' && strlen($positionID) == 1) {
         $p = $cardID.'P';
         $sql = "update `Play` set `CardID{$cardNumber}` = '{$p}' where `ID`='{$hand['PlayID']}'";
@@ -30,6 +44,13 @@
           $response['ErrorMsg'] .= mysqli_error($connection);
         }
         
+        if (strlen($cards) == 0) {
+          $sql = "update `Game` set `Lead` = '{$positionID}' where `ID`='{$gameID}'";
+          $results = mysqli_query($connection, $sql);
+          if ($results === false) {
+            $response['ErrorMsg'] .= mysqli_error($connection);
+          }
+        }
       } else {
         $response['ErrorMsg'] .= "Play state error.";
       }

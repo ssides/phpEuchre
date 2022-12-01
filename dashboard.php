@@ -25,7 +25,7 @@
       <div class="inner-block">
         <?php echo $sqlErr; ?>
         <div class="org-border dashboardMargin" data-bind="visible: invitations().length > 0">
-          <table>
+          <table style="width: 100%">
             <tbody data-bind="foreach: invitations">
               <tr>
                 <td><span data-bind="text: organizerName"></span> is inviting you to play as <span data-bind="text: position"></span>.</td>
