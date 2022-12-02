@@ -3,6 +3,7 @@
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
 
+  // I as positionID am acknowledging that I have seen the card played by playerID.
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
@@ -25,7 +26,7 @@
         }
       }
       
-      if (strlen($ack) < 3) {
+      if (strpos($ack, $playerID) === false) {
         $ack .= $playerID;
         $sql = "update `Game` set `AC{$positionID}`='{$ack}' where `ID`='{$gameID}'";
         $result = mysqli_query($connection, $sql);
@@ -33,7 +34,7 @@
           $response['ErrorMsg'] .= mysqli_error($connection);
         }
       } else {
-        $response['ErrorMsg'] .= "Too many acknowledgments from {$positionID} for {$playerID}.";
+        $response['ErrorMsg'] .= "{$positionID} already acknowledged card played by {$playerID}.";
       }
 
       http_response_code(200);

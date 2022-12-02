@@ -1,6 +1,7 @@
 <script type="text/javascript">
 
   function gameModel(data) {
+    
     this.Organizer = data.Organizer || '';
     this.Partner = data.Partner || '';
     this.Left = data.Left || '';
@@ -32,6 +33,25 @@
     this.RThumbnailURL = data.RThumbnailURL || '';
     this.RName = data.RName || '';
     this.GameStartDate = data.GameStartDate || '';
+    this.DateFinished = data.DateFinished || '';
+    
+    this.getAllCards = function(){ return this.PO + this.PP + this.PL + this.PR;  };
+    
+    this.getAllAcknowledgments = function(){
+      return this.ACO + this.ACP + this.ACL + this.ACR;
+    };
+    
+    this.allCardsHaveBeenPlayed = function() {
+      if (this.CardFaceUp.length == 5) {
+        // If there are only three players, there are only two acknowledgments per player.
+        // The skipped player will probably see all the cards, but there is no mechanism 
+        // to guarantee that.
+        return this.getAllCards().length == 6 && this.getAllAcknowledgments().length == 6;
+      } else {
+        return this.getAllCards().length == 8 && this.getAllAcknowledgments().length == 12;
+      }
+    };
+
   }
   
 </script>

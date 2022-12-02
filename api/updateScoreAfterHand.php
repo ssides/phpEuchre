@@ -48,7 +48,7 @@
             $response['ErrorMsg'] .= "Invalid dealer: '{$dealer}'";
         }
       } else {
-        $sql = "update `Game` set `Lead` = '{$winner}',`Turn` = '{$winner}' where `ID`='{$gameID}'";
+        $sql = "update `Game` set `Lead` = null,`Turn` = '{$winner}' where `ID`='{$gameID}'";
         $result = mysqli_query($connection, $sql);
         if ($result === false) {
           $response['ErrorMsg'] .= mysqli_error($connection);

@@ -29,7 +29,7 @@
     self.enableDiscardBtn = ko.observable(true);
     self.dealer = ko.observable(' ');
     self.isMyTurn = ko.observable(false);
-    self.alone = ko.observable();
+    self.obsAlone = ko.observable();
     self.cards = ko.observableArray();
     self.sortCardsCompareFn = function(a,b){ return a.suit === b.suit ? (a.rank == b.rank ? 0 : a.rank < b.rank ? -1 : 1) : a.suit < b.suit ? -1 : 1; };
     self.sortedCards = ko.pureComputed(function(){
@@ -40,10 +40,10 @@
     // This will be called on every heartbeat in most states of gameController.
     // If there is no deal, there is really nothing for this viewmodel to do.
     self.update = function(gameData, dealID) {
-      if (!gameData.GameStartDate || !dealID) return;
+      if (!gameData.GameStartDate || !dealID || gameData.allCardsHaveBeenPlayed()) return;
       
-      self.iamDealer = self.myPosition == gameData.Dealer;
       self.gameData = new gameModel(gameData);
+      self.iamDealer = self.myPosition == gameData.Dealer;
       self.trump = self.gameData.OpponentTrump || self.gameData.OrganizerTrump;
       self.dealID = dealID;
       self.pickingItUp = self.gameData.CardFaceUp.length > 2 && self.gameData.CardFaceUp[2] == 'U' && self.iamDealer;
@@ -57,47 +57,49 @@
       
       self.isMyTurn(self.myPosition == gameData.Turn);
       
-      var getmycards = false;
-      var actaccordingtorules = false;
+      var updateReason = '';
       
       if (self.dealID != self.previousDealID) {
         self.previousDealID = self.dealID;
-        getmycards = true;
+        updateReason += 'D';  // new 'D'eal
       }
       
       if (self.trump != self.previousTrump) {
         self.previousTrump = self.trump;
-        getmycards = true;
+        updateReason += 'T';  // new 'T'rump
       }
       
       if (gameData.CardFaceUp != self.previousCardFaceUp) {
         self.previousCardFaceUp = gameData.CardFaceUp;
-        getmycards = true;
-        actaccordingtorules = true;
+        updateReason += 'U'; // new CardFace'U'p
       }
       
-      if (self.getAllCards() != self.previousCards) {
-        self.previousCards = self.getAllCards();
-        actaccordingtorules =  actaccordingtorules || self.isMyTurn();
-      }
-      
-      if (getmycards || self.cards().length == 0) {
-        self.getMyCards();
+      if (self.gameData.getAllCards() != self.previousCards) {
+        self.previousCards = self.gameData.getAllCards();
+        updateReason += 'C'; // 'C'ards played.
       }
       
       if (self.previousTurn != gameData.Turn) {
         self.previousTurn = gameData.Turn;
-        if (self.isMyTurn()) {
-          self.markNotPlayable(self.cards());
-          actaccordingtorules = true;
-        } else {
-          self.markAllCardsPlayable(self.cards());
-          self.hideButtons();
-        }
+        updateReason += 'R'; // change in tu'R'n
+      }
+
+      if (updateReason.length > 0) {
+        $.when(self.getMyCards(updateReason)).done(function(){
+          if (self.isMyTurn()) {
+            self.markNotPlayable(self.cards());
+          } else if (updateReason.indexOf('R') > 0 && !self.isMyTurn()){
+            self.markAllCardsPlayable(self.cards());
+          }
+        });
+      }
+
+      if (updateReason.indexOf('R') > 0 && !self.isMyTurn()){
+        self.hideButtons();
       }
       
-      if (actaccordingtorules) {
-        self.actAccordingToRules();
+      if (updateReason.length > 0) {
+        self.actAccordingToRules(updateReason);
       }
     };
     
@@ -360,12 +362,12 @@
       });
     }
     
-    self.getMyCards = function() {
-      console.log('getMyCards()');
+    self.getMyCards = function(reason) {
+      console.log('getMyCards(); reason: ', reason);
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.positionID = self.myPosition;
-      $.ajax({
+      return $.ajax({
         method: 'POST',
         url: 'api/getMyCards.php',
         data: pd,
@@ -410,9 +412,35 @@
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.positionID = self.myPosition;
+      
       $.ajax({
         method: 'POST',
         url: 'api/setNextTurn.php',
+        data: pd,
+        success: function(response) {
+          try {
+            let data = JSON.parse(response);
+            if (data.ErrorMsg) {
+              console.log(data.ErrorMsg);
+            }
+          } catch (error) {
+            console.log('Could not parse response from setNextTurn. ' + error + ': ' + response);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+        }
+      });
+    };
+    
+    self.setNextTurnWithSkip = function() {
+      var pd = {};
+      Object.assign(pd, app.apiPostData);
+      pd.positionID = self.myPosition;
+      
+      $.ajax({
+        method: 'POST',
+        url: 'api/setNextTurnWithSkip.php',
         data: pd,
         success: function(response) {
           try {
@@ -443,10 +471,6 @@
         default:
           return '';
       }
-    };
-    
-    self.getAllCards = function(){
-      return self.gameData.PO + self.gameData.PP + self.gameData.PL + self.gameData.PR;
     };
     
     self.getSelectedCard = function(){
@@ -487,8 +511,8 @@
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.positionID = self.myPosition;
-      pd.alone = self.alone();
-      
+      pd.alone = self.obsAlone();
+
       $.ajax({
         method: 'POST',
         url: 'api/pickItUp.php',
@@ -520,6 +544,11 @@
       // the gameController pops up the bid dialog when necessary.
     };
 
+    self.shouldAdvanceTurn = function() {
+      var limit = self.gameData.CardFaceUp.length == 5 ? 4 : 6;
+      return self.getAllOtherCards().length < limit;
+    };
+    
     self.playCard = function(cardID){
       var pd = {};
       Object.assign(pd, app.apiPostData);
@@ -537,8 +566,8 @@
               console.log(data.ErrorMsg);
             } else {
               self.getMyCards(false);
-              if (self.getAllOtherCards().length < 6) {
-                self.setNextTurn();
+              if (self.shouldAdvanceTurn()) {
+                self.setNextTurnWithSkip();
               }
               // when 4 cards have been played, the game controller will score the hand and set Lead and Turn.
             }
@@ -616,10 +645,13 @@
       self.enablePassBtn(true);
       self.enablePickItUpGroup(true);
       self.enablePlayBtn(true);
+      self.enableDiscardBtn(true);
+
+      self.obsAlone(false);
     };
     
-    self.actAccordingToRules = function() {
-      console.log('actAccordingToRules()');
+    self.actAccordingToRules = function(reason) {
+      console.log('actAccordingToRules(); reason: ', reason);
 
       self.hideButtons();
       
@@ -627,7 +659,7 @@
         self.enableBid();
       }
       
-      if (self.trump && self.isMyTurn() && self.getAllCards().length < 8) {
+      if (self.trump && self.isMyTurn() && !self.gameData.allCardsHaveBeenPlayed()) {
         self.showPlayBtn(true);
       }
       

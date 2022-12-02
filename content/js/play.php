@@ -6,6 +6,9 @@
   
   // The gameController is responsible for calling on viewmodels to update the score, and do animations on 
   // the play table.  The main interval timer is the getGameInterval which runs throughout the game.
+  // The computer used by the Organizer does the scoring of the game.  So if the Organizer's Partner goes
+  // alone, the Organizer's gameController must continue to be active. (I say that because when my iPhone
+  // goes to sleep, javascript processes stop running.)
   function gameController() {
     var self = this;
     
@@ -15,6 +18,7 @@
     self.playerID = '<?php echo "{$_COOKIE[$cookieName]}"; ?>';
     self.dealID = null;
     self.bidModal = new bootstrap.Modal($('#bidModal'));
+    self.endGameModal = new bootstrap.Modal($('#endGameModal'));
     self.nPlayerInfoVM = new playerInfoViewModel();
     self.ePlayerInfoVM = new playerInfoViewModel();
     self.wPlayerInfoVM = new playerInfoViewModel();
@@ -23,6 +27,7 @@
     self.opponentScoreVM = new scoreViewModel();
     self.playVM = new playViewModel();
     self.bidDialogVM = new bidDialogViewModel();
+    self.endGameDialogVM = new endGameDialogViewModel();
     self.getGameInterval = null;
     self.orgGetNextFInterval = null;
     self.playerGetCurrentFInterval = null;
@@ -59,14 +64,6 @@
     self.setExecutionPoint = function(id) {
       console.log('execution point: ' + id);
       self.executionPoint = self.getEPIX(id);
-    };
-
-    self.getAllCards = function(){
-      return self.game.PO + self.game.PP + self.game.PL + self.game.PR;
-    };
-    
-    self.getAllAcknowledgments = function(){
-      return self.game.ACO + self.game.ACP + self.game.ACL + self.game.ACR;
     };
     
     self.updateScoresAndInfo = function() {
@@ -147,6 +144,7 @@
       pd.organizerTricks = newScore.organizerTricks;
       pd.opponentScore = newScore.opponentScore;
       pd.opponentTricks = newScore.opponentTricks;
+      pd.alone = self.game.CardFaceUp.length == 5 ? 'A' : '-';
       
       $.ajax({
         method: 'POST',
@@ -167,9 +165,26 @@
       });
     };
 
+    self.iamTheSkippedPlayer = function(){
+      if (self.game.CardFaceUp.length < 5) {
+        return false;
+      } else {
+        switch (self.game.CardFaceUp[3]) {
+          case 'O':
+            return self.position == 'P';
+          case 'P':
+            return self.position == 'O';
+          case 'L':
+            return self.position == 'R';
+          case 'R':
+            return self.position == 'L';
+        }
+      }
+    };
+    
     self.placeCardWithAcknowledge = function(card, playerID) {
       self.placeCard[app.positions.indexOf(self.position)](card, playerID);
-      if (self.position != playerID)
+      if (self.position != playerID && !self.iamTheSkippedPlayer())
         self.acknowledgeCard(playerID);
     };
     
@@ -290,7 +305,7 @@
       pd.organizerTricks = newScore.organizerTricks;
       pd.organizerScore = newScore.organizerScore;
       
-      $.ajax({
+      return $.ajax({
         method: 'POST',
         url: 'api/updateScoreAfterHand.php',
         data: pd,
@@ -377,6 +392,29 @@
       });
     };
     
+    self.endGame = function(){
+      $.ajax({
+        method: 'POST',
+        url: 'api/endGame.php',
+        data: app.apiPostData,
+        success: function (response) {
+          try {
+            var data = JSON.parse(response);
+            if (data.ErrorMsg) 
+              console.log(data.ErrorMsg);
+          } catch (error) {
+            console.log('Error ' + ': ' + error.message || error);
+            console.log(error.stack);
+            clearInterval(self.getGameInterval);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+          clearInterval(self.getGameInterval);
+        }
+      });
+    };
+    
     self.getDealID = function() {
       $.ajax({
         method: 'POST',
@@ -408,17 +446,15 @@
       
       if (self.game.Dealer) {
         if (!self.dealID) {
-          // If the player is returning to a game, there will be a dealer, but I 
-          // need to go back and query for the DealID.
+          // If the player is returning to a game, there will be a dealer, but no dealID.
           self.getDealID();
         }
         self.setExecutionPoint('waitForTrump');
+      } else if (self.game.DateFinished) {
+        self.setExecutionPoint('showGameOverDialog');
       } else {
         self.setExecutionPoint('selectFirstJack');
       }
-      
-      // for debugging:
-      // self.setExecutionPoint('popUpBidDialog');
     };
     
     self.selectFirstJackFn = function(){
@@ -503,9 +539,9 @@
     };
     
     self.waitForPlayFn = function(){
-      // whenever a card is played, show it on the screen. [done]
-      // wait for acknowledgments. when 4 cards are played,
-      // log the hand, set turn and lead.  Call into playerInfoVM
+      // whenever a card is played, show it on the screen.
+      // wait for acknowledgments. when 4 cards (3 in alone mode) are played,
+      // log the hand, set turn, clear lead.  Call into playerInfoVM
       // for that so that all the rules are in one place.
 
       if (self.previousPO != self.game.PO) {
@@ -525,7 +561,7 @@
         self.placeCardWithAcknowledge(self.game.PR, 'R');
       }
       
-      if (self.getAllCards().length == 8 && self.getAllAcknowledgments().length == 12) {
+      if (self.game.allCardsHaveBeenPlayed()) {
         if (self.position == 'O') {
           self.setExecutionPoint('scoreHand');
         } else {
@@ -537,20 +573,11 @@
     self.scoreHandFn = function(){
       var winner = self.playerInfoVM.getWinnerOfHand();
       var newScore = self.playerInfoVM.getNewScore(winner);
+
       self.logHand(newScore);
+      // the states in gameController wait for this api call to finish.  No need for $.wait() here.
       self.updateScoreAfterHand(winner, newScore);
       self.setExecutionPoint('clearBoard');
-    };
-    
-    self.waitForScoreFn = function(){
-      // What if the game is over?
-      if (self.getAllCards().length == 0 && self.getAllAcknowledgments().length == 0) {
-        if (self.game.OpponentTricks == 0 && self.game.OrganizerTricks == 0) {
-          self.setExecutionPoint('dealOrWaitForCardFaceUp');
-        } else {
-          self.setExecutionPoint('waitForPlay');
-        }
-      }
     };
     
     self.clearBoardFn = function() {
@@ -559,10 +586,31 @@
       self.setExecutionPoint('waitForScore');
     };
     
+    self.waitForScoreFn = function(){
+      // What if the game is over? Need to add a "game over" dialog.
+      if (self.game.getAllCards().length == 0 && self.game.getAllAcknowledgments().length == 0) {
+        if (self.game.OpponentTricks == 0 && self.game.OrganizerTricks == 0) {
+          if (self.game.OpponentScore >= 10 || self.game.OrganizerScore >= 10) {
+            self.endGame();
+            self.setExecutionPoint('showGameOverDialog');
+          } else {
+            self.setExecutionPoint('dealOrWaitForCardFaceUp');
+          }
+        } else {
+          self.setExecutionPoint('waitForPlay');
+        }
+      }
+    };
+    
     self.waitForDiscardFn = function(){
       if (self.game.CardFaceUp.length > 3 && self.game.CardFaceUp[2] == 'S') {
           self.setExecutionPoint('waitForPlay');
       }
+    };
+    
+    self.showGameOverDialogFn = function(){
+      self.endGameModal.show();
+      clearInterval(self.getGameInterval);
     };
     
     self.gameExecution = [
@@ -579,6 +627,7 @@
       { id: 'waitForScore', fn: self.waitForScoreFn },
       { id: 'clearBoard', fn: self.clearBoardFn },
       { id: 'waitForDiscard', fn: self.waitForDiscardFn },
+      { id: 'showGameOverDialog', fn: self.showGameOverDialogFn },
     ];
     
     self.initialize = function() {
@@ -600,6 +649,7 @@
     ko.applyBindings(gc.playVM, $('#PlayTable')[0]);
     ko.applyBindings(gc.playerInfoVM, $('#SouthInfo')[0]);
     ko.applyBindings(gc.bidDialogVM, $('#bidModal')[0]);
+    ko.applyBindings(gc.endGameDialogVM, $('#endGameModal')[0]);
   });
   
 </script>

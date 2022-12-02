@@ -12,8 +12,7 @@
       $playerID = $_POST[$cookieName];
       $game = array();
       
-      $sql = 
-        "select 
+      $sql = "select 
           `Organizer`
           ,`Partner`
           ,`Left`
@@ -41,6 +40,7 @@
           ,lu.`ThumbnailPath` `LThumbnailPath`,substr(lp.`Name`,1,8) `LName`
           ,ru.`ThumbnailPath` `RThumbnailPath`,substr(rp.`Name`,1,8) `RName`
           ,`GameStartDate`
+          ,`DateFinished`
          from `Game` g
          left join `UserProfile` ou on g.`Organizer` = ou.`PlayerID`
          join `Player` op on g.`Organizer` = op.`ID`
@@ -92,6 +92,7 @@
           $game['RThumbnailURL'] =  is_null($row['RThumbnailPath']) ? '' : getThumbnailURL($row['RThumbnailPath']);
           $game['RName'] = $row['RName'];
           $game['GameStartDate'] = $row['GameStartDate'];
+          $game['DateFinished'] = is_null($row['DateFinished']) ? '' : $row['DateFinished'];
         }
       }
 

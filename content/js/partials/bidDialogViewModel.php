@@ -19,6 +19,7 @@
       self.showSubmitBtn(true);
       self.enableSubmitBtn(true);
       self.myPosition = myPosition;
+      self.alone(false);
       self.suits().forEach(function(s){
         s.isPlayable(s.id != gameInfo.CardFaceUp[1]);
         s.isSelected(false);
@@ -43,7 +44,7 @@
               self.submitted = true;
             }
           } catch (error) {
-            console.log('Could not parse response from setNextTurn. ' + error + ': ' + response);
+            console.log('Could not parse response from setNextTurnWithSkip. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
@@ -53,11 +54,13 @@
     };
 
     self.chooseTrump = function(trumpID, alone) {
+      console.log('choose trump: alone: ', alone);
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.positionID = self.myPosition;
       pd.trumpID = trumpID;
       pd.alone = alone;
+      
       $.ajax({
         method: 'POST',
         url: 'api/chooseTrump.php',

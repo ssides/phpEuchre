@@ -72,7 +72,7 @@ create table `Game`
   `OpponentTricks` int null,
   `InsertDate` datetime not null,
   `FirstDealPosition` char(1) null,
-  `CardFaceUp` char(5) null,  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined, ordered 'U'p, or u'S'ed by dealer. [3]: who ordered it up or who declared trump ('O','P','L','R').  [4]: 'A'lone. (Stick the dealer is hard coded everywhere. CardFaceUp.length tells the js code what to display).
+  `CardFaceUp` char(5) null,  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined, ordered 'U'p, or u'S'ed by dealer. [3]: who ordered it up or who declared trump ('O','P','L','R').  [4]: The partner of the player who called it alone ('O','P','L','R'). (Stick the dealer is hard coded everywhere. CardFaceUp.length tells the js code what to display).
   constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`),
   constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`),
   constraint `FK_GameLeft_Player` foreign key (`Left`) references `Player`(`ID`),
@@ -117,12 +117,13 @@ create table `GamePlay`
   `CardP` char(2) not null, -- card id played by partner.
   `CardL` char(2) not null, -- card id played by left.
   `CardR` char(2) not null, -- card id played by right.
-  `OrganizerTrump` char(1) not null,
-  `OpponentTrump` char(1) not null,
+  `OrganizerTrump` char(1) not null, -- Suit the Organizer or Partner named or '-'
+  `OpponentTrump` char(1) not null,  -- Suit the Right or Left player named or '-'
   `OrganizerScore` int not null,
   `OpponentScore` int not null,
   `OrganizerTricks` int not null,
   `OpponentTricks` int not null,
+  `Alone` char(1) not null, -- 'A'lone or '-' not alone.
   `InsertDate` datetime not null,
   constraint `FK_GamePlay_Game` foreign key (`GameID`) references `Game`(`ID`),
   constraint `FK_GamePlay_Deal` foreign key (`DealID`) references `Deal`(`ID`)
