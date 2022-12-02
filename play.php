@@ -190,7 +190,7 @@
                   <div class="row">
                     <div class="col pt-1">
                       <button id="pass" type="button" style="display:none" data-bind="visible: showPassBtn, enable: enablePassBtn, click: pass">Pass</button>
-                      <button id="pickitup" type="button" style="display:none" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup, click: pickItUp">Pick it up</button>&nbsp;<input id="alone" type="checkbox" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup" style="display:none" name="alone" value="alone" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup, checked: alone" /><label id="lblAlone" style="display:none" for="alone" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup">&nbsp;Alone</label>
+                      <button id="pickitup" type="button" style="display:none" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup, click: pickItUp">Pick it up</button>&nbsp;<input id="alone" type="checkbox" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup, checked: obsAlone" style="display:none" name="alone" value="alone" /><label id="lblAlone" style="display:none" for="alone" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup">&nbsp;Alone</label>
                     </div>
                   </div>
                 </div>
@@ -228,19 +228,52 @@
         </div>
       </div>
     </div>
+  </div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="endGameModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Game Over</h1>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+              <div>
+                <div>Winner:</div>
+                <span data-bind="text: winner()"></span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div>
+                <span data-bind="text: loser()"></span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bind="click: ok">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 
+  <?php
+  include('content/js/partials/app.php');
+  include('content/js/partials/gameModel.php');
+  include('content/js/partials/currentPlayerInfoViewModel.php');
+  include('content/js/partials/playerInfoViewModel.php');
+  include('content/js/partials/scoreViewModel.php');
+  include('content/js/partials/playViewModel.php');
+  include('content/js/partials/bidDialogViewModel.php');
+  include('content/js/partials/endGameDialogViewModel.php');
 
-    <?php
-    include('content/js/partials/app.php');
-    include('content/js/partials/gameModel.php');
-    include('content/js/partials/currentPlayerInfoViewModel.php');
-    include('content/js/partials/playerInfoViewModel.php');
-    include('content/js/partials/scoreViewModel.php');
-    include('content/js/partials/playViewModel.php');
-    include('content/js/partials/bidDialogViewModel.php');
-
-    include('content/js/play.php')
-    ?>
+  include('content/js/play.php')
+  ?>
 
 </body>
 

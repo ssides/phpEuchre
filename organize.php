@@ -49,9 +49,6 @@
                     </tr>
                   </table>
                 </div>
-                <div data-bind="visible: allPlayers() & !partnerInvited()">
-                  <button class="uxInvitePartner">Invite</button>
-                </div>
                 <p class="notice" data-bind="visible: partnerJoined()">Joined</p>
               </div>
             </td>
@@ -74,9 +71,6 @@
                     </tr>
                   </table>
                 </div>
-                <div data-bind="visible: allPlayers() & !leftInvited()">
-                  <button class="uxInviteLeft">Invite</button>
-                </div>
                 <p class="notice" data-bind="visible: leftJoined()">Joined</p>
               </div>
             </td>
@@ -97,9 +91,6 @@
                     </tr>
                   </table>
                 </div>
-                <div data-bind="visible: allPlayers() & !rightInvited()">
-                  <button class="uxInviteRight">Invite</button>
-                </div>
                 <p class="notice" data-bind="visible: rightJoined()">Joined</p>
               </div>
             </td>
@@ -113,7 +104,11 @@
           </tr>
         </table>
         <p class="error"><?php echo $errorMsg; ?></p>
-        <div data-bind="visible: allPlayers() && allPlayersJoined()">
+        <div class="inviteMargin" data-bind="visible: allPlayers() & (!leftInvited() || !rightInvited() || !partnerInvited())">
+          <button data-bind="click: inviteAll">Invite All Players</button>
+        </div>
+
+        <div data-bind="visible: allPlayersJoined()">
           <form action="" method="post">
             <button type="submit" name="startGame" id="startGame">Start Game</button>
           </form>

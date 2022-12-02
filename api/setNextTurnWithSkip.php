@@ -2,19 +2,24 @@
   include_once('../config/db.php');
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
+  include('../svc/getNextTurn.php');
+  include('../svc/goingAlone.php');
 
+  // If someone ordered it up alone, skip that player's partner.
+  // phpEuchre\api\chooseTrump.php has similar functionality, but those functions don't 
+  // work in this context.
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
-      $response = array();
-      $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
       $playerID = $_POST[$cookieName];
-      $positionID = $_POST['positionID']; // who ordered it up.
-      $alone = $_POST['alone'] == 'true'; 
-      $cardFaceUp = '';
+      $positionID = $_POST['positionID'];
+      $response = array();
+      $response['ErrorMsg'] = "";
+
+      $cardFaceUp = "";
       
-      $sql = "select `CardFaceUp` from `Game` where `ID`='{$gameID}'";
+      $sql = "select `CardFaceUp`  from `Game`  where `ID`='{$gameID}'";
 
       $results = mysqli_query($connection, $sql);
       if ($results === false) {
@@ -25,20 +30,22 @@
         }
       }
       
-      if (strlen($cardFaceUp) == 2) {
-        $cardFaceUp .= "U{$positionID}";
-        if ($alone) {
-          $cardFaceUp .= "A";
-        }
-        $sql = "update `Game` set `CardFaceUp` = '{$cardFaceUp}' where `ID`='{$gameID}'";
-          
-        $results = mysqli_query($connection, $sql);
-        if ($results === false) {
-          $response['ErrorMsg'] .= mysqli_error($connection);
+      if (strlen($cardFaceUp) > 3 ) {
+        $turn = getNextTurn($positionID);
+
+        if (getAlone($cardFaceUp)) {
+          $skipped = getSkippedPosition($cardFaceUp[3]);
+          if ($turn == $skipped) {
+            $turn = getNextTurn($turn);
+          }
         }
         
-      } else {
-        $response['ErrorMsg'] .= "Wrong state error. CardFaceUp: {$cardFaceUp} ";
+        $sql = "update `Game` set `Turn` = '{$turn}' where `ID`='{$gameID}'";
+           
+        $results = mysqli_query($connection, $sql);
+        if ($results === false) {
+          $response['ErrorMsg'] = mysqli_error($connection);
+        } 
       }
 
       http_response_code(200);

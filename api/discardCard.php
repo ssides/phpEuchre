@@ -4,6 +4,7 @@
   include('../controllers/isAuthenticated.php');
   include('../svc/getHand.php');
   include('../svc/getNextTurn.php');
+  include('../svc/goingAlone.php');
 
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
@@ -66,6 +67,13 @@
     $playerID = substr($cardFaceUp,3,1);
     $trumpColumn = $playerID == 'O' || $playerID == 'P' ? 'OrganizerTrump' : 'OpponentTrump';
     $turn = getNextTurn($dealer);
+
+    if (getAlone($cardFaceUp)) {
+      $skipped = getSkippedPosition($cardFaceUp[3]);
+      if ($turn == $skipped) {
+        $turn = getNextTurn($turn);
+      }
+    }
     
     $sql = "update `Play` set `CardID{$cardNumber}` = '{$cardID}' where `ID`='{$hand['PlayID']}'";
     $results = mysqli_query($connection, $sql);

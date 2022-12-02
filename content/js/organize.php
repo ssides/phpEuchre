@@ -125,6 +125,18 @@
       });
     };
     
+    self.inviteAll = function() {
+      if (!self.leftInvited()) {
+        self.inviteLeft();
+      }    
+      if (!self.rightInvited()) {
+        self.inviteRight();
+      }    
+      if (!self.partnerInvited()) {
+        self.invitePartner();
+      }    
+    };
+    
     self.initialize = function() {
       $.ajax({
         method: 'POST',
@@ -141,11 +153,7 @@
         }
       });
       
-      $('.uxInvitePartner').click(function(){ self.invitePartner(); });
-      $('.uxInviteLeft').click(function(){ self.inviteLeft(); });
-      $('.uxInviteRight').click(function(){ self.inviteRight(); });
-      
-      setInterval(self.getRSVPs, 2000);
+      setInterval(self.getRSVPs, 1000);
     };
     
     self.initialize();

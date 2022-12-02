@@ -13,7 +13,7 @@
       $gameID = $_POST['gameID'];
       $positionID = $_POST['positionID'];
       $trumpID = $_POST['trumpID'];
-      $alone = $_POST['alone']; // boolean
+      $alone = $_POST['alone'] == 'true'; 
 
       $dealer = '';
       $cardFaceUp = '';

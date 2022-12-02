@@ -1,3 +1,5 @@
+-- this was supposed to be the delta from what I have locally to what I have in google cloud,
+-- but I wasn't careful enough.  To deply, drop and recreate: gamedeal, play, gameplay, game;
 
 alter table `GameDeal` drop column `DateInserted`;
 
@@ -53,33 +55,5 @@ alter table `Game` add (
   `Lead` varchar(2) null -- Card lead.
 );
 
-drop table if exists `Play`;
-create table `Play` (
-  `ID` varchar(38) not null,
-  `GameID` varchar(38) not null, 
-  `Position` char(1) not null,
-  `CardID1` char(3) not null, -- card id - third char ' ' means not been played.
-  `CardID2` char(3) not null, -- card id - third char in ('1','2','3','4','5') indicates the order the player played his/her cards.
-  `CardID3` char(3) not null, 
-  `CardID4` char(3) not null, 
-  `CardID5` char(3) not null, 
-  `InsertDate` datetime not null,
-  constraint `FK_Play_Game` foreign key (`GameID`) references `Game`(`ID`)
-);
-
-drop table if exists `GamePlay`;
-create table `GamePlay`
-(
-  `ID` varchar(38) not null primary key, 
-  `GameID` varchar(38) not null, 
-  `DealID` varchar(38) not null, 
-  `Lead` char(1) not null, -- 'OPLR'
-  `CardO` char(2) not null, -- card id played by organizer.
-  `CardP` char(2) not null, -- card id played by partner.
-  `CardL` char(2) not null, -- card id played by left.
-  `CardR` char(2) not null, -- card id played by right.
-  `InsertDate` datetime not null,
-  constraint `FK_GamePlay_Game` foreign key (`GameID`) references `Game`(`ID`),
-  constraint `FK_GamePlay_Deal` foreign key (`DealID`) references `Deal`(`ID`)
-);
+alter table `GamePlay` add (`Alone` char(1) not null);
 
