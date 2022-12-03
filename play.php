@@ -253,6 +253,13 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col">
+              <div class="endGameDate">
+                <span data-bind="text: dateStr()"></span>
+              </div>
+            </div>
+          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-bind="click: ok">OK</button>
           </div>

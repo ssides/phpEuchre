@@ -609,6 +609,7 @@
     };
     
     self.showGameOverDialogFn = function(){
+      self.endGameDialogVM.update();
       self.endGameModal.show();
       clearInterval(self.getGameInterval);
     };
