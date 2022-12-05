@@ -29,6 +29,12 @@ alter table `Game` add (
   `OpponentTrump` varchar(2) null  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.png, etc. and 'A'lone or 'N'ot.
 );
 
+
+
+alter table `Game` add (
+  `PlayTo` int not null default 10  -- Game score to play to.
+);
+
 alter table `Game` add (
 `CardFaceUp` varchar (5) null  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined or ordered 'U'p. [3]: who ordered it up or who declared trump ('O','P','L','R'). Stick the dealer is hard coded everywhere. [4]: Alone, the player who is skipped: ('O','P','L','R'). (CardFaceUp.length tells the js code what to display).
 );
@@ -56,4 +62,24 @@ alter table `Game` add (
 );
 
 alter table `GamePlay` add (`Alone` char(1) not null);
+
+alter table `Game` add (
+  `FinishDate` datetime null
+);
+
+update `Game` set finishdate=datefinished;
+
+alter table `Game` 
+  drop column `DateFinished`
+;
+
+alter table `Game` add (
+  `GameFinishDate` datetime null
+);
+
+update `Game` set GameFinishDate=finishdate;
+
+alter table `Game` 
+  drop column `finishdate`
+;
 

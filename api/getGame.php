@@ -27,6 +27,7 @@
           ,`OpponentTrump`
           ,`OpponentTricks`
           ,`OpponentScore`
+          ,`PlayTo`
           ,`ACO`
           ,`ACP`
           ,`ACR`
@@ -40,7 +41,7 @@
           ,lu.`ThumbnailPath` `LThumbnailPath`,substr(lp.`Name`,1,8) `LName`
           ,ru.`ThumbnailPath` `RThumbnailPath`,substr(rp.`Name`,1,8) `RName`
           ,`GameStartDate`
-          ,`DateFinished`
+          ,`GameFinishDate`
          from `Game` g
          left join `UserProfile` ou on g.`Organizer` = ou.`PlayerID`
          join `Player` op on g.`Organizer` = op.`ID`
@@ -71,6 +72,8 @@
           $game['OpponentTrump']   = is_null($row['OpponentTrump']) ? '' : $row['OpponentTrump'];
           $game['OpponentTricks']  = is_null($row['OpponentTricks']) ? '' : $row['OpponentTricks'];
           $game['OpponentScore'] = $row['OpponentScore'];
+          $game['PlayTo'] = $row['PlayTo'];
+          
           // ACP, ACR, and ACL are set to 'A' when the associated player acknowledges (automatically) seeing the first Jack.  
           // This is how game state is determined.  These columns are also used during play to make sure all players
           // have seen the card played.
@@ -78,6 +81,8 @@
           $game['ACP'] = is_null($row['ACP']) ? '' : $row['ACP'];
           $game['ACR'] = is_null($row['ACR']) ? '' : $row['ACR'];
           $game['ACL'] = is_null($row['ACL']) ? '' : $row['ACL'];
+          
+          // PO, PP, PL, and PR are the cards each player has played in turn.
           $game['PO'] = is_null($row['PO']) ? '' : $row['PO'];
           $game['PP'] = is_null($row['PP']) ? '' : $row['PP'];
           $game['PL'] = is_null($row['PL']) ? '' : $row['PL'];
@@ -92,7 +97,7 @@
           $game['RThumbnailURL'] =  is_null($row['RThumbnailPath']) ? '' : getThumbnailURL($row['RThumbnailPath']);
           $game['RName'] = $row['RName'];
           $game['GameStartDate'] = $row['GameStartDate'];
-          $game['DateFinished'] = is_null($row['DateFinished']) ? '' : $row['DateFinished'];
+          $game['GameFinishDate'] = is_null($row['GameFinishDate']) ? '' : $row['GameFinishDate'];
         }
       }
 

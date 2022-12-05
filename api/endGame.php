@@ -11,7 +11,7 @@
       $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
       
-      $sql = "update `Game` set `DateFinished` = now(), `Dealer` = null, `Turn` = null, `CardFaceUp` = null where `ID`='{$gameID}'";
+      $sql = "update `Game` set `GameFinishDate` = now(), `Dealer` = null, `Turn` = null, `CardFaceUp` = null where `ID`='{$gameID}'";
          
       $results = mysqli_query($connection, $sql);
       if ($results === false) {

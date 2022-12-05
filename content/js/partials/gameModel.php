@@ -16,6 +16,7 @@
     this.OpponentTrump = data.OpponentTrump || '';
     this.OpponentTricks = data.OpponentTricks || '';
     this.OpponentScore = data.OpponentScore || '';
+    this.PlayTo = data.PlayTo | '';
     this.ACO = data.ACO || '';
     this.ACP = data.ACP || '';
     this.ACR = data.ACR || '';
@@ -33,7 +34,7 @@
     this.RThumbnailURL = data.RThumbnailURL || '';
     this.RName = data.RName || '';
     this.GameStartDate = data.GameStartDate || '';
-    this.DateFinished = data.DateFinished || '';
+    this.GameFinishDate = data.GameFinishDate || '';
     
     this.getAllCards = function(){ return this.PO + this.PP + this.PL + this.PR;  };
     

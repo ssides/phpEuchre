@@ -51,8 +51,8 @@ create table `Game`
   `Right` varchar(450) null,
   `OrganizerScore` int not null, 
   `OpponentScore` int not null, 
-  `DateFinished` datetime null,
   `GameStartDate` datetime null, 
+  `GameFinishDate` datetime null,
   `PartnerInviteDate` datetime null, 
   `PartnerJoinDate` datetime null, 
   `LeftInviteDate` datetime null, 
@@ -68,9 +68,10 @@ create table `Game`
   `ACP` varchar(1) null, -- Partner 'A'cknowledges first Jack or any card played
   `ACL` varchar(1) null, -- Left 'A'cknowledges first Jack or any card played
   `ACR` varchar(1) null, -- Right 'A'cknowledges first Jack or any card played
-  `OrganizerTricks` int null, -- Score
+  `OrganizerTricks` int null,
   `OpponentTricks` int null,
   `InsertDate` datetime not null,
+  `PlayTo` int not null default 10, -- Game score to play to.
   `FirstDealPosition` char(1) null,
   `CardFaceUp` char(5) null,  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined, ordered 'U'p, or u'S'ed by dealer. [3]: who ordered it up or who declared trump ('O','P','L','R').  [4]: The partner of the player who called it alone ('O','P','L','R'). (Stick the dealer is hard coded everywhere. CardFaceUp.length tells the js code what to display).
   constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`),

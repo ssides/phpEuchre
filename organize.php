@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="./content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="<?php echo './content/css/site.css?r='.mt_rand() ?>">
   <title>Organize a Game</title>
-  <!-- jQuery + Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
   <script src="./content/ko/knockout-3.5.1.js"></script>
@@ -111,6 +110,7 @@
         <div data-bind="visible: allPlayersJoined()">
           <form action="" method="post">
             <button type="submit" name="startGame" id="startGame">Start Game</button>
+            <label for="playTo">Play to:&nbsp;&nbsp;</label><input id="playTo" name="playTo" type="number" data-bind="value: playTo" style="width:60px" max="20" min="1">
           </form>
         </div>
       </div>

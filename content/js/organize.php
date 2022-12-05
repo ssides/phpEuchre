@@ -32,6 +32,7 @@
     self.selectedPartner = ko.observable();
     self.partnerInvited = ko.observable(false);
     self.partnerJoined = ko.observable(false);
+    self.playTo = ko.observable('10');
     self.allPlayers = ko.computed(function () {
       if ((self.selectedLeft() !== undefined)
         && (self.selectedRight() !== undefined)
