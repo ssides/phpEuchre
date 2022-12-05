@@ -60,14 +60,20 @@ create table `Game`
   `RightInviteDate` datetime null, 
   `RightJoinDate` datetime null, 
   `Dealer` varchar(1) null,  --  'O'rganizer 'P'artner, 'L'eft, 'R'ight
+  `Turn` char(1) null,     -- positions: 'O'rganizer, 'P'artner, opponent 'L'eft, opponent 'R'ight
+  `Lead` varchar(2) null, -- Card lead.
   `OrganizerTrump` varchar(2) null,  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.png, etc. and 'A'lone or 'N'ot.
   `OpponentTrump` varchar(2) null,  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.png, etc. and 'A'lone or 'N'ot.
   `FirstJackIndex` int null, 
   `FirstJackPosition` varchar(1) null, --  'O'rganizer 'P'artner, opponent 'L'eft, opponent 'R'ight
-  `ACO` varchar(1) null, -- Organizer 'A'cknowledges a card played
-  `ACP` varchar(1) null, -- Partner 'A'cknowledges first Jack or any card played
-  `ACL` varchar(1) null, -- Left 'A'cknowledges first Jack or any card played
-  `ACR` varchar(1) null, -- Right 'A'cknowledges first Jack or any card played
+  `ACO` varchar(3) null, -- Organizer 'A'cknowledges a card played
+  `ACP` varchar(3) null, -- Partner 'A'cknowledges first Jack or any card played
+  `ACL` varchar(3) null, -- Left 'A'cknowledges first Jack or any card played
+  `ACR` varchar(3) null, -- Right 'A'cknowledges first Jack or any card played
+  `PO`  varchar(2) null, -- Card played by organizer.
+  `PP`  varchar(2) null, -- Card played by partner.
+  `PL`  varchar(2) null, -- Card played by left.
+  `PR`  varchar(2) null,  -- Card played by right.
   `OrganizerTricks` int null,
   `OpponentTricks` int null,
   `InsertDate` datetime not null,
