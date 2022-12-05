@@ -311,3 +311,15 @@ table.dbgTable td {
   margin-top: 10px;
   font-size: 12px;
 }
+
+.reportTable {
+  border-collapse: collapse;
+  font-family: courier;
+  font-size: 12px;
+}
+
+.reportCell {
+  border: 1px solid #000000;
+  padding: 2px;
+  font-weight: bold;
+}
