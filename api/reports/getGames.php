@@ -20,8 +20,8 @@
         ,g.`LeftJoinDate` is not null and g.`LeftJoinDate` <= '{$d}' `LCanRejoin`
         ,g.`RightJoinDate` is not null and g.`RightJoinDate` <= '{$d}' `RCanRejoin`
         ,g.`GameStartDate` is not null and g.`GameStartDate` <= '{$d}' `OCanRejoin`
-        ,g.`DateFinished`
-        ,g.`DateFinished` is not null `GameIsFinished`
+        ,g.`GameFinishDate`
+        ,g.`GameFinishDate` is not null `GameIsFinished`
         ,op.`Name` `OName`
         ,pp.`Name` `PName`
         ,lp.`Name` `LName`

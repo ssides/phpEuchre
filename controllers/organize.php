@@ -7,7 +7,7 @@
     } else {
       $gameID = $_SESSION['gameID'];
       if(isset($_POST['startGame'])) {
-        if (setGameStartDate($_COOKIE[$cookieName], $_SESSION['gameID'])) {
+        if (setGameStartDate($_COOKIE[$cookieName], $_SESSION['gameID'], $_POST['playTo'])) {
           header('Location: play.php');
         } 
         else {
@@ -17,10 +17,10 @@
       }
     }
     
-    function setGameStartDate($playerID, $gameID) {
+    function setGameStartDate($playerID, $gameID, $playTo) {
       global $connection;
       
-      $sql = "update `Game` set `GameStartDate` = now() where `Organizer` = '{$playerID}' and `ID` = '{$gameID}'";
+      $sql = "update `Game` set `GameStartDate` = now(),`PlayTo`={$playTo} where `Organizer` = '{$playerID}' and `ID` = '{$gameID}'";
       return mysqli_query($connection, $sql);
     }
 ?>
