@@ -7,7 +7,7 @@
   // the images folder must be called images and it must be in root.
   $uploadsDir = '/var/www/html/phpEuchre/images/';
   $cardImageWidth = 40; // px
-  $cardImageHeight = 56; // px
+  $cardImageHeight = 55; // px ratio: 0.73958
   $firstJackChoices = 500;
   $dealChoices = 1000;
 ?>

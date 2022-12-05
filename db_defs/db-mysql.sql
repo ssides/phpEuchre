@@ -78,7 +78,6 @@ create table `Game`
   constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`),
   constraint `FK_GameLeft_Player` foreign key (`Left`) references `Player`(`ID`),
   constraint `FK_GameRight_Player` foreign key (`Right`) references `Player`(`ID`)
-  constraint `FK_GameDealer_Player` foreign key (`Dealer`) references `Player`(`ID`)
  );
 
 drop table if exists `GameDeal`;
