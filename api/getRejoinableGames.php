@@ -26,10 +26,10 @@
             end `Position`
           from `Game` g
           join `Player` org on g.Organizer = org.ID
-          where ((`Partner` = '{$playerID}' and PartnerJoinDate is not null and PartnerJoinDate > '{$d}')
-              or (`Left` = '{$playerID}' and LeftJoinDate is not null and LeftJoinDate > '{$d}')
-              or (`Right` = '{$playerID}' and RightJoinDate is not null and RightJoinDate > '{$d}')
-              or (`Organizer` = '{$playerID}' and GameStartDate is not null and GameStartDate > '{$d}'))
+          where ((`Partner` = '{$playerID}' and PartnerJoinDate is not null and PartnerJoinDate >= '{$d}')
+              or (`Left` = '{$playerID}' and LeftJoinDate is not null and LeftJoinDate >= '{$d}')
+              or (`Right` = '{$playerID}' and RightJoinDate is not null and RightJoinDate >= '{$d}')
+              or (`Organizer` = '{$playerID}' and GameStartDate is not null and GameStartDate >= '{$d}'))
             and g.`GameFinishDate` is null
           order by g.`InsertDate` desc";
             

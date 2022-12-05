@@ -3,7 +3,18 @@
 <script type="text/javascript">
 
   function game(data) {
-    this.gameID = data.gameID || '';
+    this.gameID = data.GameID || '';
+    this.gameStartDate = data.GameStartDate || '';
+    this.gameFinishDate = data.GameFinishDate || '';
+    this.oName = data.OName || '';
+    this.pName = data.PName || '';
+    this.lName = data.LName || '';
+    this.rName = data.RName || '';
+    this.oCanRejoin = data.OCanRejoin || '';
+    this.pCanRejoin = data.PCanRejoin || '';
+    this.lCanRejoin = data.LCanRejoin || '';
+    this.rCanRejoin = data.RCanRejoin || '';
+    this.cutoffDate = data.CutoffDate || '';
   }
 
   function gamesViewModel() {
@@ -21,10 +32,11 @@
           try {
             let data = JSON.parse(response);
             if (data.length > 0) {
-              self.games([]);
+              var g = [];
               data.forEach(function(i){
-                self.games.push(new game(i));
+                g.push(new game(i));
               });
+              self.games(g);
             }
           } catch (error) {
             console.log('Error ' + ': ' + error.message || error);

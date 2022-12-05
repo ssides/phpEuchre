@@ -24,6 +24,7 @@
       <?php echo '<a class="nav-link" href="'.$appUrl.'reports/games.php">Games</a>'; ?>
       <?php echo '<a class="nav-link" href="'.$appUrl.'reports/invitations.php">Invitations</a>'; ?>
       <?php echo '<a class="nav-link" href="'.$appUrl.'reports/reJoins.php">Games to be rejoined</a>'; ?>
+      <?php echo '<a class="nav-link" href="'.$appUrl.'reports/scores.php">Scores report</a>'; ?>
     </div>
   </div>
 </body>
