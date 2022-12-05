@@ -590,7 +590,11 @@
       // What if the game is over? Need to add a "game over" dialog.
       if (self.game.getAllCards().length == 0 && self.game.getAllAcknowledgments().length == 0) {
         if (self.game.OpponentTricks == 0 && self.game.OrganizerTricks == 0) {
-          if (self.game.OpponentScore >= self.game.PlayTo || self.game.OrganizerScore >= self.game.PlayTo) {
+          var oppScore = parseInt(self.game.OpponentScore);
+          var orgScore = parseInt(self.game.OrganizerScore);
+          var playTo = parseInt(self.game.PlayTo);
+          
+          if (oppScore >= playTo || orgScore >= playTo) {
             self.endGame();
             self.setExecutionPoint('showGameOverDialog');
           } else {
