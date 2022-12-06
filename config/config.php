@@ -9,5 +9,5 @@
   $cardImageWidth = 50; // px
   $cardImageHeight = 70; // px
   $firstJackChoices = 500;
-  $dealChoices = 1000;
+  $dealChoices = 10000;
 ?>

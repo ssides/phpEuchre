@@ -9,5 +9,5 @@
   $cardImageWidth = 40; // px
   $cardImageHeight = 55; // px ratio: 0.73958
   $firstJackChoices = 500;
-  $dealChoices = 1000;
+  $dealChoices = 10000;
 ?>
