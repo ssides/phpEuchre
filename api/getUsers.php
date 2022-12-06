@@ -13,7 +13,8 @@
       $sql = "select p.`ID`,substr(`Name`,1,8) `Name`,u.`ThumbnailPath`
               from `Player` p
               left join `UserProfile` u on u.`PlayerID` = p.`ID`
-              where p.`ID` <> '{$_POST[$cookieName]}' and p.`IsActive` = '1'";
+              where p.`ID` <> '{$_POST[$cookieName]}' and p.`IsActive` = '1'
+              order by `Name`";
               
       $results = mysqli_query($connection, $sql);
       if ($results === false) {
