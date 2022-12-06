@@ -145,7 +145,10 @@
         data: { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"?> },
         success: function (response) {
           let data = JSON.parse(response);
-          data.forEach(function (i) {
+          if (data.ErrorMsg) {
+            console.log(data.ErrorMsg);
+          }
+          data.Users.forEach(function (i) {
             self.users.push(new player(i[1], i[0], i[2]));
           });
         },
