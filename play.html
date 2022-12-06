@@ -54,13 +54,39 @@
             </td>
             <td>
               <div id="NorthInfo">
-                <!-- <?php include('partials/playerInfo.php'); ?> -->
+                <div class="info" data-bind="class: infoStatus">
+                  <table>
+                    <tr>
+                      <td style="vertical-align: middle;">
+                        <div data-bind="visible: thumbnailURL().length > 0">
+                          <img data-bind="attr: {src: thumbnailURL() }" style="height: 15px; width: 15px;" />
+                        </div>
+                      </td>
+                      <td style="vertical-align: middle;">&nbsp;<span data-bind="text: name"></span></td>
+                      <td style="vertical-align: middle;">
+                        <div class="dealerBorder" data-bind="visible: dealer() != ' '">
+                          &nbsp;<span class="dealer" data-bind="text: dealer"></span>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
               </div>
             </td>
             <td>
               <div id="MyScore" class="score">
                 <div class="scoreBorder">
-                  <!-- <?php include('partials/score.php'); ?> -->
+                  <table>
+                    <tr><td><span style="display:none" data-bind="text: label, visible: showScoreGroup"></span><span style="display:none" data-bind="visible: showScoreGroup">:&nbsp;</span><span style="display:none" data-bind="text: score, visible: showScoreGroup"></span></td><td></td></tr>
+                    <tr>
+                      <td><div class="tricksBorder" data-bind="html: tricks"></div></td>
+                      <td>
+                        <div class="trump" data-bind="visible: trumpURL().length > 0">
+                          <img data-bind="attr: {src: trumpURL }" style="width: 14px; height: 14px; margin-left: 4px;" />
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
                 </div>
               </div>
             </td>
@@ -68,7 +94,23 @@
           <tr>
             <td>
               <div id="WestInfo">
-                <!-- <?php include('partials/playerInfo.php'); ?> -->
+                <div class="info" data-bind="class: infoStatus">
+                  <table>
+                    <tr>
+                      <td style="vertical-align: middle;">
+                        <div data-bind="visible: thumbnailURL().length > 0">
+                          <img data-bind="attr: {src: thumbnailURL() }" style="height: 15px; width: 15px;" />
+                        </div>
+                      </td>
+                      <td style="vertical-align: middle;">&nbsp;<span data-bind="text: name"></span></td>
+                      <td style="vertical-align: middle;">
+                        <div class="dealerBorder" data-bind="visible: dealer() != ' '">
+                          &nbsp;<span class="dealer" data-bind="text: dealer"></span>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
               </div>
             </td>
             <td>
@@ -178,7 +220,23 @@
             </td>
             <td>
               <div id="EastInfo">
-                <!-- <?php include('partials/playerInfo.php'); ?> -->
+                <div class="info" data-bind="class: infoStatus">
+                  <table>
+                    <tr>
+                      <td style="vertical-align: middle;">
+                        <div data-bind="visible: thumbnailURL().length > 0">
+                          <img data-bind="attr: {src: thumbnailURL() }" style="height: 15px; width: 15px;" />
+                        </div>
+                      </td>
+                      <td style="vertical-align: middle;">&nbsp;<span data-bind="text: name"></span></td>
+                      <td style="vertical-align: middle;">
+                        <div class="dealerBorder" data-bind="visible: dealer() != ' '">
+                          &nbsp;<span class="dealer" data-bind="text: dealer"></span>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
               </div>
             </td>
           </tr>
@@ -186,7 +244,17 @@
             <td>
               <div id="OpponentScore" class="score">
                 <div class="scoreBorder">
-                  <!-- <?php include('partials/score.php'); ?> -->
+                  <table>
+                    <tr><td><span style="display:none" data-bind="text: label, visible: showScoreGroup"></span><span style="display:none" data-bind="visible: showScoreGroup">:&nbsp;</span><span style="display:none" data-bind="text: score, visible: showScoreGroup"></span></td><td></td></tr>
+                    <tr>
+                      <td><div class="tricksBorder" data-bind="html: tricks"></div></td>
+                      <td>
+                        <div class="trump" data-bind="visible: trumpURL().length > 0">
+                          <img data-bind="attr: {src: trumpURL }" style="width: 14px; height: 14px; margin-left: 4px;" />
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
                 </div>
               </div>
             </td>
@@ -331,6 +399,49 @@
       self.playVM = new playViewModel();
       self.bidDialogVM = new bidDialogViewModel();
       self.endGameDialogVM = new endGameDialogViewModel();
+
+      self.initialize = function () {
+        self.game = new gameModel({
+          OrganizerScore: 3,
+          OpponentScore: 2,
+          OrganizerTricks: 2,
+          OpponentTricks: 1,
+          OrganizerTrump: 'D',
+          OpponentTrump: '',
+          OName: 'Steve',
+          PName: 'Judy',
+          LName: 'Chris',
+          RName: 'James'
+        });
+
+        self.game.Turn = app.positions[Math.floor(Math.random() * app.positions.length)];
+
+        self.opponentScoreVM.initialize('M', 'O', self.game);
+        self.myScoreVM.initialize('O', 'O', self.game);
+
+        self.opponentScoreVM.update(self.game);
+        self.myScoreVM.update(self.game);
+
+        self.playerInfoVM.initialize('O', self.game);
+        self.playerInfoVM.update(self.game, 'abcdefg');
+
+        self.nPlayerInfoVM.initialize('N', 'O', self.game);
+        self.nPlayerInfoVM.update(self.game);
+
+        self.ePlayerInfoVM.initialize('E', 'O', self.game);
+        self.ePlayerInfoVM.update(self.game);
+
+        self.wPlayerInfoVM.initialize('W', 'O', self.game);
+        self.wPlayerInfoVM.update(self.game);
+
+        self.playVM.nCardURL(app.getCardURL('9C'));
+        self.playVM.sCardURL(app.getCardURL('1S'));
+        self.playVM.eCardURL(app.getCardURL('9H'));
+        self.playVM.wCardURL(app.getCardURL('1H'));
+
+      };
+
+      self.initialize();
     }
 
     $(function () {
