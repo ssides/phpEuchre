@@ -10,4 +10,5 @@
   $cardImageHeight = 70; // px
   $firstJackChoices = 500;
   $dealChoices = 10000;
+  $version = '1';
 ?>

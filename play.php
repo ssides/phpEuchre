@@ -10,7 +10,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="./content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="<?php echo './content/css/site.css?r='.mt_rand() ?>">
+  <link rel="stylesheet" href="<?php echo './content/css/site.css?v='.$version ?>">
   <title>Sides Family Euchre - Play</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
@@ -72,7 +72,7 @@
                             </div>
                           </div>
                         </div>
-                        <div id="sfeJN" data-bind="visible: nCardURL().length > 0">
+                        <div data-bind="visible: nCardURL().length > 0">
                           <img data-bind="attr: {src: nCardURL}" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 180deg;" />
                         </div>
                       </td>
@@ -90,8 +90,8 @@
                             </div>
                           </div>
                         </div>
-                        <div id="sfeJW" data-bind="visible: wCardURL().length > 0">
-                          <img data-bind="attr: {src: wCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg; transform: translate(0,-14px);" />
+                        <div data-bind="visible: wCardURL().length > 0">
+                          <img data-bind="attr: {src: wCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg; transform: translate(0,-11px);" />
                         </div>
                       </td>
                       <td>
@@ -124,8 +124,8 @@
                             </div>
                           </div>
                         </div>
-                        <div id="sfeJE" data-bind="visible: eCardURL().length > 0">
-                          <img data-bind="attr: {src: eCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg; transform: translate(0,14px);" />
+                        <div data-bind="visible: eCardURL().length > 0">
+                          <img data-bind="attr: {src: eCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg; transform: translate(0,11px);" />
                         </div>
                       </td>
                     </tr>
@@ -142,7 +142,7 @@
                             </div>
                           </div>
                         </div>
-                        <div id="sfeJS" data-bind="visible: sCardURL().length > 0">
+                        <div data-bind="visible: sCardURL().length > 0">
                           <img data-bind="attr: {src: sCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;" />
                         </div>
                       </td>
@@ -177,8 +177,14 @@
                     </div>
                     <div class="col">
                       <ul class="list-group list-group-horizontal" data-bind="foreach: sortedCards">
-                        <li class="list-group-item mr-1 p-0 cardListItemSize" data-bind="class: isSelected() ? 'cardSelected' : '', click: $parent.selectCard">
-                          <div class="cardContainer" data-bind="class: isPlayable() ? '' : 'cardNotPlayable'"> <img class="clipCard" data-bind="attr: {src: url}" /> </div>
+                        <li class="list-group-item p-0" style="height:29px; width: 29px" data-bind="click: $parent.selectCard">
+                          <div class="cardSelectionContainer">
+                            <div class="cardSelecter" data-bind="class: isSelected() ? 'cardSelected' : ''">
+                              <div style="margin: 2px; padding: 0px;" class="cardContainer" data-bind="class: isPlayable() ? '' : 'cardNotPlayable'">
+                                <img class="clipCard" data-bind="attr: {src: url}" />
+                              </div>
+                            </div>
+                          </div>
                         </li>
                       </ul>
                     </div>
@@ -214,8 +220,14 @@
           <div class="row">
             <div class="col">
               <ul class="list-group list-group-horizontal" data-bind="foreach: suits">
-                <li class="list-group-item mr-1 p-0" data-bind="class: isSelected() ? 'cardSelected' : '', click: $parent.selectSuit">
-                  <div class="suitContainer" data-bind="class: isPlayable() ? '' : 'cardNotPlayable'"> <img class="suitSize" data-bind="attr: {src: url}" /> </div>
+                <li class="list-group-item p-0" data-bind="click: $parent.selectSuit">
+                  <div class="suitContainer">
+                    <div data-bind="class: isSelected() ? 'cardSelected' : ''">
+                      <div class="suitSelecter" data-bind="class: isPlayable() ? '' : 'cardNotPlayable'">
+                        <img class="suitSize" data-bind="attr: {src: url}" />
+                      </div>
+                    </div>
+                  </div>
                 </li>
               </ul>
               &nbsp;&nbsp;&nbsp;<input id="alone" type="checkbox" name="alone" value="alone" data-bind="checked: alone" /><label id="lblAlone" for="alone">&nbsp;Alone</label>
