@@ -279,11 +279,17 @@ table.dbgTable td {
 
 .cardContainer {
   position: absolute;
-  top: -11px;
-  left: -9px;
+  top: -10px;
+  left: -7px;
 }
 
-.cardListItemSize {
+.cardSelectionContainer {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.cardSelecter {
   width: 28px;
   height: 28px;
 }
@@ -298,8 +304,13 @@ table.dbgTable td {
   opacity: 0.2;
 }
 
-.suitContainer {
+.suitSelecter {
   margin: 3px;
+}
+
+.suitContainer {
+  height: 35px;
+  width: 35px;
 }
 
 .suitSize {

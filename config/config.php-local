@@ -10,4 +10,5 @@
   $cardImageHeight = 55; // px ratio: 0.73958
   $firstJackChoices = 500;
   $dealChoices = 10000;
+  $version = '1';
 ?>
