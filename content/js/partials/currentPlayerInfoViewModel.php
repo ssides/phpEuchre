@@ -29,6 +29,7 @@
     self.enableDiscardBtn = ko.observable(true);
     self.dealer = ko.observable(' ');
     self.isMyTurn = ko.observable(false);
+    self.iamSkipped = ko.observable(false);
     self.obsAlone = ko.observable();
     self.cards = ko.observableArray();
     self.sortCardsCompareFn = function(a,b){ return a.suit === b.suit ? (a.rank == b.rank ? 0 : a.rank < b.rank ? -1 : 1) : a.suit < b.suit ? -1 : 1; };
@@ -39,23 +40,27 @@
     
     // This will be called on every heartbeat in most states of gameController.
     // If there is no deal, there is really nothing for this viewmodel to do.
-    self.update = function(gameData, dealID) {
-      if (!gameData.GameStartDate || !dealID || gameData.allCardsHaveBeenPlayed()) return;
+    // I wanted to keep all the rules in one place, so the game controller can
+    // call these: getWinnerOfHand() and getNewScore(winner).  So make sure
+    // self.gameData is always up to date.
+    self.update = function(game, dealID) {
+      self.gameData = new gameModel(game);
+      if (!self.gameData.GameStartDate || !dealID || self.gameData.allCardsHaveBeenPlayed() || self.gameData.ScoringInProgress) return;
       
-      self.gameData = new gameModel(gameData);
-      self.iamDealer = self.myPosition == gameData.Dealer;
+      self.iamDealer = self.myPosition == self.gameData.Dealer;
       self.trump = self.gameData.OpponentTrump || self.gameData.OrganizerTrump;
       self.dealID = dealID;
       self.pickingItUp = self.gameData.CardFaceUp.length > 2 && self.gameData.CardFaceUp[2] == 'U' && self.iamDealer;
       self.discarded = self.gameData.CardFaceUp.length > 2 && self.gameData.CardFaceUp[2] == 'S' && self.iamDealer;
       
-      if (self.myPosition == gameData.Dealer) {
+      if (self.myPosition == self.gameData.Dealer) {
         self.dealer('D');
       } else {
         self.dealer(' ');
       }
       
-      self.isMyTurn(self.myPosition == gameData.Turn);
+      self.isMyTurn(self.myPosition == self.gameData.Turn);
+      self.iamSkipped(self.gameData.CardFaceUp.length > 4 && self.gameData.CardFaceUp[4] == self.myPosition);
       
       var updateReason = '';
       
@@ -69,8 +74,8 @@
         updateReason += 'T';  // new 'T'rump
       }
       
-      if (gameData.CardFaceUp != self.previousCardFaceUp) {
-        self.previousCardFaceUp = gameData.CardFaceUp;
+      if (self.gameData.CardFaceUp != self.previousCardFaceUp) {
+        self.previousCardFaceUp = self.gameData.CardFaceUp;
         updateReason += 'U'; // new CardFace'U'p
       }
       
@@ -79,8 +84,8 @@
         updateReason += 'C'; // 'C'ards played.
       }
       
-      if (self.previousTurn != gameData.Turn) {
-        self.previousTurn = gameData.Turn;
+      if (self.previousTurn != self.gameData.Turn) {
+        self.previousTurn = self.gameData.Turn;
         updateReason += 'R'; // change in tu'R'n
       }
 
@@ -186,6 +191,7 @@
       }
     };
 
+    
     self.selectCard = function(card){
       if ((self.isMyTurn() && self.trump) || self.pickingItUp) {
         self.cards().forEach(function(c){ 
@@ -256,6 +262,19 @@
       return (leadSuit == cardSuit) || (cardSuit == self.trump);
     };
     
+    self.test = function(){
+    debugger;
+
+    self.trump = 'S';
+    self.gameData.Lead = 'L';
+    self.gameData.PP = 'KH';
+    self.gameData.PL = 'QC';
+    self.gameData.PR = 'AC';
+    self.gameData.PO = '';
+    var winner = self.getWinnerOfHand();
+  };
+
+
     self.getWinnerOfHand = function() {
       var cards = [];
       var leadCard = self.getLeadCard();
@@ -363,7 +382,7 @@
     }
     
     self.getMyCards = function(reason) {
-      console.log('getMyCards(); reason: ', reason);
+      // console.log('getMyCards()');
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.positionID = self.myPosition;
@@ -379,16 +398,16 @@
             } else {
               var c = [];
               
-              if (data.CardID1.length == 2)
-                c.push(self.getCardObject(data.CardID1.substr(0,2)));
-              if (data.CardID2.length == 2)
-                c.push(self.getCardObject(data.CardID2.substr(0,2)));
-              if (data.CardID3.length == 2)
-                c.push(self.getCardObject(data.CardID3.substr(0,2)));
-              if (data.CardID4.length == 2)
-                c.push(self.getCardObject(data.CardID4.substr(0,2)));
-              if (data.CardID5.length == 2)
-                c.push(self.getCardObject(data.CardID5.substr(0,2)));
+              if (data.Cards.CardID1.length == 2)
+                c.push(self.getCardObject(data.Cards.CardID1.substr(0,2)));
+              if (data.Cards.CardID2.length == 2)
+                c.push(self.getCardObject(data.Cards.CardID2.substr(0,2)));
+              if (data.Cards.CardID3.length == 2)
+                c.push(self.getCardObject(data.Cards.CardID3.substr(0,2)));
+              if (data.Cards.CardID4.length == 2)
+                c.push(self.getCardObject(data.Cards.CardID4.substr(0,2)));
+              if (data.Cards.CardID5.length == 2)
+                c.push(self.getCardObject(data.Cards.CardID5.substr(0,2)));
               
               if (self.pickingItUp) {
                 var card = self.getCardObject(self.gameData.CardFaceUp.substr(0,2));
@@ -651,7 +670,7 @@
     };
     
     self.actAccordingToRules = function(reason) {
-      console.log('actAccordingToRules(); reason: ', reason);
+      // console.log('actAccordingToRules()');
 
       self.hideButtons();
       
@@ -668,7 +687,9 @@
       }
     };
     
-    self.initialize = function(selfPosition, gameData){
+    self.initialize = function(selfPosition, game){
+      console.log('currentPlayerInfoViewModel.initialize()');
+      self.gameData = new gameModel(game);
       self.myPosition = selfPosition;
     };
   }

@@ -35,17 +35,16 @@
     this.RName = data.RName || '';
     this.GameStartDate = data.GameStartDate || '';
     this.GameFinishDate = data.GameFinishDate || '';
+    this.ScoringInProgress = (data.ScoringInProgress || '') === '1';
     
     this.getAllCards = function(){ return this.PO + this.PP + this.PL + this.PR;  };
     
-    this.getAllAcknowledgments = function(){
-      return this.ACO + this.ACP + this.ACL + this.ACR;
-    };
+    this.getAllAcknowledgments = function(){ return this.ACO + this.ACP + this.ACL + this.ACR; };
     
     this.allCardsHaveBeenPlayed = function() {
       if (this.CardFaceUp.length == 5) {
         // If there are only three players, there are only two acknowledgments per player.
-        // The skipped player will probably see all the cards, but there is no mechanism 
+        // The skipped player will probably see all the cards played, but there is no mechanism 
         // to guarantee that.
         return this.getAllCards().length == 6 && this.getAllAcknowledgments().length == 6;
       } else {

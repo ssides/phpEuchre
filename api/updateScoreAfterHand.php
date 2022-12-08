@@ -2,7 +2,6 @@
   include_once('../config/db.php');
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
-  include('../svc/services.php'); // for GUID
   include('../svc/getNextTurn.php');
 
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
@@ -17,19 +16,27 @@
       $organizerScore = $_POST['organizerScore'];
       $winner = $_POST['winner'];
       
-      $sql = "update `Game` set `OrganizerTricks` = {$organizerTricks},`OrganizerScore` = {$organizerScore},`OpponentTricks` = {$opponentTricks},`OpponentScore` = {$opponentScore},`ACO` = null,`ACP` = null,`ACL` = null,`ACR` = null,`PO` = null,`PP` = null,`PL` = null,`PR` = null where `ID`='{$gameID}'";
-      $result = mysqli_query($connection, $sql);
-      if ($result === false) {
-        $response['ErrorMsg'] .= mysqli_error($connection);
-      }
+      $conn1 = mysqli_connect($hostname, $username, $password, $dbname);
     
+      $smt = mysqli_prepare($conn1, "update `Game` set `OrganizerTricks` = ? ,`OrganizerScore` = ? ,`OpponentTricks` = ? ,`OpponentScore` = ? ,`ACO` = null,`ACP` = null,`ACL` = null,`ACR` = null ,`PO` = null,`PP` = null,`PL` = null,`PR` = null,`ScoringInProgress` = '1'  where `ID`= ?");
+      mysqli_stmt_bind_param($smt, 'iiiis', $organizerTricks,$organizerScore,$opponentTricks,$opponentScore,$gameID);
+      if (!mysqli_stmt_execute($smt)){
+        $response['ErrorMsg'] .= mysqli_error($conn1);
+      }
+
+      mysqli_stmt_close($smt);
+
+      mysqli_close($conn1);
+      
+      $conn2 = mysqli_connect($hostname, $username, $password, $dbname);
+
       if ($opponentTricks == 0 && $organizerTricks == 0) {
         $dealer = "";
         $sql = "select `Dealer` from `Game` where `ID`='{$gameID}'";
 
-        $results = mysqli_query($connection, $sql);
+        $results = mysqli_query($conn2, $sql);
         if ($results === false) {
-          $response['ErrorMsg'] .= mysqli_error($connection);
+          $response['ErrorMsg'] .= mysqli_error($conn2);
         } else {
           while ($row = mysqli_fetch_array($results)) {
             $dealer = is_null($row['Dealer']) ? '' : $row['Dealer'];
@@ -40,21 +47,23 @@
           $dealer = getNextTurn($dealer);
           $turn = getNextTurn($dealer);
           $sql = "update `Game` set `Dealer` = '{$dealer}',`Lead` = null,`Turn` = '{$turn}',`OrganizerTrump` = null,`OpponentTrump` = null where `ID`='{$gameID}'";
-          $result = mysqli_query($connection, $sql);
+          $result = mysqli_query($conn2, $sql);
           if ($result === false) {
-            $response['ErrorMsg'] .= mysqli_error($connection);
+            $response['ErrorMsg'] .= mysqli_error($conn2);
           }
         } else {
             $response['ErrorMsg'] .= "Invalid dealer: '{$dealer}'";
         }
       } else {
         $sql = "update `Game` set `Lead` = null,`Turn` = '{$winner}' where `ID`='{$gameID}'";
-        $result = mysqli_query($connection, $sql);
+        $result = mysqli_query($conn2, $sql);
         if ($result === false) {
-          $response['ErrorMsg'] .= mysqli_error($connection);
+          $response['ErrorMsg'] .= mysqli_error($conn2);
         }
       }
       
+      mysqli_close($conn2);
+
       http_response_code(200);
       
       echo json_encode($response);

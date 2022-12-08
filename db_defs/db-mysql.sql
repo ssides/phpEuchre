@@ -64,6 +64,7 @@ create table `Game`
   `Lead` varchar(2) null, -- Card lead.
   `OrganizerTrump` varchar(2) null,  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.png, etc. and 'A'lone or 'N'ot.
   `OpponentTrump` varchar(2) null,  -- 'D'iamonds 'S'pades, 'H'earts, 'C'lubs  phpEuchre\content\images\cards\D.png, etc. and 'A'lone or 'N'ot.
+  `FirstDealPosition` char(1) null,
   `FirstJackIndex` int null, 
   `FirstJackPosition` varchar(1) null, --  'O'rganizer 'P'artner, opponent 'L'eft, opponent 'R'ight
   `ACO` varchar(3) null, -- Organizer 'A'cknowledges a card played
@@ -78,8 +79,8 @@ create table `Game`
   `OpponentTricks` int null,
   `InsertDate` datetime not null,
   `PlayTo` int not null default 10, -- Game score to play to.
-  `FirstDealPosition` char(1) null,
   `CardFaceUp` char(5) null,  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined, ordered 'U'p, or u'S'ed by dealer. [3]: who ordered it up or who declared trump ('O','P','L','R').  [4]: The partner of the player who called it alone ('O','P','L','R'). (Stick the dealer is hard coded everywhere. CardFaceUp.length tells the js code what to display).
+  `ScoringInProgress` enum('0','1') NOT NULL default '0',  -- '1' if scoring is in progress, '0' otherwise.
   constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`),
   constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`),
   constraint `FK_GameLeft_Player` foreign key (`Left`) references `Player`(`ID`),

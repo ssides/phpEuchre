@@ -13,14 +13,16 @@
       $positionID = $_POST['positionID'];
       $cardID = $_POST['cardID'];
       
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
+
       $hand = getHand($gameID, $positionID);
       $cardNumber = getCardNumber($hand, $cardID);
       $cards = "";
       
       $sql = "select `PO`,`PP`,`PL`,`PR` from `Game` where `ID`='{$gameID}'";
-      $results = mysqli_query($connection, $sql);
+      $results = mysqli_query($conn, $sql);
       if ($results === false) {
-        $response['ErrorMsg'] .= mysqli_error($connection);
+        $response['ErrorMsg'] .= mysqli_error($conn);
       } else {
         while ($row = mysqli_fetch_array($results)) {
           $cards .= is_null($row['PO']) ? '' : $row['PO'];
@@ -33,28 +35,30 @@
       if (strlen($hand['PlayID']) > 0 && $cardNumber != '0' && strlen($positionID) == 1) {
         $p = $cardID.'P';
         $sql = "update `Play` set `CardID{$cardNumber}` = '{$p}' where `ID`='{$hand['PlayID']}'";
-        $results = mysqli_query($connection, $sql);
+        $results = mysqli_query($conn, $sql);
         if ($results === false) {
-          $response['ErrorMsg'] .= mysqli_error($connection);
+          $response['ErrorMsg'] .= mysqli_error($conn);
         }
         
         $sql = "update `Game` set `P{$positionID}` = '{$cardID}' where `ID`='{$gameID}'";
-        $results = mysqli_query($connection, $sql);
+        $results = mysqli_query($conn, $sql);
         if ($results === false) {
-          $response['ErrorMsg'] .= mysqli_error($connection);
+          $response['ErrorMsg'] .= mysqli_error($conn);
         }
         
         if (strlen($cards) == 0) {
           $sql = "update `Game` set `Lead` = '{$positionID}' where `ID`='{$gameID}'";
-          $results = mysqli_query($connection, $sql);
+          $results = mysqli_query($conn, $sql);
           if ($results === false) {
-            $response['ErrorMsg'] .= mysqli_error($connection);
+            $response['ErrorMsg'] .= mysqli_error($conn);
           }
         }
       } else {
         $response['ErrorMsg'] .= "Play state error.";
       }
       
+      mysqli_close($conn);
+
       http_response_code(200);
       
       echo json_encode($response);

@@ -14,12 +14,13 @@
       $playerID = $_POST['playerID'];
       
       $ack = "";
-      
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
+
       $sql = "select `AC{$positionID}` `ACK` from `Game` where `ID`='{$gameID}'";
       
-      $results = mysqli_query($connection, $sql);
+      $results = mysqli_query($conn, $sql);
       if ($results === false) {
-        $response['ErrorMsg'] .= mysqli_error($connection);
+        $response['ErrorMsg'] .= mysqli_error($conn);
       } else {
         while ($row = mysqli_fetch_array($results)) {
           $ack = is_null($row['ACK']) ? '' : $row['ACK'];
@@ -29,13 +30,15 @@
       if (strpos($ack, $playerID) === false) {
         $ack .= $playerID;
         $sql = "update `Game` set `AC{$positionID}`='{$ack}' where `ID`='{$gameID}'";
-        $result = mysqli_query($connection, $sql);
+        $result = mysqli_query($conn, $sql);
         if ($result === false) {
-          $response['ErrorMsg'] .= mysqli_error($connection);
+          $response['ErrorMsg'] .= mysqli_error($conn);
         }
       } else {
         $response['ErrorMsg'] .= "{$positionID} already acknowledged card played by {$playerID}.";
       }
+
+      mysqli_close($conn);
 
       http_response_code(200);
       

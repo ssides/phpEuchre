@@ -6,11 +6,14 @@
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
-      $errorMsg = "";
+      $response = array();
+      $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
       $positionID = $_POST['positionID'];
       $cards = array();
       
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
+
       $sql = "
         select `CardID1`,`CardID2`,`CardID3`,`CardID4`,`CardID5` 
         from `Play` 
@@ -18,11 +21,10 @@
         order by `InsertDate` desc
         limit 1;";
       
-      $cards['ErrorMsg'] = "";
-      $results = mysqli_query($connection, $sql);
+      $results = mysqli_query($conn, $sql);
       
       if ($results === false) {
-        $cards['ErrorMsg'] = mysqli_error($connection);
+        $response['ErrorMsg'] .= mysqli_error($conn);
       } else {
         while ($row = mysqli_fetch_array($results)) {
           $cards['CardID1'] = $row['CardID1'];
@@ -33,8 +35,16 @@
         }
       }
       
+      $response['Cards'] = $cards;
+      if (!isset($cards['CardID1'])) {
+        $response['ErrorMsg'] .= "No cards for '{$gameID}' position '{$positionID}'";
+      }
+    
+      mysqli_close($conn);
+
       http_response_code(200);
-      echo json_encode($cards);
+      
+      echo json_encode($response);
 
     } else {
       echo "ID invalid or missing.";
