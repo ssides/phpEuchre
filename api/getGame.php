@@ -7,11 +7,14 @@
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
-      $errorMsg = "";
+      $response = array();
+      $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
       $playerID = $_POST[$cookieName];
       $game = array();
       
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
+
       $sql = "select 
           `Organizer`
           ,`Partner`
@@ -36,6 +39,7 @@
           ,`PP`
           ,`PL`
           ,`PR`
+          ,`ScoringInProgress`
           ,ou.`ThumbnailPath` `OThumbnailPath`,substr(op.`Name`,1,8) `OName`
           ,pu.`ThumbnailPath` `PThumbnailPath`,substr(pp.`Name`,1,8) `PName`
           ,lu.`ThumbnailPath` `LThumbnailPath`,substr(lp.`Name`,1,8) `LName`
@@ -53,9 +57,9 @@
          join `Player` rp on g.`Right` = rp.`ID`
          where g.`ID`='{$gameID}'";
          
-      $results = mysqli_query($connection, $sql);
+      $results = mysqli_query($conn, $sql);
       if ($results === false) {
-        $errorMsg = mysqli_error($connection);
+        $response['ErrorMsg'] .= mysqli_error($conn);
       } else {
         while ($row = mysqli_fetch_array($results)) {
           $game['Organizer'] = $row['Organizer'];
@@ -87,6 +91,7 @@
           $game['PP'] = is_null($row['PP']) ? '' : $row['PP'];
           $game['PL'] = is_null($row['PL']) ? '' : $row['PL'];
           $game['PR'] = is_null($row['PR']) ? '' : $row['PR'];
+          $game['ScoringInProgress'] = $row['ScoringInProgress'];
           $game['OThumbnailPath'] = $row['OThumbnailPath'];
           $game['OThumbnailURL'] = is_null($row['OThumbnailPath']) ? '' : getThumbnailURL($row['OThumbnailPath']);
           $game['OName'] = $row['OName'];
@@ -100,14 +105,14 @@
           $game['GameFinishDate'] = is_null($row['GameFinishDate']) ? '' : $row['GameFinishDate'];
         }
       }
+      
+      $response['Game'] = $game;
 
-      if (!isset($game['GameStartDate']) || is_null($game['GameStartDate'])) {
-        $errorMsg .= "Missing Game Start Date for game: {$gameID}";
-      }
-      $game['ErrorMsg'] = $errorMsg;
+      mysqli_close($conn);
 
       http_response_code(200);
-      echo json_encode($game);
+      
+      echo json_encode($response);
 
     } else {
       echo "ID invalid or missing.";

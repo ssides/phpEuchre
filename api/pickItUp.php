@@ -2,6 +2,7 @@
   include_once('../config/db.php');
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
+  include('../svc/getNextTurn.php');
 
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
@@ -28,7 +29,7 @@
       if (strlen($cardFaceUp) == 2) {
         $cardFaceUp .= "U{$positionID}";
         if ($alone) {
-          $cardFaceUp .= "A";
+          $cardFaceUp .= getPlayerSkipped($positionID);
         }
         $sql = "update `Game` set `CardFaceUp` = '{$cardFaceUp}' where `ID`='{$gameID}'";
           

@@ -1,4 +1,4 @@
-<div class="info" data-bind="class: infoStatus">
+<div class="info" data-bind="class: isPlayersTurn() ? 'infoTurnBorder' : isPlayerSkipped() ? 'infoSkippedBorder' : 'infoBorder'">
   <table>
     <tr>
       <td style="vertical-align: middle;">

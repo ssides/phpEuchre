@@ -1,6 +1,6 @@
 <?php
   // make sure there is a final path separator in paths.
-  $appUrl = 'http://localhost:8080/';
+  $appUrl = 'http://192.168.254.148:8080/';
   $cookieName = 'sidesLocalEuchre_cookie';
   $thumbnailDim = 25;
   $positionDistance = 3;
@@ -10,5 +10,5 @@
   $cardImageHeight = 70; // px
   $firstJackChoices = 500;
   $dealChoices = 10000;
-  $version = '1';
+  $version = '3'; // when you change styles update this so that all players get the latest.
 ?>

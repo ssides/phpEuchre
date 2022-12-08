@@ -51,8 +51,7 @@
       }
     };
 
-    // todo: organize gameController. can it be modularized?
-    self.getEPIX = function(id) {
+    self.getExecutionPointIndex = function(id) {
       for(var i = 0; i < self.gameExecution.length; i++) {
         if (self.gameExecution[i].id === id) {
           return i;
@@ -63,7 +62,7 @@
     
     self.setExecutionPoint = function(id) {
       console.log('execution point: ' + id);
-      self.executionPoint = self.getEPIX(id);
+      self.executionPoint = self.getExecutionPointIndex(id);
     };
     
     self.updateScoresAndInfo = function() {
@@ -90,7 +89,7 @@
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.position = position;
-      
+      console.log('acknowledgeJack()');
       $.ajax({
         method: 'POST',
         url: 'api/acknowledgeJack.php',
@@ -109,7 +108,8 @@
       Object.assign(pd, app.apiPostData);
       pd.positionID = self.position;
       pd.playerID = playerID;
-      
+            console.log('acknowledgeCard()');
+
       $.ajax({
         method: 'POST',
         url: 'api/acknowledgeCard.php',
@@ -146,6 +146,8 @@
       pd.opponentTricks = newScore.opponentTricks;
       pd.alone = self.game.CardFaceUp.length == 5 ? 'A' : '-';
       
+      console.log('logHand()');
+
       $.ajax({
         method: 'POST',
         url: 'api/logHand.php',
@@ -189,6 +191,8 @@
     };
     
     self.getCurrentStartCard = function(){
+      console.log('getCurrentStartCard()');
+
       $.ajax({
         method: 'POST',
         url: 'api/getCurrentStartCard.php',
@@ -220,6 +224,8 @@
     };
     
     self.getNextStartCard = function() {
+      console.log('getNextStartCard()');
+
       $.ajax({
         method: 'POST',
         url: 'api/getNextStartCard.php',
@@ -250,6 +256,8 @@
     // The deal api selects a random deal where `PurposeCode` = 'D' and DealID has not yet been used in this game.
     // It distributes cards to players in table `Play`.
     self.deal = function() {
+            console.log('deal()');
+
       $.ajax({
         method: 'POST',
         url: 'api/deal.php',
@@ -274,6 +282,8 @@
     };
 
     self.setDealPosition = function(position, isFirst){
+                  console.log('setDealPosition()');
+
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.position = position;
@@ -311,8 +321,9 @@
         data: pd,
         success: function(response){
           let data = JSON.parse(response);
-          if (data.ErrorMsg) 
+          if (data.ErrorMsg) {
             console.log(data.ErrorMsg);
+          }
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
@@ -365,20 +376,26 @@
       }
     ];
 
-    self.clearBoard = function(){
+    self.clearTable = function(){
       self.playVM.nCardURL('');  self.playVM.eCardURL('');  self.playVM.sCardURL('');  self.playVM.wCardURL('');
     };
 
     self.getGame = function() {
+      // console.log('getGame()');
       $.ajax({
         method: 'POST',
         url: 'api/getGame.php',
         data: app.apiPostData,
         success: function (response) {
           try {
-            self.game = new gameModel(JSON.parse(response));
-            self.updateScoresAndInfo();
-            self.gameExecution[self.executionPoint].fn();
+            let data = JSON.parse(response);
+            if (data.ErrorMsg) {
+              console.log(data.ErrorMsg);
+            } else {
+              self.game = new gameModel(data.Game);
+              self.updateScoresAndInfo();
+              self.gameExecution[self.executionPoint].fn();
+            }
           } catch (error) {
             console.log('Error ' + ': ' + error.message || error);
             console.log(error.stack);
@@ -393,6 +410,8 @@
     };
     
     self.endGame = function(){
+            console.log('endGame()');
+
       $.ajax({
         method: 'POST',
         url: 'api/endGame.php',
@@ -416,6 +435,7 @@
     };
     
     self.getDealID = function() {
+      console.log('getDealID()');
       $.ajax({
         method: 'POST',
         url: 'api/getDealID.php',
@@ -424,6 +444,29 @@
           try {
             var data = JSON.parse(response);
             self.dealID = data.DealID;
+          } catch (error) {
+            console.log('Error ' + ': ' + error.message || error);
+            console.log(error.stack);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+        }
+      });
+    };
+
+    self.acknowledgeScore = function() {
+      console.log('acknowledgeScore()');
+      $.ajax({
+        method: 'POST',
+        url: 'api/acknowledgeScore.php',
+        data: app.apiPostData,
+        success: function (response) {
+          try {
+            var data = JSON.parse(response);
+            if (data.ErrorMsg) {
+              console.log(data.ErrorMsg);
+            }
           } catch (error) {
             console.log('Error ' + ': ' + error.message || error);
             console.log(error.stack);
@@ -449,7 +492,15 @@
           // If the player is returning to a game, there will be a dealer, but no dealID.
           self.getDealID();
         }
-        self.setExecutionPoint('waitForTrump');
+        if (self.game.allCardsHaveBeenPlayed()) {
+          if (self.position == 'O') {
+            self.setExecutionPoint('scoreHand');
+          } else {
+            self.setExecutionPoint('clearTable');
+          }
+        } else {
+          self.setExecutionPoint('waitForTrump');
+        }
       } else if (self.game.GameFinishDate) {
         self.setExecutionPoint('showGameOverDialog');
       } else {
@@ -489,10 +540,9 @@
     self.waitForAcknowledgmentsFn = function(){
       if (self.game.ACP == 'A' && self.game.ACR == 'A' && self.game.ACL == 'A') {
         // all the players have acknowledged seeing the first Jack.
-        self.clearBoard();
+        self.clearTable();
         if (self.position == 'O') {
           self.setDealPosition(self.firstDealer, 'isFirst');
-          // self.setDealPosition('O', 'isFirst');  // the first dealer is always the organizer for debugging.
         } else {
           self.setExecutionPoint('dealOrWaitForCardFaceUp');
         }
@@ -543,7 +593,7 @@
       // wait for acknowledgments. when 4 cards (3 in alone mode) are played,
       // log the hand, set turn, clear lead.  Call into playerInfoVM
       // for that so that all the rules are in one place.
-
+      
       if (self.previousPO != self.game.PO) {
         self.previousPO = self.game.PO;
         self.placeCardWithAcknowledge(self.game.PO, 'O');
@@ -565,30 +615,36 @@
         if (self.position == 'O') {
           self.setExecutionPoint('scoreHand');
         } else {
-          self.setExecutionPoint('clearBoard');
+          self.setExecutionPoint('clearTable');
         }
       }
     };
     
-    self.scoreHandFn = function(){
+    // The user (organizer) is reentering the game, and all cards have been played.
+    self.scoreHandFn = function() {
       var winner = self.playerInfoVM.getWinnerOfHand();
       var newScore = self.playerInfoVM.getNewScore(winner);
-
+      console.log('scoreHandFn(): winner: ' + winner + ' Opp Score: ' + newScore.opponentScore + ' Opp Tricks: ' + newScore.opponentTricks + ' Org Score: ' + newScore.organizerScore + ' Org Tricks: ' + newScore.organizerTricks);
       self.logHand(newScore);
-      // the states in gameController wait for this api call to finish.  No need for $.wait() here.
-      self.updateScoreAfterHand(winner, newScore);
-      self.setExecutionPoint('clearBoard');
-    };
+      self.updateScoreAfterHand(winner, newScore); // sets ScoringInProgress to '1'; self.game.allCardsHaveBeenPlayed() will now be false.
+      self.setExecutionPoint('clearTable');
+    }
     
-    self.clearBoardFn = function() {
-      self.clearBoard();
+    // players may need to sit in this state for one or two heartbeats.  slightly inefficient,
+    // but it won't happen very often if everything is normal.
+    self.clearTableFn = function() {
+      self.clearTable();
       self.previousPO = ''; self.previousPP = ''; self.previousPL = ''; self.previousPR = '';
-      self.setExecutionPoint('waitForScore');
+      if (self.game.ScoringInProgress) {
+        if (self.position == 'O') {
+          self.acknowledgeScore();
+        } 
+        self.setExecutionPoint('waitForScore');
+      }
     };
     
     self.waitForScoreFn = function(){
-      // What if the game is over? Need to add a "game over" dialog.
-      if (self.game.getAllCards().length == 0 && self.game.getAllAcknowledgments().length == 0) {
+      if (!self.game.ScoringInProgress) {
         if (self.game.OpponentTricks == 0 && self.game.OrganizerTricks == 0) {
           var oppScore = parseInt(self.game.OpponentScore);
           var orgScore = parseInt(self.game.OrganizerScore);
@@ -630,7 +686,7 @@
       { id: 'waitForPlay', fn: self.waitForPlayFn },
       { id: 'scoreHand', fn: self.scoreHandFn },
       { id: 'waitForScore', fn: self.waitForScoreFn },
-      { id: 'clearBoard', fn: self.clearBoardFn },
+      { id: 'clearTable', fn: self.clearTableFn },
       { id: 'waitForDiscard', fn: self.waitForDiscardFn },
       { id: 'showGameOverDialog', fn: self.showGameOverDialogFn },
     ];

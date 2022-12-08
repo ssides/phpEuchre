@@ -168,7 +168,7 @@
             </td>
             <td colspan=2>
               <div id="SouthInfo">
-                <div class="info container" data-bind="class: isMyTurn() ? 'infoTurnBorder': 'infoBorder'">
+                <div class="info container" data-bind="class: isMyTurn() ? 'infoTurnBorder': iamSkipped() ? 'infoSkippedBorder' : 'infoBorder'">
                   <div class="row">
                     <div class="col">
                       <div class="dealerBorder" data-bind="visible: dealer() != ' '">

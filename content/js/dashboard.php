@@ -18,6 +18,7 @@
 
     self.getInvitations = function() {
       var postData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'" ?> };
+      console.log('getInvitations()');
       $.ajax({
         method: 'POST',
         url: 'api/getInvitations.php',
@@ -41,8 +42,9 @@
       });
     };
 
-    self.getReJoinGames = function(){
+    self.getRejoinableGames = function(){
       var postData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'" ?> };
+      console.log('getRejoinableGames()');
       $.ajax({
         method: 'POST',
         url: 'api/getRejoinableGames.php',
@@ -74,10 +76,10 @@
       // everything needs to be stored in the database.  I need a Play table
       // that joins to Game. who is the dealer? what is trump?
       console.log('start timer rejoinTimer.');
-      self.rejoinTimer = setInterval(self.getReJoinGames, 1000);
+      self.rejoinTimer = setInterval(self.getRejoinableGames, 1000);
       
       $('.uxRefreshInvites').click(function(){ self.getInvitations(); });
-      $('.uxRefreshReJoins').click(function(){ self.getReJoinGames(); });
+      $('.uxRefreshReJoins').click(function(){ self.getRejoinableGames(); });
 
     }
     

@@ -54,7 +54,6 @@
     };
 
     self.chooseTrump = function(trumpID, alone) {
-      console.log('choose trump: alone: ', alone);
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.positionID = self.myPosition;

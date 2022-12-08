@@ -83,3 +83,7 @@ alter table `Game`
   drop column `finishdate`
 ;
 
+alter table `Game` add (
+  `ScoringInProgress` enum('0','1') NOT NULL default '0'  -- '1' if scoring is in progress, '0' otherwise.
+);
+

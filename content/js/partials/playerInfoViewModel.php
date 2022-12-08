@@ -8,7 +8,9 @@
     self.thumbnailURL = ko.observable('');
     self.name = ko.observable('');
     self.dealer = ko.observable(' ');
-    self.infoStatus = ko.observable('infoBorder');
+    self.isPlayersTurn = ko.observable(false);
+    self.isPlayerSkipped = ko.observable(false);
+    
     self.aSetURL = [
       function(){},
       function(gameData){
@@ -28,20 +30,19 @@
         self.name(gameData.RName);
       }
     ];
+    
     self.setURL = function(gameData) { 
       self.aSetURL[self.ix](gameData) 
     };
+    
     self.update = function(gameData) { 
       if (self.myPosition == gameData.Dealer) {
         self.dealer('D');
       } else {
         self.dealer(' ');
       }
-      if (self.myPosition == gameData.Turn) {
-        self.infoStatus('infoTurnBorder');
-      } else {
-        self.infoStatus('infoBorder');
-      }
+      self.isPlayersTurn(self.myPosition == gameData.Turn);
+      self.isPlayerSkipped(gameData.CardFaceUp.length > 4 && gameData.CardFaceUp[4] == self.myPosition);
     };
     
     // When I started working on bidding, I changed this view model.

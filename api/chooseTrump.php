@@ -83,18 +83,4 @@
     return $t;
   }
   
-  function getPlayerSkipped($position) {
-    $s = ' ';
-    if ($position == 'O') {
-      $s = 'P';
-    } else if ($position == 'L') {
-      $s = 'R';
-    } else if ($position == 'P') {
-      $s = 'O';
-    } else if ($position == 'R') {
-      $s = 'L';
-    } 
-    return $s;
-  }
-
 ?>
