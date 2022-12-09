@@ -1,0 +1,14 @@
+<?php
+  // make sure there is a final path separator in paths.
+  $appUrl = 'http://104.198.42.120/phpEuchre/';
+  $cookieName = 'sidesEuchre_cookie_prod';
+  $thumbnailDim = 25;
+  $positionDistance = 3;
+  // the images folder must be called images and it must be in root.
+  $uploadsDir = '/var/www/html/phpEuchre/images/';
+  $cardImageWidth = 40; // px
+  $cardImageHeight = 55; // px ratio: 0.73958
+  $firstJackChoices = 500;
+  $dealChoices = 10000;
+  $version = '1';
+?>
