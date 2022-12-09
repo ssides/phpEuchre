@@ -10,5 +10,5 @@
   $cardImageHeight = 70; // px
   $firstJackChoices = 500;
   $dealChoices = 10000;
-  $version = '3'; // when you change styles update this so that all players get the latest.
+  $version = '1.1'; // displayed in the header. change in version forces the browser to get the latest styles.
 ?>

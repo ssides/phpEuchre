@@ -5,7 +5,7 @@
 
   <nav class="navbar navbar-expand navbar-dark bg-primary fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="#">Sides Family Euchre</a>
+        <a class="navbar-brand" href="#">Sides Family Euchre <span style="font-size: 9px">(Version <?php echo $version ?>)</span></a>
         
         <div id="navbarColor02">
           <?php if($userIsAuthenticated): ?>
