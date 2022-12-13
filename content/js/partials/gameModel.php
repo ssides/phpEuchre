@@ -52,6 +52,14 @@
       }
     };
 
+    this.preScoring = function() {
+      if (this.CardFaceUp.length == 5) {
+        return this.getAllCards().length == 6;
+      } else {
+        return this.getAllCards().length == 8;
+      }
+    };
+    
   }
   
 </script>
