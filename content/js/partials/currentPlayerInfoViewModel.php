@@ -18,6 +18,7 @@
     self.previousCards = '';
     self.pickingItUp = false;
     self.discarded = false;
+    self.bidModalIsVisible = false;
     self.gameData = new gameModel({});
     self.showPassBtn = ko.observable(false);
     self.enablePassBtn = ko.observable(true);
@@ -108,6 +109,8 @@
       }
     };
     
+
+    // -- helper functions --
     self.getSuitOrder = function(c) {
       if (self.trump) {
         var order = 5;
@@ -191,19 +194,6 @@
       }
     };
 
-    
-    self.selectCard = function(card){
-      if ((self.isMyTurn() && self.trump) || self.pickingItUp) {
-        self.cards().forEach(function(c){ 
-          if (c.id == card.id && c.isPlayable()) {
-            c.isSelected(!c.isSelected());
-          } else {
-            c.isSelected(false);
-          }
-        });
-      }
-    };
-    
     self.getCardObject = function(c) {
       var o = {
         id: c, 
@@ -215,30 +205,6 @@
       };
       
       return o;
-    };
-    
-    self.getCardObjectForScoring = function(c,p) {
-      var o = {
-        id: c,         // card played
-        positionID: p, // who played it
-        suit: self.getSuitOrder(c),
-        rank: self.getRank(c),
-      };
-      
-      return o;
-    };
-    
-    self.getLeadCard = function(){
-      switch (self.gameData.Lead) {
-        case 'O':
-          return self.gameData.PO;
-        case 'P':
-          return self.gameData.PP;
-        case 'L':
-          return self.gameData.PL;
-        case 'R':
-          return self.gameData.PR;
-      }
     };
     
     self.getSuit = function(c) {
@@ -262,93 +228,17 @@
       return (leadSuit == cardSuit) || (cardSuit == self.trump);
     };
     
-    self.test = function(){
-    debugger;
-
-    self.trump = 'S';
-    self.gameData.Lead = 'L';
-    self.gameData.PP = 'KH';
-    self.gameData.PL = 'QC';
-    self.gameData.PR = 'AC';
-    self.gameData.PO = '';
-    var winner = self.getWinnerOfHand();
-  };
-
-
-    self.getWinnerOfHand = function() {
-      var cards = [];
-      var leadCard = self.getLeadCard();
-      cards.push(self.getCardObjectForScoring(leadCard, self.gameData.Lead));
-      
-      if (self.gameData.Lead != 'O' && self.followsSuit(leadCard, self.gameData.PO))
-        cards.push(self.getCardObjectForScoring(self.gameData.PO, 'O'));
-      if (self.gameData.Lead != 'P' && self.followsSuit(leadCard, self.gameData.PP))
-        cards.push(self.getCardObjectForScoring(self.gameData.PP, 'P'));
-      if (self.gameData.Lead != 'L' && self.followsSuit(leadCard, self.gameData.PL))
-        cards.push(self.getCardObjectForScoring(self.gameData.PL, 'L'));
-      if (self.gameData.Lead != 'R' && self.followsSuit(leadCard, self.gameData.PR))
-        cards.push(self.getCardObjectForScoring(self.gameData.PR, 'R'));
-      
-      cards.sort(self.sortCardsCompareFn);
-      
-      return cards[0].positionID;
-    };
-    
-    self.getNewScore = function(winner) {
-      var newScore = {
-        organizerScore: Number(self.gameData.OrganizerScore),
-        organizerTricks: Number(self.gameData.OrganizerTricks),
-        opponentScore: Number(self.gameData.OpponentScore),
-        opponentTricks: Number(self.gameData.OpponentTricks),
-      };
-      
-      if (winner == 'O' || winner == 'P') {
-        newScore.organizerTricks += 1;
-      } else {
-        newScore.opponentTricks += 1;
+    self.getLeadCard = function(){
+      switch (self.gameData.Lead) {
+        case 'O':
+          return self.gameData.PO;
+        case 'P':
+          return self.gameData.PP;
+        case 'L':
+          return self.gameData.PL;
+        case 'R':
+          return self.gameData.PR;
       }
-      
-      if (newScore.organizerTricks + newScore.opponentTricks == 5) {
-        var organizerScoreThisHand = 0;
-        var opponentScoreThisHand = 0;
-        
-        if (self.gameData.OrganizerTrump) {
-          if (newScore.organizerTricks == 3 || newScore.organizerTricks == 4) {
-            organizerScoreThisHand = 1;
-          } else if (newScore.organizerTricks == 5) {
-            if (self.gameData.CardFaceUp.length == 5) {
-              organizerScoreThisHand = 4;
-            } else {
-              organizerScoreThisHand = 2;
-            }
-          }
-          
-          if (newScore.opponentTricks >= 3) {
-            opponentScoreThisHand = 2;
-          }
-        } else {
-          if (newScore.opponentTricks == 3 || newScore.opponentTricks == 4) {
-            opponentScoreThisHand = 1;
-          } else if (newScore.opponentTricks == 5) {
-            if (self.gameData.CardFaceUp.length == 5) {
-              opponentScoreThisHand = 4;
-            } else {
-              opponentScoreThisHand = 2;
-            }
-          }
-          
-          if (newScore.organizerTricks >= 3) {
-            organizerScoreThisHand = 2;
-          }
-        }
-
-        newScore.organizerScore += organizerScoreThisHand;
-        newScore.opponentScore += opponentScoreThisHand;
-        newScore.organizerTricks = 0;
-        newScore.opponentTricks = 0;
-      }
-      
-      return newScore;
     };
     
     self.markNotPlayable = function(cards) {
@@ -476,6 +366,25 @@
         }
       });
     };
+
+    self.enableBid = function() {
+      self.showPassBtn(true);
+      self.showPickItUpGroup(true);
+    };
+    
+    self.hideButtons = function() {
+      self.showPassBtn(false);
+      self.showPlayBtn(false);
+      self.showPickItUpGroup(false);
+      self.showDiscardBtn(false);
+      
+      self.enablePassBtn(true);
+      self.enablePickItUpGroup(true);
+      self.enablePlayBtn(true);
+      self.enableDiscardBtn(true);
+
+      self.obsAlone(false);
+    };
     
     self.getAllOtherCards = function(){
       switch(self.myPosition){
@@ -526,43 +435,6 @@
       });
     };
     
-    self.pickItUpApi = function() {
-      var pd = {};
-      Object.assign(pd, app.apiPostData);
-      pd.positionID = self.myPosition;
-      pd.alone = self.obsAlone();
-
-      $.ajax({
-        method: 'POST',
-        url: 'api/pickItUp.php',
-        data: pd,
-        success: function(response) {
-          try {
-            let data = JSON.parse(response);
-            if (data.ErrorMsg) {
-              console.log(data.ErrorMsg);
-            }
-          } catch (error) {
-            console.log('Could not parse response from pickItUp. ' + error + ': ' + response);
-          }
-        },
-        error: function (xhr, status, error) {
-          console.log(xhr.responseText);
-        }
-      });
-    };
-    
-    self.pass = function() {
-      self.enablePassBtn(false);
-      self.showPickItUpGroup(false);
-      if (self.iamDealer && self.gameData.CardFaceUp.length == 2) {
-        self.declineCard();
-      } else {
-        self.setNextTurn();
-      }
-      // the gameController pops up the bid dialog when necessary.
-    };
-
     self.shouldAdvanceTurn = function() {
       var limit = self.gameData.CardFaceUp.length == 5 ? 4 : 6;
       return self.getAllOtherCards().length < limit;
@@ -600,6 +472,34 @@
       });
     };
     
+    
+    self.pickItUpApi = function() {
+      
+      var pd = {};
+      Object.assign(pd, app.apiPostData);
+      pd.positionID = self.myPosition;
+      pd.alone = self.obsAlone();
+
+      $.ajax({
+        method: 'POST',
+        url: 'api/pickItUp.php',
+        data: pd,
+        success: function(response) {
+          try {
+            let data = JSON.parse(response);
+            if (data.ErrorMsg) {
+              console.log(data.ErrorMsg);
+            }
+          } catch (error) {
+            console.log('Could not parse response from pickItUp. ' + error + ': ' + response);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+        }
+      });
+    };
+
     self.discardCard = function(cardID){
       var pd = {};
       Object.assign(pd, app.apiPostData);
@@ -628,19 +528,45 @@
       });
     };
     
-    self.play = function() {
-      var cardID = self.cards().length == 1 ?  self.cards()[0].id : self.getSelectedCard();
-      if (cardID) {
-        self.enablePlayBtn(false);
-        self.playCard(cardID);
-      }
-    }
     
+    // bound click events
+    self.selectCard = function(card){
+      if ((self.isMyTurn() && self.trump) || self.pickingItUp) {
+        self.cards().forEach(function(c){ 
+          if (c.id == card.id && c.isPlayable()) {
+            c.isSelected(!c.isSelected());
+          } else {
+            c.isSelected(false);
+          }
+        });
+      }
+    };
+
     self.discard = function() {
       var cardID = self.getSelectedCard();
       if (cardID) {
         self.enableDiscardBtn(false);
         self.discardCard(cardID);
+      }
+    }
+    
+    self.pass = function() {
+      self.enablePassBtn(false);
+      self.showPickItUpGroup(false);
+      if (self.iamDealer && self.gameData.CardFaceUp.length == 2) {
+        self.declineCard();
+      } else {
+        self.setNextTurn();
+      }
+      // the gameController pops up the bid dialog when necessary.
+    };
+
+    self.play = function() {
+      console.log('play()');
+      var cardID = self.cards().length == 1 ?  self.cards()[0].id : self.getSelectedCard();
+      if (cardID) {
+        self.enablePlayBtn(false);
+        self.playCard(cardID);
       }
     }
     
@@ -650,25 +576,7 @@
       self.pickItUpApi();
     }
     
-    self.enableBid = function() {
-      self.showPassBtn(true);
-      self.showPickItUpGroup(true);
-    };
-    
-    self.hideButtons = function() {
-      self.showPassBtn(false);
-      self.showPlayBtn(false);
-      self.showPickItUpGroup(false);
-      self.showDiscardBtn(false);
-      
-      self.enablePassBtn(true);
-      self.enablePickItUpGroup(true);
-      self.enablePlayBtn(true);
-      self.enableDiscardBtn(true);
-
-      self.obsAlone(false);
-    };
-    
+    // update actions
     self.actAccordingToRules = function(reason) {
       // console.log('actAccordingToRules()');
 
@@ -687,11 +595,173 @@
       }
     };
     
+    // called externally
+    self.getCardObjectForScoring = function(c,p) {
+      var o = {
+        id: c,         // card played
+        positionID: p, // who played it
+        suit: self.getSuitOrder(c),
+        rank: self.getRank(c),
+      };
+      
+      return o;
+    };
+
+    self.getWinnerOfHand = function() {
+      var cards = [];
+      var leadCard = self.getLeadCard();
+      cards.push(self.getCardObjectForScoring(leadCard, self.gameData.Lead));
+      
+      if (self.gameData.Lead != 'O' && self.followsSuit(leadCard, self.gameData.PO))
+        cards.push(self.getCardObjectForScoring(self.gameData.PO, 'O'));
+      if (self.gameData.Lead != 'P' && self.followsSuit(leadCard, self.gameData.PP))
+        cards.push(self.getCardObjectForScoring(self.gameData.PP, 'P'));
+      if (self.gameData.Lead != 'L' && self.followsSuit(leadCard, self.gameData.PL))
+        cards.push(self.getCardObjectForScoring(self.gameData.PL, 'L'));
+      if (self.gameData.Lead != 'R' && self.followsSuit(leadCard, self.gameData.PR))
+        cards.push(self.getCardObjectForScoring(self.gameData.PR, 'R'));
+      
+      cards.sort(self.sortCardsCompareFn);
+      
+      return cards[0].positionID;
+    };
+    
+    self.getNewScore = function(winner) {
+      var newScore = {
+        organizerScore: Number(self.gameData.OrganizerScore),
+        organizerTricks: Number(self.gameData.OrganizerTricks),
+        opponentScore: Number(self.gameData.OpponentScore),
+        opponentTricks: Number(self.gameData.OpponentTricks),
+      };
+      
+      if (winner == 'O' || winner == 'P') {
+        newScore.organizerTricks += 1;
+      } else {
+        newScore.opponentTricks += 1;
+      }
+      
+      if (newScore.organizerTricks + newScore.opponentTricks == 5) {
+        var organizerScoreThisHand = 0;
+        var opponentScoreThisHand = 0;
+        
+        if (self.gameData.OrganizerTrump) {
+          if (newScore.organizerTricks == 3 || newScore.organizerTricks == 4) {
+            organizerScoreThisHand = 1;
+          } else if (newScore.organizerTricks == 5) {
+            if (self.gameData.CardFaceUp.length == 5) {
+              organizerScoreThisHand = 4;
+            } else {
+              organizerScoreThisHand = 2;
+            }
+          }
+          
+          if (newScore.opponentTricks >= 3) {
+            opponentScoreThisHand = 2;
+          }
+        } else {
+          if (newScore.opponentTricks == 3 || newScore.opponentTricks == 4) {
+            opponentScoreThisHand = 1;
+          } else if (newScore.opponentTricks == 5) {
+            if (self.gameData.CardFaceUp.length == 5) {
+              opponentScoreThisHand = 4;
+            } else {
+              opponentScoreThisHand = 2;
+            }
+          }
+          
+          if (newScore.organizerTricks >= 3) {
+            organizerScoreThisHand = 2;
+          }
+        }
+
+        newScore.organizerScore += organizerScoreThisHand;
+        newScore.opponentScore += opponentScoreThisHand;
+        newScore.organizerTricks = 0;
+        newScore.opponentTricks = 0;
+      }
+      
+      return newScore;
+    };
+
+    // -- hotkeys --
+    self.hotKeyCardsAvailableForPlay = function(){
+      var count = 0;
+      self.cards().forEach(function(c){
+        if (c.isPlayable()) {
+          count++;
+        }
+      });
+      return count;
+    };
+    
+    self.hotKeySelectPlayableCards = function(){
+      self.cards().forEach(function(c){
+        if (c.isPlayable()) {
+          c.isSelected(true);
+        }
+      });
+    };
+    
+    self.hotKeySelectOnlyCard = function(){
+      if (self.hotKeyCardsAvailableForPlay() == 1 && self.isMyTurn()) {
+        self.hotKeySelectPlayableCards();
+      }
+    };
+    
+    self.hotKeyPlayCard = function() {
+      if (self.showPlayBtn() !== false) {
+        $('#play').click();
+      }
+    };
+    
+    self.hotKeyPass = function(){
+      if (self.showPassBtn() !== false) {
+        $('#pass').click();
+      }
+    };
+    
+    self.hotKeySpace = function() {
+      if (self.showPickItUpGroup() !== false) {
+        self.obsAlone(!self.obsAlone());
+      } else {
+        self.hotKeySelectOnlyCard();
+      }
+    };
+    
+    self.hotKeyPickItUp = function() {
+      if (self.enablePickItUpGroup() !== false) {
+        $('#pickitup').click();
+      }
+    }
+      
+    self.bidModalShown = function(visible) {
+      self.bidModalIsVisible = visible;
+    };
+    
+    self.hotKeys = function(event) {
+      if (self.bidModalIsVisible) return;
+      
+      if (event.code == 'Space' && event.ctrlKey === false && event.shiftKey === false) {
+        self.hotKeySpace();
+      } else if ((event.code == 'Enter' && event.ctrlKey === false && event.shiftKey === false) 
+              || (event.code == 'NumpadEnter' && event.ctrlKey === false && event.shiftKey === false)) {
+        self.hotKeyPlayCard();
+      } else if (event.code == 'KeyX' && event.ctrlKey === false) {
+        self.hotKeyPass();
+      } else if (event.code == 'KeyP' && event.ctrlKey === false) {
+        self.hotKeyPickItUp();
+      }
+      event.preventDefault();
+    };
+
     self.initialize = function(selfPosition, game){
       console.log('currentPlayerInfoViewModel.initialize()');
       self.gameData = new gameModel(game);
       self.myPosition = selfPosition;
+      
+      document.addEventListener('keyup', self.hotKeys);
     };
+
   }
   
 </script>

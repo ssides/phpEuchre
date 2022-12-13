@@ -126,6 +126,34 @@
       };
       return o;
     };
+    
+    self.isActive = function(iamActive) {
+      self.iamActive = iamActive;
+    };
+    
+    self.hotKeys = function() {
+      if (self.iamActive) {
+        if (event.code == 'Space' && event.ctrlKey === false && event.shiftKey === false) {
+          self.alone(!self.alone());
+        } else if (event.code == 'KeyS' && event.ctrlKey === false) {
+          self.selectSuit({ id: 'S' });
+        } else if (event.code == 'KeyC' && event.ctrlKey === false) {
+          self.selectSuit({ id: 'C' });
+        } else if (event.code == 'KeyH' && event.ctrlKey === false) {
+          self.selectSuit({ id: 'H' });
+        } else if (event.code == 'KeyD' && event.ctrlKey === false) {
+          self.selectSuit({ id: 'D' });
+        } else if (event.code == 'KeyX' && event.ctrlKey === false) {
+          if (self.showPassBtn()) {
+            $('#bidmodalpass').click();
+          }
+        } else if ((event.code == 'Enter' && event.ctrlKey === false && event.shiftKey === false)
+          || (event.code == 'NumpadEnter' && event.ctrlKey === false && event.shiftKey === false)) {
+          $('#bidmodalsubmit').click();
+        } 
+      }
+    };
+    
 
     self.initialize = function() {
       self.submitted = false;
@@ -135,6 +163,8 @@
       s.push(self.getSuitObject('H'));
       s.push(self.getSuitObject('S'));
       self.suits(s);
+      
+      document.addEventListener('keyup', self.hotKeys);
     }
     
     self.initialize();
