@@ -82,6 +82,7 @@
       
       if (self.gameData.getAllCards() != self.previousCards) {
         self.previousCards = self.gameData.getAllCards();
+        console.log('cards played', self.previousCards);
         updateReason += 'C'; // 'C'ards played.
       }
       
@@ -89,26 +90,30 @@
         self.previousTurn = self.gameData.Turn;
         updateReason += 'R'; // change in tu'R'n
       }
-
-      if (updateReason.length > 0) {
-        $.when(self.getMyCards(updateReason)).done(function(){
-          if (self.isMyTurn()) {
-            self.markNotPlayable(self.cards());
-          } else if (updateReason.indexOf('R') > 0 && !self.isMyTurn()){
-            self.markAllCardsPlayable(self.cards());
-          }
-        });
-      }
-
-      if (updateReason.indexOf('R') > 0 && !self.isMyTurn()){
-        self.hideButtons();
-      }
       
       if (updateReason.length > 0) {
         self.actAccordingToRules(updateReason);
       }
+
+      if (updateReason.length > 0 && self.iamSkipped() === false) {
+        $.when(self.getMyCards(updateReason)).done(function(){
+          if (self.isMyTurn()) {
+            self.markNotPlayable(self.cards());
+            if (self.trump) {
+              if (self.cards().length == 0) {
+                self.showPlayBtn(false);
+              } else {
+                self.showPlayBtn(!self.gameData.preScoring());
+              }
+            }
+          } else if (updateReason.indexOf('R') > 0 && !self.isMyTurn()){
+            self.markAllCardsPlayable(self.cards());
+          }
+        });
+      } else if (updateReason.length > 0 && self.iamSkipped() === true) {
+        self.cards([]);
+      }
     };
-    
 
     // -- helper functions --
     self.getSuitOrder = function(c) {
@@ -578,16 +583,10 @@
     
     // update actions
     self.actAccordingToRules = function(reason) {
-      // console.log('actAccordingToRules()');
-
       self.hideButtons();
       
       if (self.gameData.CardFaceUp.length == 2 && self.isMyTurn()) {
         self.enableBid();
-      }
-      
-      if (self.trump && self.isMyTurn() && !self.gameData.allCardsHaveBeenPlayed()) {
-        self.showPlayBtn(true);
       }
       
       if (self.pickingItUp) {
