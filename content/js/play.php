@@ -571,6 +571,8 @@
       if (!trump && self.game.CardFaceUp.length > 2 && self.game.CardFaceUp[2] == 'D' && self.game.Turn == self.position) {
         self.bidDialogVM.update(self.position, self.game);
         self.bidModal.show();
+        self.playerInfoVM.bidModalShown(true);
+        self.bidDialogVM.isActive(true);
         self.setExecutionPoint('waitForBidDialog');
       }
       if (!trump && self.game.CardFaceUp.length > 2 && self.game.CardFaceUp[2] == 'U') {
@@ -584,6 +586,8 @@
     self.waitForBidDialogFn = function(){
       if (self.bidDialogVM.submitted) {
         self.bidModal.hide();
+        self.playerInfoVM.bidModalShown(false);
+        self.bidDialogVM.isActive(false);
         self.setExecutionPoint('waitForTrump');
       }
     };
