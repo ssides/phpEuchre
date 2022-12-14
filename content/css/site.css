@@ -339,3 +339,7 @@ table.dbgTable td {
   padding: 2px;
   font-weight: bold;
 }
+
+.reportWinner {
+  background-color: #f2f21e;
+}
