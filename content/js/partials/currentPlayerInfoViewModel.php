@@ -99,13 +99,7 @@
         $.when(self.getMyCards(updateReason)).done(function(){
           if (self.isMyTurn()) {
             self.markNotPlayable(self.cards());
-            if (self.trump) {
-              if (self.cards().length == 0) {
-                self.showPlayBtn(false);
-              } else {
-                self.showPlayBtn(!self.gameData.preScoring());
-              }
-            }
+            self.showPlayBtn(self.trump && self.cards().length > 0 && !self.gameData.preScoring());
           } else if (updateReason.indexOf('R') > 0 && !self.isMyTurn()){
             self.markAllCardsPlayable(self.cards());
           }
