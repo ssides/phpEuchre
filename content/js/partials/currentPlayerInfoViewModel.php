@@ -82,7 +82,6 @@
       
       if (self.gameData.getAllCards() != self.previousCards) {
         self.previousCards = self.gameData.getAllCards();
-        console.log('cards played', self.previousCards);
         updateReason += 'C'; // 'C'ards played.
       }
       
@@ -97,10 +96,12 @@
 
       if (updateReason.length > 0 && self.iamSkipped() === false) {
         $.when(self.getMyCards(updateReason)).done(function(){
-          if (self.isMyTurn()) {
-            self.markNotPlayable(self.cards());
-            self.showPlayBtn(self.trump && self.cards().length > 0 && !self.gameData.preScoring());
-          } else if (updateReason.indexOf('R') > 0 && !self.isMyTurn()){
+          if (self.isMyTurn() && !self.gameData.preScoring()) {
+            if (self.trump && self.gameData.Lead) {
+              self.markNotPlayable(self.cards());
+            }
+            self.showPlayBtn(self.trump && self.cards().length > 0 );
+          } else if (!self.isMyTurn() && updateReason.indexOf('R') > 0){
             self.markAllCardsPlayable(self.cards());
           }
         });
@@ -271,7 +272,6 @@
     }
     
     self.getMyCards = function(reason) {
-      // console.log('getMyCards()');
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.positionID = self.myPosition;
@@ -530,7 +530,7 @@
     
     // bound click events
     self.selectCard = function(card){
-      if ((self.isMyTurn() && self.trump) || self.pickingItUp) {
+      if (((self.isMyTurn() && self.trump) || self.pickingItUp) && !self.gameData.preScoring()) {
         self.cards().forEach(function(c){ 
           if (c.id == card.id && c.isPlayable()) {
             c.isSelected(!c.isSelected());

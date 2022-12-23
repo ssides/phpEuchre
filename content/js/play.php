@@ -381,7 +381,6 @@
     };
 
     self.getGame = function() {
-      // console.log('getGame()');
       $.ajax({
         method: 'POST',
         url: 'api/getGame.php',
@@ -516,12 +515,12 @@
         throw "selectFirstJackFn(): dealer is already set.";
       
       if ((self.position == 'O') && (self.orgGetNextFInterval === null)) {
-        console.log('Starting the first Jack selection timer.  ');
+        console.log('Starting the first Jack selection timer.');
         self.orgGetNextFInterval = setInterval(self.getNextStartCard, app.times.firstJackTime);
       }
       
       if ((self.position != 'O') && (self.playerGetCurrentFInterval === null)) {
-        console.log('Starting the first Jack query timer.  ');
+        console.log('Starting the first Jack query timer.');
         self.playerGetCurrentFInterval = setInterval(self.getCurrentStartCard, app.times.firstJackTime);
       }
     };
@@ -628,7 +627,6 @@
     self.scoreHandFn = function() {
       var winner = self.playerInfoVM.getWinnerOfHand();
       var newScore = self.playerInfoVM.getNewScore(winner);
-      console.log('scoreHandFn(): winner: ' + winner + ' Opp Score: ' + newScore.opponentScore + ' Opp Tricks: ' + newScore.opponentTricks + ' Org Score: ' + newScore.organizerScore + ' Org Tricks: ' + newScore.organizerTricks);
       self.logHand(newScore);
       self.updateScoreAfterHand(winner, newScore); // sets ScoringInProgress to '1'; self.game.allCardsHaveBeenPlayed() will now be false.
       self.setExecutionPoint('clearTable');
