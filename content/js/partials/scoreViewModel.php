@@ -6,7 +6,6 @@
     self.ix = 0;
     self.label = ko.observable('');
     self.score = ko.observable(0);
-    self.trumpURL = ko.observable('');
     self.tricks = ko.observable('');
     self.showScoreGroup = ko.observable(false);
     
@@ -20,11 +19,6 @@
     self.aUpdate = [
       function(){ },
       function(gameData){
-        if (gameData.OrganizerTrump) {
-          self.trumpURL(app.appURL + 'content/images/cards/' + gameData.OrganizerTrump[0] + '.png');
-        } else {
-          self.trumpURL('');
-        }
         if (gameData.OrganizerTricks) {
           self.tricks(self.getTricks(gameData.OrganizerTricks));
         } else {
@@ -33,11 +27,6 @@
         self.score(gameData.OrganizerScore);
       },
       function(gameData){
-        if (gameData.OpponentTrump) {
-          self.trumpURL(app.appURL + 'content/images/cards/' + gameData.OpponentTrump[0] + '.png');
-        } else {
-          self.trumpURL('');
-        }
         if (gameData.OpponentTricks) {
           self.tricks(self.getTricks(gameData.OpponentTricks));
         } else {

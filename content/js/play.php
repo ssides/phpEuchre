@@ -19,6 +19,7 @@
     self.dealID = null;
     self.bidModal = new bootstrap.Modal($('#bidModal'));
     self.endGameModal = new bootstrap.Modal($('#endGameModal'));
+    self.whatsTrumpVM = new whatsTrumpViewModel();
     self.nPlayerInfoVM = new playerInfoViewModel();
     self.ePlayerInfoVM = new playerInfoViewModel();
     self.wPlayerInfoVM = new playerInfoViewModel();
@@ -66,6 +67,7 @@
     };
     
     self.updateScoresAndInfo = function() {
+      self.whatsTrumpVM.update(self.game);
       self.nPlayerInfoVM.update(self.game);
       self.ePlayerInfoVM.update(self.game);
       self.wPlayerInfoVM.update(self.game);
@@ -704,6 +706,7 @@
   
   $(function () {
     var gc = new gameController();
+    ko.applyBindings(gc.whatsTrumpVM, $('#WhatsTrump')[0]);
     ko.applyBindings(gc.nPlayerInfoVM, $('#NorthInfo')[0]);
     ko.applyBindings(gc.ePlayerInfoVM, $('#EastInfo')[0]);
     ko.applyBindings(gc.wPlayerInfoVM, $('#WestInfo')[0]);

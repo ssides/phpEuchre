@@ -32,6 +32,7 @@
     self.isMyTurn = ko.observable(false);
     self.iamSkipped = ko.observable(false);
     self.obsAlone = ko.observable();
+    self.trumpURL = ko.observable('');
     self.cards = ko.observableArray();
     self.sortCardsCompareFn = function(a,b){ return a.suit === b.suit ? (a.rank == b.rank ? 0 : a.rank < b.rank ? -1 : 1) : a.suit < b.suit ? -1 : 1; };
     self.sortedCards = ko.pureComputed(function(){
@@ -53,6 +54,8 @@
       self.dealID = dealID;
       self.pickingItUp = self.gameData.CardFaceUp.length > 2 && self.gameData.CardFaceUp[2] == 'U' && self.iamDealer;
       self.discarded = self.gameData.CardFaceUp.length > 2 && self.gameData.CardFaceUp[2] == 'S' && self.iamDealer;
+      
+      self.setTrumpIcon();
       
       if (self.myPosition == self.gameData.Dealer) {
         self.dealer('D');
@@ -111,6 +114,22 @@
     };
 
     // -- helper functions --
+    self.setTrumpIcon = function() {
+      if (self.trump && self.gameData.CardFaceUp.length > 3 && self.gameData.CardFaceUp[3] == self.myPosition) {
+        if (self.myPosition == 'O' || self.myPosition == 'P') {
+          if (self.gameData.OrganizerTrump) {
+            self.trumpURL(app.getCardURL(self.gameData.OrganizerTrump));
+          }
+        } else {
+          if (self.gameData.OpponentTrump) {
+            self.trumpURL(app.getCardURL(self.gameData.OpponentTrump));
+          }
+        }
+      } else {
+        self.trumpURL('');
+      }
+    };
+    
     self.getSuitOrder = function(c) {
       if (self.trump) {
         var order = 5;

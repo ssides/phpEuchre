@@ -6,12 +6,14 @@
     self.ix = 0;
     self.myPosition = ' ';
     self.thumbnailURL = ko.observable('');
+    self.trumpURL = ko.observable('');
     self.name = ko.observable('');
     self.dealer = ko.observable(' ');
     self.isPlayersTurn = ko.observable(false);
     self.isPlayerSkipped = ko.observable(false);
-    
-    self.aSetURL = [
+    self.trumpURL = ko.observable('');
+
+    self.aSetThumbnailURL = [
       function(){},
       function(gameData){
         self.thumbnailURL(gameData.OThumbnailURL);
@@ -31,8 +33,8 @@
       }
     ];
     
-    self.setURL = function(gameData) { 
-      self.aSetURL[self.ix](gameData) 
+    self.setThumbnailURL = function(gameData) { 
+      self.aSetThumbnailURL[self.ix](gameData);
     };
     
     self.update = function(gameData) { 
@@ -43,39 +45,46 @@
       }
       self.isPlayersTurn(self.myPosition == gameData.Turn);
       self.isPlayerSkipped(gameData.CardFaceUp.length > 4 && gameData.CardFaceUp[4] == self.myPosition);
+      
+      if ((gameData.OrganizerTrump || gameData.OpponentTrump) && gameData.CardFaceUp.length > 3 && gameData.CardFaceUp[3] == self.myPosition) {
+        if (self.myPosition == 'O' || self.myPosition == 'P') {
+          if (gameData.OrganizerTrump) {
+            self.trumpURL(app.getCardURL(gameData.OrganizerTrump));
+          }
+        } else {
+          if (gameData.OpponentTrump) {
+            self.trumpURL(app.getCardURL(gameData.OpponentTrump));
+          }
+        }
+      } else {
+        self.trumpURL('');
+      }
     };
     
-    // When I started working on bidding, I changed this view model.
-    // It's no longer used for South, so there is no need to test for 
-    // that here.  Having that check was nice for getting things going.
     self.initialize = function(iam, selfPosition, gameData){
       if ((iam == 'N' && selfPosition == 'P')
-          || (iam == 'S' && selfPosition == 'O')
           || (iam == 'E' && selfPosition == 'L')
           || (iam == 'W' && selfPosition == 'R')) {
         self.myPosition = 'O';
         self.ix = 1; // use Organizer data
       } else if ((iam == 'N' && selfPosition == 'O')
-          || (iam == 'S' && selfPosition == 'P')
           || (iam == 'E' && selfPosition == 'R')
           || (iam == 'W' && selfPosition == 'L')) {
         self.myPosition = 'P';
         self.ix = 2; // use Partner data
       } else if ((iam == 'N' && selfPosition == 'R')
-          || (iam == 'S' && selfPosition == 'L')
           || (iam == 'E' && selfPosition == 'P')
           || (iam == 'W' && selfPosition == 'O')) {
         self.myPosition = 'L';
         self.ix = 3; // use Left data
       } else if ((iam == 'N' && selfPosition == 'L')
-          || (iam == 'S' && selfPosition == 'R')
           || (iam == 'E' && selfPosition == 'O')
           || (iam == 'W' && selfPosition == 'P')) {
         self.myPosition = 'R';
         self.ix = 4; // use Right data
       }
       
-      self.setURL(gameData);
+      self.setThumbnailURL(gameData);
     };
   }
 
