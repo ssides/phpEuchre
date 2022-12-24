@@ -27,6 +27,11 @@
         <table>
           <tr>
             <td>
+              <div id="WhatsTrump">
+                <div class="whatsTrumpContainer" data-bind="visible: trumpURL().length > 0">
+                  <img class="whatsTrump" data-bind="attr: {src: trumpURL() }"/>
+                </div>
+              </div>
             </td>
             <td>
               <div id="NorthInfo">
@@ -170,9 +175,14 @@
               <div id="SouthInfo">
                 <div class="info container" data-bind="class: isMyTurn() ? 'infoTurnBorder': iamSkipped() ? 'infoSkippedBorder' : 'infoBorder'">
                   <div class="row">
-                    <div class="col">
+                    <div class="col-1">
                       <div class="dealerBorder" data-bind="visible: dealer() != ' '">
                         &nbsp;<span class="dealer" data-bind="text: dealer"></span>
+                      </div>
+                    </div>
+                    <div class="col-1" data-bind="visible: trumpURL().length > 0">
+                      <div data-bind="visible: trumpURL().length > 0">
+                        <img data-bind="attr: {src: trumpURL() }" style="height: 15px; width: 15px;" />
                       </div>
                     </div>
                     <div class="col">
@@ -241,7 +251,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Modal -->
   <div class="modal fade" id="endGameModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -279,12 +289,13 @@
       </div>
     </div>
   </div>
-  
+
 
   <?php
   include('content/js/partials/app.php');
   include('content/js/partials/gameModel.php');
   include('content/js/partials/currentPlayerInfoViewModel.php');
+  include('content/js/partials/whatsTrumpViewModel.php');
   include('content/js/partials/playerInfoViewModel.php');
   include('content/js/partials/scoreViewModel.php');
   include('content/js/partials/playViewModel.php');

@@ -12,6 +12,11 @@
           &nbsp;<span class="dealer" data-bind="text: dealer"></span>
         </div>
       </td>
+      <td>
+        <div data-bind="visible: trumpURL().length > 0">
+          <img data-bind="attr: {src: trumpURL() }" style="height: 15px; width: 15px;" />
+        </div>
+      </td>
     </tr>
   </table>
 </div>
