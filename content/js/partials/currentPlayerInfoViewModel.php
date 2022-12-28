@@ -17,7 +17,6 @@
     self.previousCardFaceUp = '';
     self.previousCards = '';
     self.pickingItUp = false;
-    self.discarded = false;
     self.bidModalIsVisible = false;
     self.gameData = new gameModel({});
     self.showPassBtn = ko.observable(false);
@@ -53,7 +52,6 @@
       self.trump = self.gameData.OpponentTrump || self.gameData.OrganizerTrump;
       self.dealID = dealID;
       self.pickingItUp = self.gameData.CardFaceUp.length > 2 && self.gameData.CardFaceUp[2] == 'U' && self.iamDealer;
-      self.discarded = self.gameData.CardFaceUp.length > 2 && self.gameData.CardFaceUp[2] == 'S' && self.iamDealer;
       
       self.setTrumpIcon();
       
