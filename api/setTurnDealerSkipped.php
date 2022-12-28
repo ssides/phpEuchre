@@ -2,9 +2,7 @@
   include_once('../config/db.php');
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
-  include('../svc/getHand.php');
   include('../svc/getNextTurn.php');
-  include('../svc/goingAlone.php');
 
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
@@ -13,8 +11,6 @@
       $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
       $playerID = $_POST[$cookieName];
-      $positionID = $_POST['positionID'];
-      $cardID = $_POST['cardID']; // card being discarded
       
       $dealer = '';
       $cardFaceUp = '';
@@ -29,23 +25,10 @@
           $dealer = is_null($row['Dealer']) ? '' : $row['Dealer'];
           $cardFaceUp = is_null($row['CardFaceUp']) ? '' : $row['CardFaceUp'];
         }
+        
+        $response['ErrorMsg'] .= setTurnSetTrump($cardFaceUp, $gameID, $dealer);
       }
       
-      if (strlen($dealer) > 0 && $dealer == $positionID && strlen($cardFaceUp) > 3 && $cardFaceUp[2] == 'U') {
-        $hand = getHand($gameID, $positionID);
-        $cardNumber = getCardNumber($hand, $cardID);
-        
-        if ($cardNumber == '0') {
-          // I don't let them discard CardFaceUp.
-          $response['ErrorMsg'] .= "Card not found '{$cardID}'. ";
-        } else {
-          // save the hand and set trump based on who ordered it up. Turn goes to left of dealer.
-          $response['ErrorMsg'] .= saveHandSetTurn($hand, $cardNumber, $cardFaceUp, $gameID, $dealer);
-        }
-      } else {
-        $response['ErrorMsg'] .= "Wrong state error. ";
-      }
-
       http_response_code(200);
       
       echo json_encode($response);
@@ -57,8 +40,7 @@
     echo "Expecting request method: POST";
   }
 
-  // save the hand and set trump based on who ordered it up.
-  function saveHandSetTurn($hand, $cardNumber, $cardFaceUp, $gameID, $dealer) {
+  function setTurnSetTrump($cardFaceUp, $gameID, $dealer) {
     global $connection;
     
     $response = "";
@@ -67,21 +49,8 @@
     $playerID = substr($cardFaceUp,3,1);
     $trumpColumn = $playerID == 'O' || $playerID == 'P' ? 'OrganizerTrump' : 'OpponentTrump';
     $turn = getNextTurn($dealer);
-
-    if (getAlone($cardFaceUp)) {
-      $skipped = getSkippedPosition($cardFaceUp[3]);
-      if ($turn == $skipped) {
-        $turn = getNextTurn($turn);
-      }
-    }
     
-    $sql = "update `Play` set `CardID{$cardNumber}` = '{$cardID}' where `ID`='{$hand['PlayID']}'";
-    $results = mysqli_query($connection, $sql);
-    if ($results === false) {
-      $response .= mysqli_error($connection);
-    }
-    
-    $cardFaceUp = $cardID.'S'.substr($cardFaceUp,3);
+    $cardFaceUp = $cardID.'K'.substr($cardFaceUp,3);
     $sql = "update `Game` set `{$trumpColumn}` = '{$trump}',`CardFaceUp` = '{$cardFaceUp}',`Turn` = '{$turn}' where `ID`='{$gameID}'";
     $results = mysqli_query($connection, $sql);
     if ($results === false) {

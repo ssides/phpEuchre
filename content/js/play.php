@@ -133,6 +133,7 @@
     };
     
     self.logHand = function(newScore) {
+      console.log('logHand()');
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.dealID = self.dealID;
@@ -147,9 +148,8 @@
       pd.organizerTricks = newScore.organizerTricks;
       pd.opponentScore = newScore.opponentScore;
       pd.opponentTricks = newScore.opponentTricks;
-      pd.alone = self.game.CardFaceUp.length == 5 ? 'A' : '-';
-      
-      console.log('logHand()');
+      pd.cardFaceUp = self.game.CardFaceUp;
+      pd.dealer = self.game.Dealer;
 
       $.ajax({
         method: 'POST',
@@ -517,6 +517,27 @@
       });
     };
 
+    self.setTurnDealerSkipped = function(){
+      $.ajax({
+        method: 'POST',
+        url: 'api/setTurnDealerSkipped.php',
+        data: app.apiPostData,
+        success: function (response) {
+          try {
+            var data = JSON.parse(response);
+            if (data.ErrorMsg) {
+              console.log(data.ErrorMsg);
+            }
+          } catch (error) {
+            console.log('Error ' + ': ' + error.message || error);
+            console.log(error.stack);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+        }
+      });
+    };
 
     self.initializeFn = function(){
       self.setThisPlayerPosition(self.game);
@@ -621,7 +642,13 @@
         self.setExecutionPoint('waitForBidDialog');
       }
       if (!trump && self.game.CardFaceUp.length > 2 && self.game.CardFaceUp[2] == 'U') {
-        self.setExecutionPoint('waitForDiscard');
+        if (self.game.CardFaceUp.length == 5 && self.game.CardFaceUp[4] == self.game.Dealer) {
+          // The partner of the dealer took it alone.  The dealer is the skipped player.
+          self.setTurnDealerSkipped();
+          self.setExecutionPoint('waitForPlay');
+        } else {
+          self.setExecutionPoint('waitForDiscard');
+        }
       }
       if (trump) {
         self.setExecutionPoint('waitForPlay');

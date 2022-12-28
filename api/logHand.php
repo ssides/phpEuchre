@@ -22,13 +22,14 @@
       $organizerTricks = $_POST['organizerTricks'];
       $opponentScore = $_POST['opponentScore'];
       $opponentTricks = $_POST['opponentTricks'];
-      $alone = $_POST['alone'];
+      $cardFaceUp = $_POST['cardFaceUp'];
+      $dealer = $_POST['dealer'];
       
       $ID = GUID();
 
       $sql = "
-        insert into `GamePlay` (`ID`,`GameID`,`DealID`,`Lead`,`CardO`,`CardP`,`CardL`,`CardR`,`OrganizerTrump`,`OpponentTrump`,`OrganizerScore`,`OrganizerTricks`,`OpponentScore`,`OpponentTricks`,`Alone`,`InsertDate`) 
-        values ('{$ID}','{$gameID}','{$dealID}','{$lead}','{$cardO}','{$cardP}','{$cardL}','{$cardR}','{$organizerTrump}','{$opponentTrump}',{$organizerScore},{$organizerTricks},{$opponentScore},{$opponentTricks},'{$alone}',now())
+        insert into `GamePlay` (`ID`,`GameID`,`DealID`,`Lead`,`CardO`,`CardP`,`CardL`,`CardR`,`OrganizerTrump`,`OpponentTrump`,`OrganizerScore`,`OrganizerTricks`,`OpponentScore`,`OpponentTricks`,`CardFaceUp`,`Dealer`,`InsertDate`) 
+        values ('{$ID}','{$gameID}','{$dealID}','{$lead}','{$cardO}','{$cardP}','{$cardL}','{$cardR}','{$organizerTrump}','{$opponentTrump}',{$organizerScore},{$organizerTricks},{$opponentScore},{$opponentTricks},'{$cardFaceUp}','{$dealer}',now())
       ";
 
       if (mysqli_query($connection, $sql) === false) {
