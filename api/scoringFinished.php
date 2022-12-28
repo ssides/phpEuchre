@@ -10,7 +10,7 @@
       $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
           
-      $smt = mysqli_prepare($connection, "update `Game` set `ScoringInProgress` = '0'  where `ID`= ?");
+      $smt = mysqli_prepare($connection, "update `Game` set `ScoringInProgress` = '0',`ACO` = null,`ACP` = null,`ACL` = null,`ACR` = null  where `ID`= ?");
       mysqli_stmt_bind_param($smt, 's', $gameID);
       if (!mysqli_stmt_execute($smt)){
         $response['ErrorMsg'] .= mysqli_error($connection);

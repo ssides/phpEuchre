@@ -51,6 +51,8 @@ create table `Game`
   `Right` varchar(450) null,
   `OrganizerScore` int not null, 
   `OpponentScore` int not null, 
+  `OrganizerTricks` int null,
+  `OpponentTricks` int null,
   `GameStartDate` datetime null, 
   `GameFinishDate` datetime null,
   `PartnerInviteDate` datetime null, 
@@ -75,12 +77,11 @@ create table `Game`
   `PP`  varchar(2) null, -- Card played by partner.
   `PL`  varchar(2) null, -- Card played by left.
   `PR`  varchar(2) null,  -- Card played by right.
-  `OrganizerTricks` int null,
-  `OpponentTricks` int null,
   `InsertDate` datetime not null,
   `PlayTo` int not null default 10, -- Game score to play to.
   `CardFaceUp` char(5) null,  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined, ordered 'U'p, or u'S'ed by dealer. [3]: who ordered it up or who declared trump ('O','P','L','R').  [4]: The partner of the player who called it alone ('O','P','L','R'). (Stick the dealer is hard coded everywhere. CardFaceUp.length tells the js code what to display).
-  `ScoringInProgress` enum('0','1') NOT NULL default '0',  -- '1' if scoring is in progress, '0' otherwise.
+  `ScoringInProgress` enum('0','1') not null default '0',  -- '1' if scoring is in progress, '0' otherwise.
+  `AcknowledgeScoring` varchar(3) null, -- P,L,R need to acknowledge scoring in progress.
   constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`),
   constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`),
   constraint `FK_GameLeft_Player` foreign key (`Left`) references `Player`(`ID`),
@@ -90,11 +91,12 @@ create table `Game`
 drop table if exists `GameDeal`;
 create table `GameDeal`
 (
-  `ID` varchar(38) not null primary key, 
-  `GameID` varchar(38) not null, 
-  `DealID` varchar(38) not null, 
+  `ID` varchar(38) not null primary key,
+  `GameID` varchar(38) not null,
+  `DealID` varchar(38) not null,
+  `IsActive` enum('0','1') not null default '0',
   `InsertDate` datetime not null,
-  constraint `FK_GameDeal_Game` foreign key (`GameID`) references `Game`(`ID`), 
+  constraint `FK_GameDeal_Game` foreign key (`GameID`) references `Game`(`ID`),
   constraint `FK_GameDeal_Deal` foreign key (`DealID`) references `Deal`(`ID`)
 );
 

@@ -13,12 +13,67 @@
           header("Location: organize.php");
         }
       } else if (isset($_POST['join']) || isset($_POST['rejoin'])) {
-          $_SESSION['gameID'] = $_POST['gameid'];
-          
-          if (joinGame($_POST['gameid'], $_COOKIE[$cookieName], $_POST['identifier'])) {
-            header("Location: play.php");
-          }
+        $gameID = $_POST['gameid'];
+        $identifier = $_POST['identifier'];
+        $playerID = $_COOKIE[$cookieName];
+      
+        $_SESSION['gameID'] = $gameID;
+        
+        if (isset($_POST['rejoin'])) {
+          $sqlErr = logRejoinGame($gameID, $playerID, $identifier);
+        }
+        
+        if (strlen($sqlErr) == 0 && joinGame($gameID, $playerID, $identifier)) {
+          header("Location: play.php");
+        }
       }
+    }
+    
+    function logRejoinGame($gameID, $playerID, $identifier){
+      global $hostname, $username, $password, $dbname;
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
+      $err = "";
+
+      $id = GUID();
+      $positionID = getPositionID($identifier);
+      $state = 'pre-play';
+      $message = 'Rejoining game';
+      
+      $sql = "insert into `GameControllerLog` (`ID`,`GameID`,`PositionID`,`GameControllerState`,`Message`,`OrganizerScore`,`OpponentScore`,`OrganizerTricks`,`OpponentTricks`,`InsertDate`) values (?,?,?,?,?,0,0,0,0,now())";
+      
+      $smt = mysqli_prepare($conn, $sql);
+      mysqli_stmt_bind_param($smt, 'sssss', $id,$gameID,$positionID,$state,$message);
+      if (!mysqli_stmt_execute($smt)) {
+        $err = mysqli_error($conn);
+      }
+      
+      mysqli_stmt_close($smt);
+      mysqli_close($conn);
+      
+      return $err;
+    }
+    
+    function getPositionID($identifier) {
+      $posID = '-';
+      
+      switch($identifier) {
+        case 'Partner':
+          $posID = 'P';
+          break;
+        case 'Opponent Left':
+          $posID = 'L';
+          break;
+        case 'Opponent Right':
+          $posID = 'R';
+          break;
+        case 'Organizer':
+          $posID = 'O';
+          break;
+        default:
+          $posID = '-';
+      }
+
+      return $posID;
     }
     
     function joinGame($gameID, $playerID, $identifier) {

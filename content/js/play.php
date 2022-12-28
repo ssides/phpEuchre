@@ -63,6 +63,7 @@
     
     self.setExecutionPoint = function(id) {
       console.log('execution point: ' + id);
+      self.logGameControllerState(id, null);
       self.executionPoint = self.getExecutionPointIndex(id);
     };
     
@@ -87,17 +88,17 @@
       } 
     };
 
-    self.acknowledgeJack = function(position) {
+    self.acknowledge = function(position) {
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.position = position;
-      console.log('acknowledgeJack()');
+      console.log('acknowledge()');
       $.ajax({
         method: 'POST',
-        url: 'api/acknowledgeJack.php',
+        url: 'api/acknowledge.php',
         data: pd,
         success: function (response) {
-          console.log('acknowledgeJack response', response);
+          console.log('acknowledge response', response);
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
@@ -206,7 +207,7 @@
               var i = app.positions.indexOf(self.position);
               self.placeCard[i](data.ID, data.Position);
               if (data.ID[0] == 'J') {
-                self.acknowledgeJack(self.position);
+                self.acknowledge(self.position);
                 self.setExecutionPoint('waitForAcknowledgments');
                 clearInterval(self.playerGetCurrentFInterval);
               }
@@ -258,7 +259,7 @@
     // The deal api selects a random deal where `PurposeCode` = 'D' and DealID has not yet been used in this game.
     // It distributes cards to players in table `Play`.
     self.deal = function() {
-            console.log('deal()');
+      console.log('deal()');
 
       $.ajax({
         method: 'POST',
@@ -284,7 +285,7 @@
     };
 
     self.setDealPosition = function(position, isFirst){
-                  console.log('setDealPosition()');
+      console.log('setDealPosition()');
 
       var pd = {};
       Object.assign(pd, app.apiPostData);
@@ -437,13 +438,16 @@
     
     self.getDealID = function() {
       console.log('getDealID()');
-      $.ajax({
+      return $.ajax({
         method: 'POST',
         url: 'api/getDealID.php',
         data: app.apiPostData,
         success: function (response) {
           try {
             var data = JSON.parse(response);
+            if (data.ErrorMsg) {
+              console.log(data.ErrorMsg);
+            }
             self.dealID = data.DealID;
           } catch (error) {
             console.log('Error ' + ': ' + error.message || error);
@@ -456,11 +460,11 @@
       });
     };
 
-    self.acknowledgeScore = function() {
-      console.log('acknowledgeScore()');
+    self.scoringFinished = function() {
+      console.log('scoringFinished()');
       $.ajax({
         method: 'POST',
-        url: 'api/acknowledgeScore.php',
+        url: 'api/scoringFinished.php',
         data: app.apiPostData,
         success: function (response) {
           try {
@@ -479,6 +483,41 @@
       });
     };
 
+    self.logGameControllerState = function(state,message) {
+      console.log('logGameControllerState()');
+      var pd = {};
+      Object.assign(pd, app.apiPostData);
+      pd.dealID = self.dealID;
+      pd.positionID = self.position;
+      pd.state = state;
+      pd.message = message || '';
+      pd.organizerScore = self.game.OrganizerScore;
+      pd.opponentScore = self.game.OpponentScore;
+      pd.organizerTricks = self.game.OrganizerTricks;
+      pd.opponentTricks = self.game.OpponentTricks;
+      
+      $.ajax({
+        method: 'POST',
+        url: 'api/logGameControllerState.php',
+        data: pd,
+        success: function (response) {
+          try {
+            var data = JSON.parse(response);
+            if (data.ErrorMsg) {
+              console.log(data.ErrorMsg);
+            }
+          } catch (error) {
+            console.log('Error ' + ': ' + error.message || error);
+            console.log(error.stack);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+        }
+      });
+    };
+
+
     self.initializeFn = function(){
       self.setThisPlayerPosition(self.game);
       self.nPlayerInfoVM.initialize('N', self.position, self.game);
@@ -491,7 +530,12 @@
       if (self.game.Dealer) {
         if (!self.dealID) {
           // If the player is returning to a game, there will be a dealer, but no dealID.
-          self.getDealID();
+          $.when(self.getDealID()).done(function(){
+            // If they closed the browser during scoring of a hand, need a new deal.
+            if (!self.dealID) {
+              self.setExecutionPoint('dealOrWaitForCardFaceUp');
+            }
+          });
         }
         if (self.game.allCardsHaveBeenPlayed()) {
           if (self.position == 'O') {
@@ -539,7 +583,7 @@
     }
     
     self.waitForAcknowledgmentsFn = function(){
-      if (self.game.ACP == 'A' && self.game.ACR == 'A' && self.game.ACL == 'A') {
+      if (self.game.allPlayersHaveAcknowledged()) {
         // all the players have acknowledged seeing the first Jack.
         self.clearTable();
         if (self.position == 'O') {
@@ -620,7 +664,7 @@
         if (self.position == 'O') {
           self.setExecutionPoint('scoreHand');
         } else {
-          self.setExecutionPoint('clearTable');
+          self.setExecutionPoint('clearTableAsPlayer');
         }
       }
     };
@@ -631,18 +675,25 @@
       var newScore = self.playerInfoVM.getNewScore(winner);
       self.logHand(newScore);
       self.updateScoreAfterHand(winner, newScore); // sets ScoringInProgress to '1'; self.game.allCardsHaveBeenPlayed() will now be false.
-      self.setExecutionPoint('clearTable');
+      self.setExecutionPoint('clearTableAsOrganizer');
     }
     
-    // players may need to sit in this state for one or two heartbeats.  slightly inefficient,
-    // but it won't happen very often if everything is normal.
-    self.clearTableFn = function() {
+    self.clearTableAsPlayerFn = function() {
       self.clearTable();
       self.previousPO = ''; self.previousPP = ''; self.previousPL = ''; self.previousPR = '';
+
       if (self.game.ScoringInProgress) {
-        if (self.position == 'O') {
-          self.acknowledgeScore();
-        } 
+        self.acknowledge(self.position);
+        self.setExecutionPoint('waitForScore');
+      }
+    };
+    
+    self.clearTableAsOrganizerFn = function() {
+      self.clearTable();
+      self.previousPO = ''; self.previousPP = ''; self.previousPL = ''; self.previousPR = '';
+      
+      if (self.game.allPlayersHaveAcknowledged()) {
+        self.scoringFinished();
         self.setExecutionPoint('waitForScore');
       }
     };
@@ -690,9 +741,10 @@
       { id: 'waitForPlay', fn: self.waitForPlayFn },
       { id: 'scoreHand', fn: self.scoreHandFn },
       { id: 'waitForScore', fn: self.waitForScoreFn },
-      { id: 'clearTable', fn: self.clearTableFn },
+      { id: 'clearTableAsOrganizer', fn: self.clearTableAsOrganizerFn },
       { id: 'waitForDiscard', fn: self.waitForDiscardFn },
       { id: 'showGameOverDialog', fn: self.showGameOverDialogFn },
+      { id: 'clearTableAsPlayer', fn: self.clearTableAsPlayerFn },
     ];
     
     self.initialize = function() {

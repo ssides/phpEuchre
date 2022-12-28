@@ -85,13 +85,13 @@
     return $errorMsg;
   }
   
-    function insertDeal($gameID, $dealID) {
+  function insertDeal($gameID, $dealID) {
     global $hostname, $username, $password, $dbname;
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
     $ID = GUID();
     $errorMsg = "";
     
-    $sql = "insert into `GameDeal` (`ID`, `DealID`, `GameID`,`InsertDate`) values ('{$ID}','{$dealID}','{$gameID}',now())";
+    $sql = "insert into `GameDeal` (`ID`,`DealID`,`GameID`,`IsActive`,`InsertDate`) values ('{$ID}','{$dealID}','{$gameID}','1',now())";
     if (mysqli_query($conn, $sql) === false) {
       $errorMsg = mysqli_error($conn);
     } 

@@ -11,14 +11,18 @@
       $response['ErrorMsg'] = "";
       $response['DealID'] = "";
 
-      $sql = "select `DealID` from `GameDeal` where `GameID` = '{$gameID}' order by `InsertDate` desc limit 1";
+      $sql = "select `DealID` from `GameDeal` where `GameID` = '{$gameID}' and `IsActive` = '1'";
 
       $results = mysqli_query($connection, $sql);
       if ($results === false) {
         $response['ErrorMsg'] .= mysqli_error($connection);
       } else {
-        while ($row = mysqli_fetch_array($results)) {
-          $response['DealID'] = $row['DealID'];
+        if (mysqli_num_rows($results) > 1) {
+          $response['ErrorMsg'] .= 'More than 1 active deal in GameDeal';
+        } else {
+          while ($row = mysqli_fetch_array($results)) {
+            $response['DealID'] = $row['DealID'];
+          }
         }
       }
       
