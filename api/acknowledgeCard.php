@@ -15,6 +15,7 @@
       
       $ack = "";
       $conn = mysqli_connect($hostname, $username, $password, $dbname);
+      mysqli_query($conn, "START TRANSACTION;");
 
       $sql = "select `AC{$positionID}` `ACK` from `Game` where `ID`='{$gameID}'";
       
@@ -37,7 +38,8 @@
       } else {
         $response['ErrorMsg'] .= "{$positionID} already acknowledged card played by {$playerID}.";
       }
-
+      
+      mysqli_query($conn, "COMMIT;");
       mysqli_close($conn);
 
       http_response_code(200);
