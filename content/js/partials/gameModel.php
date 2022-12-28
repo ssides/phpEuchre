@@ -39,8 +39,14 @@
     
     this.getAllCards = function(){ return this.PO + this.PP + this.PL + this.PR;  };
     
+    // Acknowledgements of played cards.
     this.getAllAcknowledgments = function(){ return this.ACO + this.ACP + this.ACL + this.ACR; };
     
+    // Acknowledgements of first Jack or scoring in progress.
+    this.allPlayersHaveAcknowledged = function() {
+      return this.ACP == 'A' && this.ACR == 'A' && this.ACL == 'A';
+    };
+
     this.allCardsHaveBeenPlayed = function() {
       if (this.CardFaceUp.length == 5) {
         // If there are only three players, there are only two acknowledgments per player.
@@ -51,7 +57,7 @@
         return this.getAllCards().length == 8 && this.getAllAcknowledgments().length == 12;
       }
     };
-
+    
     this.preScoring = function() {
       if (this.CardFaceUp.length == 5) {
         return this.getAllCards().length == 6;
@@ -61,5 +67,5 @@
     };
     
   }
-  
+
 </script>

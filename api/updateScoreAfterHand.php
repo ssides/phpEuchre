@@ -18,7 +18,23 @@
       
       $conn1 = mysqli_connect($hostname, $username, $password, $dbname);
     
-      $smt = mysqli_prepare($conn1, "update `Game` set `OrganizerTricks` = ? ,`OrganizerScore` = ? ,`OpponentTricks` = ? ,`OpponentScore` = ? ,`ACO` = null,`ACP` = null,`ACL` = null,`ACR` = null ,`PO` = null,`PP` = null,`PL` = null,`PR` = null,`ScoringInProgress` = '1'  where `ID`= ?");
+      $sql = "update `Game` set 
+        `OrganizerTricks` = ?
+        ,`OrganizerScore` = ?
+        ,`OpponentTricks` = ?
+        ,`OpponentScore` = ?
+        ,`ACO` = null
+        ,`ACP` = null
+        ,`ACL` = null
+        ,`ACR` = null
+        ,`PO` = null
+        ,`PP` = null
+        ,`PL` = null
+        ,`PR` = null
+        ,`ScoringInProgress` = '1'
+        where `ID`= ?";
+      
+      $smt = mysqli_prepare($conn1, $sql);
       mysqli_stmt_bind_param($smt, 'iiiis', $organizerTricks,$organizerScore,$opponentTricks,$opponentScore,$gameID);
       if (!mysqli_stmt_execute($smt)){
         $response['ErrorMsg'] .= mysqli_error($conn1);
@@ -31,6 +47,7 @@
       $conn2 = mysqli_connect($hostname, $username, $password, $dbname);
 
       if ($opponentTricks == 0 && $organizerTricks == 0) {
+        $response['ErrorMsg'] .= setDealInActive($gameID);
         $dealer = "";
         $sql = "select `Dealer` from `Game` where `ID`='{$gameID}'";
 
@@ -74,5 +91,17 @@
   } else {
     echo "Expecting request method: POST";
   }
+  
+  function setDealInActive($gameID){
+    global $hostname, $username, $password, $dbname;
+    $conn = mysqli_connect($hostname, $username, $password, $dbname);
+    $errorMsg = "";
+    
+    $sql = "update `GameDeal` set `IsActive` = '0' where `GameID` = '{$gameID}' and `IsActive` = '1'";
+    if (mysqli_query($conn, $sql) === false) {
+      $errorMsg = mysqli_error($conn);
+    } 
 
+    return $errorMsg;
+  }
 ?>
