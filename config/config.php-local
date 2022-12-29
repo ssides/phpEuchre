@@ -10,6 +10,6 @@
   $cardImageHeight = 55; // px ratio: 0.73958
   $firstJackChoices = 500;
   $dealChoices = 10000;
-  $gameControllerLog = false;
+  $gameControllerLog = true;
   $version = '1.1:1';
 ?>
