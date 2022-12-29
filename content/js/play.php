@@ -644,7 +644,10 @@
       if (!trump && self.game.CardFaceUp.length > 2 && self.game.CardFaceUp[2] == 'U') {
         if (self.game.CardFaceUp.length == 5 && self.game.CardFaceUp[4] == self.game.Dealer) {
           // The partner of the dealer took it alone.  The dealer is the skipped player.
-          self.setTurnDealerSkipped();
+          // Let the organizer set Turn.
+          if (self.position == 'O') {
+            self.setTurnDealerSkipped();
+          }
           self.setExecutionPoint('waitForPlay');
         } else {
           self.setExecutionPoint('waitForDiscard');
