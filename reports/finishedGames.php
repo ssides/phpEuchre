@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="../content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="<?php echo '../content/css/site.css?v='.$version  ?>">
-  <title>Start or Join a Game</title>
+  <title>Finished Games Report</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="../content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
   <script src="../content/ko/knockout-3.5.1.js"></script>

@@ -6,11 +6,11 @@
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       $games = array();
-      $scores = array();
+      $log = array();
       $gameID = $_POST['gameID'];
 
-      $sql = "select `OpponentTrump`,`OrganizerTrump`,`Lead`,`CardO`,`CardL`,`CardP`,`CardR`,`OpponentScore`,`OrganizerScore`,`OpponentTricks`,`OrganizerTricks`,`CardFaceUp`,`Dealer`,`DealID`
-        from `GamePlay` 
+      $sql = "select `DealID`,`GameControllerState`,`InsertDate`,`Message`,`OpponentScore`,`OpponentTricks`,`OrganizerScore`,`OrganizerTricks`,`PositionID` 
+        from `GameControllerLog` 
         where `GameID`='{$gameID}' order by `InsertDate`";
 
       $results = mysqli_query($connection, $sql);
@@ -19,25 +19,21 @@
       } else {
         while ($row = mysqli_fetch_array($results)) {
           $r = array();
-          $r['OrganizerTrump'] = $row['OrganizerTrump'];
-          $r['OpponentTrump'] = $row['OpponentTrump'];
-          $r['Lead'] = $row['Lead'];
-          $r['CardO'] = $row['CardO'];
-          $r['CardL'] = $row['CardL'];
-          $r['CardP'] = $row['CardP'];
-          $r['CardR'] = $row['CardR'];
           $r['OrganizerScore'] = $row['OrganizerScore'];
           $r['OpponentScore'] = $row['OpponentScore'];
           $r['OrganizerTricks'] = $row['OrganizerTricks'];
           $r['OpponentTricks'] = $row['OpponentTricks'];
-          $r['CardFaceUp'] = $row['CardFaceUp'];
-          $r['DealID'] = $row['DealID'];
-          $r['Dealer'] = $row['Dealer'];
-          array_push($scores, $r);
+          $r['DealID'] = is_null($row['DealID']) ? '' : $row['DealID'];
+          $r['GameControllerState'] = $row['GameControllerState'];
+          $r['InsertDate'] = $row['InsertDate'];
+          $r['Message'] = is_null($row['Message']) ? '' : $row['Message'];
+          $r['PositionID'] = $row['PositionID'];
+          
+          array_push($log, $r);
         }
       }
 
-      $games['Scores'] = $scores;
+      $games['Log'] = $log;
       
       http_response_code(200);
       echo json_encode($games);
