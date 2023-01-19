@@ -2,27 +2,22 @@
 
 <script type="text/javascript">
 
-  function score(data) {
-    this.organizerTrump = data.OrganizerTrump || '';
-    this.opponentTrump = data.OpponentTrump || '';
-    this.lead = data.Lead || '';
-    this.cardO = data.CardO || '';
-    this.cardL = data.CardL || '';
-    this.cardP = data.CardP || '';
-    this.cardR = data.CardR || '';
-    this.organizerScore = data.OrganizerScore || '';
-    this.opponentScore = data.OpponentScore || '';
-    this.organizerTricks = data.OrganizerTricks || '';
-    this.opponentTricks = data.OpponentTricks || '';
-    this.cardFaceUp = data.CardFaceUp || '';
-    this.dealer = data.Dealer || '';
+  function debugLog(data) {
     this.dealID = data.DealID || '';
+    this.gameControllerState = data.GameControllerState || '';
+    this.insertDate = data.InsertDate || '';
+    this.message = data.Message || '';
+    this.opponentScore = data.OpponentScore || '';
+    this.opponentTricks = data.OpponentTricks || '';
+    this.organizerScore = data.OrganizerScore || '';
+    this.organizerTricks = data.OrganizerTricks || '';
+    this.positionID = data.PositionID || '';
   }
 
-  function scoresViewModel() {
+  function debugLogViewModel() {
     var self = this;
     
-    self.scores = ko.observableArray();
+    self.log = ko.observableArray();
     self.gameID = ko.observable();
     
     self.getScores = function() {
@@ -32,7 +27,7 @@
         };
       $.ajax({
         method: 'POST',
-        url: '../api/reports/getScores.php',
+        url: '../api/reports/getDebugLog.php',
         data: postData,
         success: function (response) {
           try {
@@ -40,11 +35,11 @@
             if (data.ErrorMsg) {
               console.log(data.ErrorMsg);
             } else {
-              var s = [];
-              data.Scores.forEach(function(i){
-                s.push(new score(i));
+              var l = [];
+              data.Log.forEach(function(i){
+                l.push(new debugLog(i));
               });
-              self.scores(s);
+              self.log(l);
             }
           } catch (error) {
             console.log('Error ' + ': ' + error.message || error);
@@ -62,6 +57,6 @@
   }    
   
   $(function () {
-    ko.applyBindings(new scoresViewModel());
+    ko.applyBindings(new debugLogViewModel());
   });
 </script>
