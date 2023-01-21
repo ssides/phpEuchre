@@ -183,11 +183,29 @@
       }
     };
     
-    self.placeCardWithAcknowledge = function(card, playerID) {
+    self.acknowledgmentAccepted = function(playerID){
+        switch (self.position) {
+          case 'O':
+            return self.game.ACO.includes(playerID);
+          case 'P':
+            return self.game.ACP.includes(playerID);
+          case 'L':
+            return self.game.ACL.includes(playerID);
+          case 'R':
+            return self.game.ACR.includes(playerID);
+          default:
+            return false;
+        }
+    };
+    
+    self.placeCardWithAcknowledge = function(card, playerID){
       if (card) {
         self.placeCard[app.positions.indexOf(self.position)](card, playerID);
-        if (self.position != playerID && !self.iamTheSkippedPlayer())
-          self.acknowledgeCard(playerID);
+        if (self.position != playerID && !self.iamTheSkippedPlayer()) {
+          if (!self.acknowledgmentAccepted(playerID)) {
+            self.acknowledgeCard(playerID);
+          }
+        }
       }
     };
     
@@ -224,7 +242,7 @@
       });
     };
     
-    self.getNextStartCard = function() {
+    self.getNextStartCard = function(){
       console.log('getNextStartCard()');
 
       $.ajax({
@@ -256,7 +274,7 @@
     // Turn and Dealer have been set in self.game.  self.position is the dealer. 
     // The deal api selects a random deal where `PurposeCode` = 'D' and DealID has not yet been used in this game.
     // It distributes cards to players in table `Play`. The dealer calls self.deal().
-    self.deal = function() {
+    self.deal = function(){
       console.log('deal()');
 
       $.ajax({
@@ -381,7 +399,7 @@
       self.playVM.nCardURL('');  self.playVM.eCardURL('');  self.playVM.sCardURL('');  self.playVM.wCardURL('');
     };
 
-    self.getGame = function() {
+    self.getGame = function(){
       $.ajax({
         method: 'POST',
         url: 'api/getGame.php',
@@ -433,7 +451,7 @@
       });
     };
     
-    self.scoringFinished = function() {
+    self.scoringFinished = function(){
       console.log('scoringFinished()');
       $.ajax({
         method: 'POST',
@@ -574,10 +592,10 @@
       }
     };
     
-    self.idleFn = function() {
+    self.idleFn = function(){
     };
     
-    self.dealOrWaitForCardFaceUpFn = function() {
+    self.dealOrWaitForCardFaceUpFn = function(){
       if (self.position === self.game.Dealer) {
         self.deal();
       } else {
@@ -603,7 +621,7 @@
       }
     };
     
-    self.waitForTrumpFn = function() {
+    self.waitForTrumpFn = function(){
       // The getGameInterval timer is running and will update the page.
       // The currentPlayerInfoViewModel.update() method is called on 
       // every heartbeat.  That VM needs to be smart enough to work
@@ -665,7 +683,7 @@
       }
     };
     
-    self.scoreHandFn = function() {
+    self.scoreHandFn = function(){
       var winner = self.playerInfoVM.getWinnerOfHand();
       var newScore = self.playerInfoVM.getNewScore(winner);
       self.logHand(newScore);
@@ -673,7 +691,7 @@
       self.setExecutionPoint('clearTableAsOrganizer');
     }
     
-    self.clearTableAsPlayerFn = function() {
+    self.clearTableAsPlayerFn = function(){
       self.clearTable();
       self.previousPO = ''; self.previousPP = ''; self.previousPL = ''; self.previousPR = '';
 
@@ -683,7 +701,7 @@
       }
     };
     
-    self.clearTableAsOrganizerFn = function() {
+    self.clearTableAsOrganizerFn = function(){
       self.clearTable();
       self.previousPO = ''; self.previousPP = ''; self.previousPL = ''; self.previousPR = '';
       
@@ -742,7 +760,7 @@
       { id: 'clearTableAsPlayer', fn: self.clearTableAsPlayerFn },
     ];
     
-    self.initialize = function() {
+    self.initialize = function(){
       self.setExecutionPoint('initialize');
       self.getGameInterval = setInterval(self.getGame, app.times.gameTime);
     }
@@ -751,7 +769,7 @@
 
   }
   
-  $(function () {
+  $(function (){
     var gc = new gameController();
     ko.applyBindings(gc.whatsTrumpVM, $('#WhatsTrump')[0]);
     ko.applyBindings(gc.nPlayerInfoVM, $('#NorthInfo')[0]);
