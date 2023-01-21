@@ -9,6 +9,7 @@
       
       $response = array();
       $response['ErrorMsg'] = "";
+      $id = GUID();
       $gameID = $_POST['gameID'];
       $dealID = strlen($_POST['dealID']) > 0 ? $_POST['dealID'] : null;
       $positionID = $_POST['positionID'];
@@ -18,12 +19,24 @@
       $opponentScore = $_POST['opponentScore'];
       $organizerTricks = $_POST['organizerTricks'];
       $opponentTricks = $_POST['opponentTricks'];
-      $id = GUID();
+      $dealer = $_POST['dealer'];
+      $turn = $_POST['turn'];
+      $cardFaceUp = $_POST['cardFaceUp'];
+      $aco = $_POST['aco'];
+      $acp = $_POST['acp'];
+      $acl = $_POST['acl'];
+      $acr = $_POST['acr'];
+      $po = $_POST['po'];
+      $pp = $_POST['pp'];
+      $pl = $_POST['pl'];
+      $pr = $_POST['pr'];
 
-      $sql = "insert into `GameControllerLog` (`ID`,`GameID`,`DealID`,`PositionID`,`GameControllerState`,`Message`,`OrganizerScore`,`OpponentScore`,`OrganizerTricks`,`OpponentTricks`,`InsertDate`) values (?,?,?,?,?,?,?,?,?,?,now())";
+      $sql = "insert into `GameControllerLog` 
+        (`ID`,`GameID`,`DealID`,`PositionID`,`GameControllerState`,`Message`,`OrganizerScore`,`OpponentScore`,`OrganizerTricks`,`OpponentTricks`,`Dealer`,`Turn`,`CardFaceUp`,`ACO`,`ACP`,`ACL`,`ACR`,`PO`,`PP`,`PL`,`PR`,`InsertDate`) 
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now())";
       
       $smt = mysqli_prepare($connection, $sql);
-      mysqli_stmt_bind_param($smt, 'ssssssiiii', $id,$gameID,$dealID,$positionID,$state,$message,$organizerScore,$opponentScore,$organizerTricks,$opponentTricks);
+      mysqli_stmt_bind_param($smt, 'ssssssiiiisssssssssss', $id,$gameID,$dealID,$positionID,$state,$message,$organizerScore,$opponentScore,$organizerTricks,$opponentTricks,$dealer,$turn,$cardFaceUp,$aco,$acp,$acl,$acr,$po,$pp,$pl,$pr);
       if (!mysqli_stmt_execute($smt)){
         $response['ErrorMsg'] .= mysqli_error($connection);
       }

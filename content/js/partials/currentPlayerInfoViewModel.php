@@ -11,7 +11,6 @@
     self.myPosition = '';
     self.trump = '';
     self.previousTrump = '';
-    self.dealID = '';
     self.previousDealID = '';
     self.previousTurn = '';
     self.previousCardFaceUp = '';
@@ -44,13 +43,13 @@
     // I wanted to keep all the rules in one place, so the game controller can
     // call these: getWinnerOfHand() and getNewScore(winner).  So make sure
     // self.gameData is always up to date.
-    self.update = function(game, dealID) {
+    // todo: make sure self.initialize() is called before self.update()!
+    self.update = function(game) {
       self.gameData = new gameModel(game);
-      if (!self.gameData.GameStartDate || !dealID || self.gameData.allCardsHaveBeenPlayed() || self.gameData.ScoringInProgress) return;
+      if (!self.myPosition || !self.gameData.GameStartDate || !self.gameData.DealID || self.gameData.allCardsHaveBeenPlayed() || self.gameData.ScoringInProgress) return;
       
       self.iamDealer = self.myPosition == self.gameData.Dealer;
       self.trump = self.gameData.OpponentTrump || self.gameData.OrganizerTrump;
-      self.dealID = dealID;
       self.pickingItUp = self.gameData.CardFaceUp.length > 2 && self.gameData.CardFaceUp[2] == 'U' && self.iamDealer;
       
       self.setTrumpIcon();
@@ -66,8 +65,8 @@
       
       var updateReason = '';
       
-      if (self.dealID != self.previousDealID) {
-        self.previousDealID = self.dealID;
+      if (self.gameData.DealID != self.previousDealID) {
+        self.previousDealID = self.gameData.DealID;
         updateReason += 'D';  // new 'D'eal
       }
       
@@ -292,6 +291,7 @@
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.positionID = self.myPosition;
+      
       return $.ajax({
         method: 'POST',
         url: 'api/getMyCards.php',
@@ -765,7 +765,7 @@
     };
 
     self.initialize = function(selfPosition, game){
-      console.log('currentPlayerInfoViewModel.initialize()');
+      console.log('currentPlayerInfoViewModel.initialize(' + selfPosition + ')');
       self.gameData = new gameModel(game);
       self.myPosition = selfPosition;
       

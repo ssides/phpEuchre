@@ -3,11 +3,18 @@
   include_once('../config/db.php');
   include_once('../config/config.php');
 
+
   function getDealID($gameID) {
     global $hostname, $username, $password, $dbname;
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
     $dealID = null;
-    $results = mysqli_query($conn, "select `DealID` from `GameDeal` where `GameID` = '{$gameID}'");
+    
+    $sql = "select `DealID` 
+      from `GameDeal` gd
+      join `Deal` d on gd.`DealID` = d.`ID`
+      where gd.`GameID` = '{$gameID}' and d.`PurposeCode` = 'J'";
+    
+    $results = mysqli_query($conn, $sql);
     
     while ($row = mysqli_fetch_array($results)) {
       $dealID = $row['DealID'];
