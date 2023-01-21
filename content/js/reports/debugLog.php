@@ -12,6 +12,18 @@
     this.organizerScore = data.OrganizerScore || '';
     this.organizerTricks = data.OrganizerTricks || '';
     this.positionID = data.PositionID || '';
+    
+    this.dealer = data.Dealer || '';
+    this.turn = data.Turn || '';
+    this.cardFaceUp = data.CardFaceUp || '';
+    this.aco = data.ACO || '';
+    this.acp = data.ACP || '';
+    this.acl = data.ACL || '';
+    this.acr = data.ACR || '';
+    this.po = data.PO || '';
+    this.pp = data.PP || '';
+    this.pl = data.PL || '';
+    this.pr = data.PR || '';
   }
 
   function debugLogViewModel() {
@@ -20,10 +32,10 @@
     self.log = ko.observableArray();
     self.gameID = ko.observable();
     
-    self.getScores = function() {
+    self.getLogData = function() {
       var postData = { 
         <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'" ?>,
-        gameID: self.gameID()
+        gameID: self.gameID().trim()
         };
       $.ajax({
         method: 'POST',

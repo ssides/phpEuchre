@@ -36,6 +36,7 @@
     this.GameStartDate = data.GameStartDate || '';
     this.GameFinishDate = data.GameFinishDate || '';
     this.ScoringInProgress = (data.ScoringInProgress || '') === '1';
+    this.DealID = data.DealID || '';
     
     this.getAllCards = function(){ return this.PO + this.PP + this.PL + this.PR;  };
     
@@ -47,6 +48,8 @@
       return this.ACP == 'A' && this.ACR == 'A' && this.ACL == 'A';
     };
 
+    // todo: come up with a short name for allCardsHaveBeenPlayedAndAcknowledged()
+    // maybe allCardsPlayedAndSeen
     this.allCardsHaveBeenPlayed = function() {
       if (this.CardFaceUp.length == 5) {
         // If there are only three players, there are only two acknowledgments per player.

@@ -28,7 +28,7 @@
     self.getScores = function() {
       var postData = { 
         <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'" ?>,
-        gameID: self.gameID()
+        gameID: self.gameID().trim()
         };
       $.ajax({
         method: 'POST',
