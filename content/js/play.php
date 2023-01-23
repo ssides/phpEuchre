@@ -679,6 +679,7 @@
       
       if (self.game.allCardsHaveBeenPlayed() || self.game.ScoringInProgress) {
         if (self.position == 'O') {
+          self.delay = 1;
           self.setExecutionPoint('scoreHand');
         } else {
           self.delay = app.delayClearTable;
@@ -716,6 +717,7 @@
       self.previousPO = ''; self.previousPP = ''; self.previousPL = ''; self.previousPR = '';
       
       if (self.game.allPlayersHaveAcknowledged()) {
+        self.delay = 0;
         self.clearTable();
         self.scoringFinished();
         self.setExecutionPoint('waitForScore');
