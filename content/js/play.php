@@ -32,6 +32,7 @@
     self.orgGetNextFInterval = null;
     self.playerGetCurrentFInterval = null;
     self.firstDealer = ' ';
+    self.delay = 0;
     
     self.setThisPlayerPosition = function(gameData){
       if ((self.playerID === gameData.Organizer)) {
@@ -67,7 +68,7 @@
       self.nPlayerInfoVM.update(self.game);
       self.ePlayerInfoVM.update(self.game);
       self.wPlayerInfoVM.update(self.game);
-      self.playerInfoVM.update(self.game);
+      self.playerInfoVM.update(self.game, self.delay);
       self.myScoreVM.update(self.game);
       self.opponentScoreVM.update(self.game);
       if (self.game.OpponentTrump || self.game.OrganizerTrump) {
@@ -608,7 +609,9 @@
         // all the players have acknowledged seeing the first Jack.
         self.clearTable();
         if (self.position == 'O') {
-          self.setDealPosition(self.firstDealer, 'isFirst');
+          // for debugging:
+          self.setDealPosition('O', 'isFirst');
+          // self.setDealPosition(self.firstDealer, 'isFirst');
         } else {
           self.setExecutionPoint('dealOrWaitForCardFaceUp');
         }
@@ -678,7 +681,8 @@
         if (self.position == 'O') {
           self.setExecutionPoint('scoreHand');
         } else {
-          self.setExecutionPoint('clearTableAsPlayer');
+          self.delay = app.delayClearTable;
+          self.setExecutionPoint('delayAsPlayer');
         }
       }
     };
@@ -689,6 +693,13 @@
       self.logHand(newScore);
       self.updateScoreAfterHand(winner, newScore); // sets ScoringInProgress to '1'; self.game.allCardsHaveBeenPlayed() will now be false.
       self.setExecutionPoint('clearTableAsOrganizer');
+    }
+    
+    self.delayAsPlayerFn = function() {
+      self.delay = self.delay - 1 > 0 ? self.delay - 1 : 0;
+      if (self.delay == 0) {
+        self.setExecutionPoint('clearTableAsPlayer');
+      }
     }
     
     self.clearTableAsPlayerFn = function(){
@@ -702,10 +713,10 @@
     };
     
     self.clearTableAsOrganizerFn = function(){
-      self.clearTable();
       self.previousPO = ''; self.previousPP = ''; self.previousPL = ''; self.previousPR = '';
       
       if (self.game.allPlayersHaveAcknowledged()) {
+        self.clearTable();
         self.scoringFinished();
         self.setExecutionPoint('waitForScore');
       }
@@ -758,6 +769,7 @@
       { id: 'waitForDiscard', fn: self.waitForDiscardFn },
       { id: 'showGameOverDialog', fn: self.showGameOverDialogFn },
       { id: 'clearTableAsPlayer', fn: self.clearTableAsPlayerFn },
+      { id: 'delayAsPlayer', fn: self.delayAsPlayerFn },
     ];
     
     self.initialize = function(){

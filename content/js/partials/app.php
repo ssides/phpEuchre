@@ -22,4 +22,7 @@
     };
   
   app.gameControllerLog = <?php echo $gameControllerLog ? 'true' : 'false'; ?>;
+  
+  app.delayClearTable = <?php echo $delayClearTable; ?>;
+  
 </script>
