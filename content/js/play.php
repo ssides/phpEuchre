@@ -5,7 +5,7 @@
 <script type="text/javascript">
   
   // The gameController is responsible for calling on viewmodels to update the score, and do animations on 
-  // the play table.  The main interval timer is the getGameInterval which runs throughout the game.
+  // the play table.  The main interval timer is the getGameTimer which runs throughout the game.
   // The computer used by the Organizer does the scoring of the game.  So if the Organizer's Partner goes
   // alone, the Organizer's gameController must continue to be active. (I say that because when my iPhone
   // goes to sleep, javascript processes stop running.)
@@ -28,9 +28,12 @@
     self.playVM = new playViewModel();
     self.bidDialogVM = new bidDialogViewModel();
     self.endGameDialogVM = new endGameDialogViewModel();
-    self.getGameInterval = null;
-    self.orgGetNextFInterval = null;
-    self.playerGetCurrentFInterval = null;
+    self.getGameTimer = null;
+    self.getGameInProgress = false;   // lets the $.ajax() call take more than a second to complete.
+    self.getNextStartCardTimer = null;
+    self.getNextStartCardInProgress = false;
+    self.getCurrentStartCardTimer = null;
+    self.getCurrentStartCardInProgress = false;
     self.firstDealer = ' ';
     self.delay = 0;
     
@@ -211,65 +214,77 @@
     };
     
     self.getCurrentStartCard = function(){
-      console.log('getCurrentStartCard()');
-
-      $.ajax({
-        method: 'POST',
-        url: 'api/getCurrentStartCard.php',
-        data: app.apiPostData,
-        success: function (response) {
-          try {
-            let data = JSON.parse(response);
-            if (data.ID) {
-              var i = app.positions.indexOf(self.position);
-              self.placeCard[i](data.ID, data.Position);
-              if (data.ID[0] == 'J') {
-                self.acknowledge(self.position);
-                self.setExecutionPoint('waitForAcknowledgments');
-                clearInterval(self.playerGetCurrentFInterval);
+      if (!self.getCurrentStartCardInProgress) {
+        console.log('getCurrentStartCard()');
+        
+        self.getCurrentStartCardInProgress = true;
+        $.ajax({
+          method: 'POST',
+          url: 'api/getCurrentStartCard.php',
+          data: app.apiPostData,
+          success: function (response) {
+            try {
+              let data = JSON.parse(response);
+              if (data.ID) {
+                var i = app.positions.indexOf(self.position);
+                self.placeCard[i](data.ID, data.Position);
+                if (data.ID[0] == 'J') {
+                  self.acknowledge(self.position);
+                  self.setExecutionPoint('waitForAcknowledgments');
+                  clearInterval(self.getCurrentStartCardTimer);
+                }
+              } else {
+                console.log(data.ErrorMsg);
               }
-            } else {
-              console.log(data.ErrorMsg);
+            } catch (error) {
+              console.log('Could not parse response from getCurrentStartCard. ' + error + ': ' + response);
+              clearInterval(self.getCurrentStartCardTimer);
             }
-          } catch (error) {
-            console.log('Could not parse response from getCurrentStartCard. ' + error + ': ' + response);
-            clearInterval(self.playerGetCurrentFInterval);
+          },
+          error: function (xhr, status, error) {
+            console.log(xhr.responseText);
+            clearInterval(self.getCurrentStartCardTimer);
+          },
+          complete: function(){
+            self.getCurrentStartCardInProgress = false;
           }
-        },
-        error: function (xhr, status, error) {
-          console.log(xhr.responseText);
-          clearInterval(self.playerGetCurrentFInterval);
-        }
-      });
+        });
+      }
     };
     
     self.getNextStartCard = function(){
-      console.log('getNextStartCard()');
-
-      $.ajax({
-        method: 'POST',
-        url: 'api/getNextStartCard.php',
-        data: app.apiPostData,
-        success: function (response) {
-          try {
-            let data = JSON.parse(response);
-            var i = app.positions.indexOf(self.position);
-            self.placeCard[i](data.ID, data.Position);
-            if (data.ID[0] == 'J') {
-              self.firstDealer = data.Position;
-              self.setExecutionPoint('waitForAcknowledgments');
-              clearInterval(self.orgGetNextFInterval);
+      if (!self.getNextStartCardInProgress) {
+        console.log('getNextStartCard()');
+        
+        self.getNextStartCardInProgress = true;
+        $.ajax({
+          method: 'POST',
+          url: 'api/getNextStartCard.php',
+          data: app.apiPostData,
+          success: function (response) {
+            try {
+              let data = JSON.parse(response);
+              var i = app.positions.indexOf(self.position);
+              self.placeCard[i](data.ID, data.Position);
+              if (data.ID[0] == 'J') {
+                self.firstDealer = data.Position;
+                self.setExecutionPoint('waitForAcknowledgments');
+                clearInterval(self.getNextStartCardTimer);
+              }
+            } catch (error) {
+              console.log('Could not parse response from getNextStartCard. ' + error + ': ' + response);
+              clearInterval(self.getNextStartCardTimer);
             }
-          } catch (error) {
-            console.log('Could not parse response from getNextStartCard. ' + error + ': ' + response);
-            clearInterval(self.orgGetNextFInterval);
+          },
+          error: function (xhr, status, error) {
+            console.log(xhr.responseText);
+            clearInterval(self.getNextStartCardTimer);
+          },
+          complete: function(){
+            self.getNextStartCardInProgress = false;
           }
-        },
-        error: function (xhr, status, error) {
-          console.log(xhr.responseText);
-          clearInterval(self.orgGetNextFInterval);
-        }
-      });
+        });
+      }
     };
 
     // Turn and Dealer have been set in self.game.  self.position is the dealer. 
@@ -288,15 +303,14 @@
             if (data.ErrorMsg) {
               console.log(data.ErrorMsg);
             } 
-            self.setExecutionPoint('waitForCardFaceUp');
           } catch (error) {
             console.log('Could not parse response from deal. ' + error + ': ' + response);
-            clearInterval(self.getGameInterval);
+            clearInterval(self.getGameTimer);
           }
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
-          clearInterval(self.getGameInterval);
+          clearInterval(self.getGameTimer);
         }
       });
     };
@@ -317,11 +331,10 @@
         data: pd,
         success: function(response){
           // wait for the dealer to deal.
-          self.setExecutionPoint('dealOrWaitForCardFaceUp');
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
-          clearInterval(self.getGameInterval);
+          clearInterval(self.getGameTimer);
         }
       });
     };
@@ -347,7 +360,7 @@
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
-          clearInterval(self.getGameInterval);
+          clearInterval(self.getGameTimer);
         }
       });
     };
@@ -401,31 +414,37 @@
     };
 
     self.getGame = function(){
-      $.ajax({
-        method: 'POST',
-        url: 'api/getGame.php',
-        data: app.apiPostData,
-        success: function (response) {
-          try {
-            let data = JSON.parse(response);
-            if (data.ErrorMsg) {
-              console.log(data.ErrorMsg);
-            } else {
-              self.game = new gameModel(data.Game);
-              self.updateScoresAndInfo();
-              self.gameExecution[self.executionPoint].fn();
+      if (!self.getGameInProgress) {
+        self.getGameInProgress = true;
+        $.ajax({
+          method: 'POST',
+          url: 'api/getGame.php',
+          data: app.apiPostData,
+          success: function (response) {
+            try {
+              let data = JSON.parse(response);
+              if (data.ErrorMsg) {
+                console.log(data.ErrorMsg);
+              } else {
+                self.game = new gameModel(data.Game);
+                self.updateScoresAndInfo();
+                self.gameExecution[self.executionPoint].fn();
+              }
+            } catch (error) {
+              console.log('Error ' + ': ' + error.message || error);
+              console.log(error.stack);
+              clearInterval(self.getGameTimer);
             }
-          } catch (error) {
-            console.log('Error ' + ': ' + error.message || error);
-            console.log(error.stack);
-            clearInterval(self.getGameInterval);
+          },
+          error: function (xhr, status, error) {
+            console.log(xhr.responseText);
+            clearInterval(self.getGameTimer);
+          },
+          complete: function(){
+            self.getGameInProgress = false;
           }
-        },
-        error: function (xhr, status, error) {
-          console.log(xhr.responseText);
-          clearInterval(self.getGameInterval);
-        }
-      });
+        });
+      }
     };
     
     self.endGame = function(){
@@ -442,12 +461,12 @@
           } catch (error) {
             console.log('Error ' + ': ' + error.message || error);
             console.log(error.stack);
-            clearInterval(self.getGameInterval);
+            clearInterval(self.getGameTimer);
           }
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
-          clearInterval(self.getGameInterval);
+          clearInterval(self.getGameTimer);
         }
       });
     };
@@ -552,17 +571,20 @@
       self.opponentScoreVM.initialize('O', self.position, self.game);
       
       if (self.game.Dealer) {
+        // the dealer has been determined
         if (!self.game.DealID) {
+          // the deal api has not completed.
           self.setExecutionPoint('dealOrWaitForCardFaceUp');
         }
         if (self.game.allCardsHaveBeenPlayed()) {
           if (self.position == 'O') {
             self.setExecutionPoint('scoreHand');
           } else {
-            self.setExecutionPoint('clearTable');
+            self.setExecutionPoint('waitForScore');
           }
         } else {
           if (self.game.OpponentTrump || self.game.OrganizerTrump) {
+            // trump has been established.
             self.setExecutionPoint('waitForPlay');
           } else {
             self.setExecutionPoint('waitForTrump');
@@ -582,14 +604,14 @@
       if (self.game.Dealer)
         throw "selectFirstJackFn(): dealer is already set.";
       
-      if ((self.position == 'O') && (self.orgGetNextFInterval === null)) {
+      if ((self.position == 'O') && (self.getNextStartCardTimer === null)) {
         console.log('Starting the first Jack selection timer.');
-        self.orgGetNextFInterval = setInterval(self.getNextStartCard, app.times.firstJackTime);
+        self.getNextStartCardTimer = setInterval(self.getNextStartCard, app.times.firstJackTime);
       }
       
-      if ((self.position != 'O') && (self.playerGetCurrentFInterval === null)) {
+      if ((self.position != 'O') && (self.getCurrentStartCardTimer === null)) {
         console.log('Starting the first Jack query timer.');
-        self.playerGetCurrentFInterval = setInterval(self.getCurrentStartCard, app.times.firstJackTime);
+        self.getCurrentStartCardTimer = setInterval(self.getCurrentStartCard, app.times.firstJackTime);
       }
     };
     
@@ -599,9 +621,8 @@
     self.dealOrWaitForCardFaceUpFn = function(){
       if (self.position === self.game.Dealer) {
         self.deal();
-      } else {
-        self.setExecutionPoint('waitForCardFaceUp');
       }
+      self.setExecutionPoint('waitForCardFaceUp');
     }
     
     self.waitForAcknowledgmentsFn = function(){
@@ -609,12 +630,9 @@
         // all the players have acknowledged seeing the first Jack.
         self.clearTable();
         if (self.position == 'O') {
-          // for debugging:
-          self.setDealPosition('O', 'isFirst');
-          // self.setDealPosition(self.firstDealer, 'isFirst');
-        } else {
-          self.setExecutionPoint('dealOrWaitForCardFaceUp');
+          self.setDealPosition(self.firstDealer, 'isFirst');  // todo: rename it self.setFirstDealPosition() and remove the parameter.
         }
+        self.setExecutionPoint('dealOrWaitForCardFaceUp');
       }
     };
 
@@ -625,7 +643,7 @@
     };
     
     self.waitForTrumpFn = function(){
-      // The getGameInterval timer is running and will update the page.
+      // The getGameTimer is running and will cause the page to be updated.
       // The currentPlayerInfoViewModel.update() method is called on 
       // every heartbeat.  That VM needs to be smart enough to work
       // efficiently based on the game state determined by several
@@ -752,7 +770,7 @@
     self.showGameOverDialogFn = function(){
       self.endGameDialogVM.update();
       self.endGameModal.show();
-      clearInterval(self.getGameInterval);
+      clearInterval(self.getGameTimer);
     };
     
     self.gameExecution = [
@@ -776,7 +794,7 @@
     
     self.initialize = function(){
       self.setExecutionPoint('initialize');
-      self.getGameInterval = setInterval(self.getGame, app.times.gameTime);
+      self.getGameTimer = setInterval(self.getGame, app.times.gameTime);
     }
     
     self.initialize();
