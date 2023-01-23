@@ -62,7 +62,9 @@
     
     self.setExecutionPoint = function(id) {
       console.log('execution point: ' + id);
-      self.logGameControllerState(id, null);
+      if (app.gameControllerLog) {
+        self.logGameControllerState(id, null);
+      }
       self.executionPoint = self.getExecutionPointIndex(id);
     };
     
@@ -700,7 +702,7 @@
           self.delay = 1;
           self.setExecutionPoint('scoreHand');
         } else {
-          self.delay = app.delayClearTable;
+          self.delay = app.clearTableDelay;
           self.setExecutionPoint('delayAsPlayer');
         }
       }

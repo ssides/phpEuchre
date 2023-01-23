@@ -19,7 +19,7 @@
       
         $_SESSION['gameID'] = $gameID;
         
-        if (isset($_POST['rejoin'])) {
+        if (isset($_POST['rejoin']) && $gameControllerLog) {
           $sqlErr = logRejoinGame($gameID, $playerID, $identifier);
         }
         
