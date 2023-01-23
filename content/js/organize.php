@@ -22,6 +22,8 @@
   function organizeViewModel() {
     var self = this;
     
+    self.getRSVPSTimer = null;
+    self.getRSVPSInProgress = false;   // lets the $.ajax() call take more than a second to complete.
     self.users = ko.observableArray();
     self.selectedLeft = ko.observable();
     self.leftInvited = ko.observable(false);
@@ -98,32 +100,38 @@
     };
     
     self.getRSVPs = function() {
-      var postData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"
-                    .",gameID:'{$_SESSION['gameID']}'"   ?> };
-      $.ajax({
-        method: 'POST',
-        url: 'api/getRSVPs.php',
-        data: postData,
-        success: function (response) {
-          let data = JSON.parse(response);
-          if (data.LeftJoinDate)
-            self.leftJoined(true);
-          else 
-            self.leftJoined(false);
-          if (data.RightJoinDate)
-            self.rightJoined(true);
-          else 
-            self.rightJoined(false);
-          if (data.PartnerJoinDate)
-            self.partnerJoined(true);
-          else 
-            self.partnerJoined(false);
-        },
-        error: function (xhr, status, error) {
-          console.log(xhr.responseText);
-          console.log(error);
-        }
-      });
+      if (!self.getRSVPSInProgress){
+        self.getRSVPSInProgress = true;
+        var postData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"
+                      .",gameID:'{$_SESSION['gameID']}'"   ?> };
+        self.getRSVPSInProgress = $.ajax({
+          method: 'POST',
+          url: 'api/getRSVPs.php',
+          data: postData,
+          success: function (response) {
+            let data = JSON.parse(response);
+            if (data.LeftJoinDate)
+              self.leftJoined(true);
+            else 
+              self.leftJoined(false);
+            if (data.RightJoinDate)
+              self.rightJoined(true);
+            else 
+              self.rightJoined(false);
+            if (data.PartnerJoinDate)
+              self.partnerJoined(true);
+            else 
+              self.partnerJoined(false);
+          },
+          error: function (xhr, status, error) {
+            console.log(xhr.responseText);
+            console.log(error);
+          },
+          complete: function(){
+            self.getRSVPSInProgress = false;
+          }
+        });
+      }
     };
     
     self.inviteAll = function() {
@@ -157,7 +165,7 @@
         }
       });
       
-      setInterval(self.getRSVPs, 1000);
+      self.getRSVPSTimer = setInterval(self.getRSVPs, 1000);
     };
     
     self.initialize();
