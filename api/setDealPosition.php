@@ -11,6 +11,10 @@
       $gameID = $_POST['gameID'];
       $position = $_POST['position'];
       $isFirst = isset($_POST['isFirst']);
+      
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
+      mysqli_query($conn, "START TRANSACTION;");
+
       $turn = getNextTurn($position);
       $sql = "";
       
@@ -26,6 +30,8 @@
       else 
         $errorMsg = 'OK';
       
+      mysqli_query($connection, "COMMIT;");
+      mysqli_close($conn);
       http_response_code(200);
       echo $errorMsg;
       

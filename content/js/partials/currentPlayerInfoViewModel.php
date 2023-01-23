@@ -44,9 +44,9 @@
     // call these: getWinnerOfHand() and getNewScore(winner).  So make sure
     // self.gameData is always up to date.
     // todo: make sure self.initialize() is called before self.update()!
-    self.update = function(game) {
+    self.update = function(game, delay) {
       self.gameData = new gameModel(game);
-      if (!self.myPosition || !self.gameData.GameStartDate || !self.gameData.DealID || self.gameData.allCardsHaveBeenPlayed() || self.gameData.ScoringInProgress) return;
+      if (!self.myPosition || delay != 0 || !self.gameData.GameStartDate || !self.gameData.DealID || self.gameData.allCardsHaveBeenPlayed() || self.gameData.ScoringInProgress) return;
       
       self.iamDealer = self.myPosition == self.gameData.Dealer;
       self.trump = self.gameData.OpponentTrump || self.gameData.OrganizerTrump;
