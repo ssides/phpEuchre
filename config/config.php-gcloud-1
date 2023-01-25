@@ -11,6 +11,6 @@
   $firstJackChoices = 500;
   $dealChoices = 12000;
   $gameControllerLog = false;
-  $delayClearTable = 2;
+  $clearTableDelay = 2;
   $version = '1.3:1';
 ?>
