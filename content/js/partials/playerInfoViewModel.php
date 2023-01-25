@@ -9,6 +9,7 @@
     self.trumpURL = ko.observable('');
     self.name = ko.observable('');
     self.dealer = ko.observable(' ');
+    self.pickedItUp = ko.observable(false);
     self.isPlayersTurn = ko.observable(false);
     self.isPlayerSkipped = ko.observable(false);
     self.trumpURL = ko.observable('');
@@ -46,7 +47,10 @@
       self.isPlayersTurn(self.myPosition == gameData.Turn);
       self.isPlayerSkipped(gameData.CardFaceUp.length > 4 && gameData.CardFaceUp[4] == self.myPosition);
       
-      if ((gameData.OrganizerTrump || gameData.OpponentTrump) && gameData.CardFaceUp.length > 3 && gameData.CardFaceUp[3] == self.myPosition) {
+      var trump = gameData.OrganizerTrump || gameData.OpponentTrump;
+      
+      if (trump && gameData.CardFaceUp.length > 3 && gameData.CardFaceUp[3] == self.myPosition) {
+        self.pickedItUp(false);
         if (self.myPosition == 'O' || self.myPosition == 'P') {
           if (gameData.OrganizerTrump) {
             self.trumpURL(app.getCardURL(gameData.OrganizerTrump));
@@ -56,9 +60,12 @@
             self.trumpURL(app.getCardURL(gameData.OpponentTrump));
           }
         }
+      } else if (!trump && gameData.CardFaceUp.length > 3 && gameData.CardFaceUp[2] == 'U' && gameData.CardFaceUp[3] == self.myPosition) {
+        self.pickedItUp(true);
       } else {
         self.trumpURL('');
       }
+      
     };
     
     self.initialize = function(iam, selfPosition, gameData){
