@@ -16,6 +16,11 @@
         <div data-bind="visible: trumpURL().length > 0">
           <img data-bind="attr: {src: trumpURL() }" style="height: 15px; width: 15px;" />
         </div>
+        <div data-bind="visible: pickedItUp">
+          <div class="pickedItUpBorder">
+            &nbsp;<span class="pickedItUp">U</span>
+          </div>
+        </div>
       </td>
     </tr>
   </table>
