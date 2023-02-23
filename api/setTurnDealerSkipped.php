@@ -52,9 +52,13 @@
     
     $cardFaceUp = $cardID.'K'.substr($cardFaceUp,3);
     $sql = "update `Game` set `{$trumpColumn}` = '{$trump}',`CardFaceUp` = '{$cardFaceUp}',`Turn` = '{$turn}' where `ID`='{$gameID}'";
+    mysqli_query($connection, "START TRANSACTION;");
     $results = mysqli_query($connection, $sql);
     if ($results === false) {
       $response .= mysqli_error($connection);
+      mysqli_query($connection, "ROLLBACK;");
+    } else {
+      mysqli_query($connection, "COMMIT;");
     }
     
     return $response;

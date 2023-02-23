@@ -23,12 +23,15 @@
           default:
             $msg = "Invalid identifier";
         };
-
+        
+        mysqli_query($connection, "START TRANSACTION;");
         $update = mysqli_query($connection, $sql);
-        if ($update) {
-          $msg = "OK";
-        } else {
+        if ($update === false) {
           $msg = mysqli_error($connection);
+          mysqli_query($connection, "ROLLBACK;");
+        } else {
+          $msg = "OK";
+          mysqli_query($connection, "COMMIT;");
         }
       } else {
         $msg = "Identifier not set.";

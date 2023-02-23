@@ -19,8 +19,13 @@
     
     function setGameStartDate($playerID, $gameID, $playTo) {
       global $connection;
+      $result = true;
       
       $sql = "update `Game` set `GameStartDate` = now(),`PlayTo`={$playTo} where `Organizer` = '{$playerID}' and `ID` = '{$gameID}'";
-      return mysqli_query($connection, $sql);
+      mysqli_query($connection, "START TRANSACTION;");
+      $result = mysqli_query($connection, $sql);
+      mysqli_query($connection, "COMMIT;");
+
+      return $result;
     }
 ?>

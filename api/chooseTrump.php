@@ -45,8 +45,12 @@
           $sql = "update `Game` set `OpponentTrump` = '{$trumpID}'".$sqlTail;
         }
         
+        mysqli_query($connection, "START TRANSACTION;");
         if (mysqli_query($connection, $sql) === false) {
           $response['ErrorMsg'] .= mysqli_error($connection);
+          mysqli_query($connection, "ROLLBACK;");
+        } else {
+          mysqli_query($connection, "COMMIT;");
         }
 
       } else {

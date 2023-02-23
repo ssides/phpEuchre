@@ -36,13 +36,15 @@
           $cardFaceUp .= 'D';
           $turn = getNextTurn($positionID);
 
-          $sql = "update `Game` 
-            set `CardFaceUp` = '{$cardFaceUp}', `Turn` = '{$turn}'
-            where `ID`='{$gameID}'";
-            
+          $sql = "update `Game` set `CardFaceUp` = '{$cardFaceUp}', `Turn` = '{$turn}' where `ID`='{$gameID}'";
+          
+          mysqli_query($connection, "START TRANSACTION;");
           $results = mysqli_query($connection, $sql);
           if ($results === false) {
             $response['ErrorMsg'] .= mysqli_error($connection);
+            mysqli_query($connection, "ROLLBACK;");
+          } else {
+            mysqli_query($connection, "COMMIT;");
           }
         }
       } else {

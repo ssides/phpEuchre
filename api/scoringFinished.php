@@ -10,10 +10,14 @@
       $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
           
+      mysqli_query($connection, "START TRANSACTION;");
       $smt = mysqli_prepare($connection, "update `Game` set `ScoringInProgress` = '0',`ACO` = null,`ACP` = null,`ACL` = null,`ACR` = null  where `ID`= ?");
       mysqli_stmt_bind_param($smt, 's', $gameID);
       if (!mysqli_stmt_execute($smt)){
         $response['ErrorMsg'] .= mysqli_error($connection);
+        mysqli_query($connection, "ROLLBACK;");
+      } else {
+        mysqli_query($connection, "COMMIT;");
       }
 
       mysqli_stmt_close($smt);
