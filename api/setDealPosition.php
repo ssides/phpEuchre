@@ -12,8 +12,6 @@
       $position = $_POST['position'];
       $isFirst = isset($_POST['isFirst']);
       
-      mysqli_query($connection, "START TRANSACTION;");
-
       $turn = getNextTurn($position);
       $sql = "";
       
@@ -23,13 +21,16 @@
         $sql = "update `Game` set `Dealer`='{$position}', `Turn`='{$turn}', `CardFaceUp`=null where `ID`='{$gameID}'";
       }
       
+      mysqli_query($connection, "START TRANSACTION;");
       $result = mysqli_query($connection, $sql);
-      if ($result === false)
+      if ($result === false) {
         $errorMsg = mysqli_error($connection);
-      else 
+        mysqli_query($connection, "ROLLBACK;");
+      } else {
         $errorMsg = 'OK';
+        mysqli_query($connection, "COMMIT;");
+      }
       
-      mysqli_query($connection, "COMMIT;");
       http_response_code(200);
       echo $errorMsg;
       
