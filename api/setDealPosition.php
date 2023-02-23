@@ -12,8 +12,7 @@
       $position = $_POST['position'];
       $isFirst = isset($_POST['isFirst']);
       
-      $conn = mysqli_connect($hostname, $username, $password, $dbname);
-      mysqli_query($conn, "START TRANSACTION;");
+      mysqli_query($connection, "START TRANSACTION;");
 
       $turn = getNextTurn($position);
       $sql = "";
@@ -31,7 +30,6 @@
         $errorMsg = 'OK';
       
       mysqli_query($connection, "COMMIT;");
-      mysqli_close($conn);
       http_response_code(200);
       echo $errorMsg;
       
