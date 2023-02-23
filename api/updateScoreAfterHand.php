@@ -34,14 +34,17 @@
         ,`ScoringInProgress` = '1'
         where `ID`= ?";
       
+      mysqli_query($conn1, "START TRANSACTION;");
       $smt = mysqli_prepare($conn1, $sql);
       mysqli_stmt_bind_param($smt, 'iiiis', $organizerTricks,$organizerScore,$opponentTricks,$opponentScore,$gameID);
       if (!mysqli_stmt_execute($smt)){
         $response['ErrorMsg'] .= mysqli_error($conn1);
+        mysqli_query($conn1, "ROLLBACK;");
+      } else {
+        mysqli_query($conn1, "COMMIT;");
       }
 
       mysqli_stmt_close($smt);
-
       mysqli_close($conn1);
       
       $conn2 = mysqli_connect($hostname, $username, $password, $dbname);
@@ -64,18 +67,28 @@
           $dealer = getNextTurn($dealer);
           $turn = getNextTurn($dealer);
           $sql = "update `Game` set `Dealer` = '{$dealer}',`Lead` = null,`Turn` = '{$turn}',`OrganizerTrump` = null,`OpponentTrump` = null where `ID`='{$gameID}'";
+              
+          mysqli_query($conn2, "START TRANSACTION;");
           $result = mysqli_query($conn2, $sql);
           if ($result === false) {
             $response['ErrorMsg'] .= mysqli_error($conn2);
+            mysqli_query($conn2, "ROLLBACK;");
+          } else {
+            mysqli_query($conn2, "COMMIT;");
           }
         } else {
             $response['ErrorMsg'] .= "Invalid dealer: '{$dealer}'";
         }
       } else {
         $sql = "update `Game` set `Lead` = null,`Turn` = '{$winner}' where `ID`='{$gameID}'";
+
+        mysqli_query($conn2, "START TRANSACTION;");
         $result = mysqli_query($conn2, $sql);
         if ($result === false) {
           $response['ErrorMsg'] .= mysqli_error($conn2);
+          mysqli_query($conn2, "ROLLBACK;");
+        } else {
+          mysqli_query($conn2, "COMMIT;");
         }
       }
       

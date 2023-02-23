@@ -48,7 +48,9 @@
   function updateFDeal($gameID, $ix, $position) {
     global $errorMsg, $hostname, $username, $password, $dbname;
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
+    mysqli_query($conn, "START TRANSACTION;");
     $result = mysqli_query($conn,"update `Game` set `FirstJackIndex`={$ix}, `FirstJackPosition`='{$position}' where `ID` = '{$gameID}'");
+    mysqli_query($conn, "COMMIT;");
     mysqli_close($conn);
     return $result;
   }
@@ -63,8 +65,13 @@
       $errorMsg .= mysqli_error($conn);
     } else {
       $sql = "update `Game` set `FirstJackIndex` = 0, `FirstJackPosition`='L' where `ID`='{$gameID}'";
+      
+      mysqli_query($conn, "START TRANSACTION;");
       if (mysqli_query($conn, $sql) === false) {
         $errorMsg .= mysqli_error($conn);
+        mysqli_query($conn, "ROLLBACK;");
+      } else {
+        mysqli_query($conn, "COMMIT;");
       }
     }
 

@@ -28,6 +28,7 @@
     global $errorMsg, $hostname, $username, $password, $dbname;
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
     $fdeal = array();
+    
     $sql = "select `FirstJackIndex`,`FirstJackPosition`,d.`Cards`
       from `Game` g
       join `GameDeal` gd on g.ID = gd.`GameID`

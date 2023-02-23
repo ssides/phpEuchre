@@ -79,6 +79,7 @@
     function joinGame($gameID, $playerID, $identifier) {
       global $connection;
       
+      $result = true;
       $sql = "";
       switch($identifier) {
         case 'Partner':
@@ -99,11 +100,12 @@
       };
       
       if (strlen($sql) > 0) {
-        return mysqli_query($connection, $sql);
-      } else {
-        return true;
+        mysqli_query($connection, "START TRANSACTION;");
+        $result = mysqli_query($connection, $sql);
+        mysqli_query($connection, "COMMIT;");
       }
-
+      
+      return $result;
     }
     
     function startGame($playerID) {
