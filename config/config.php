@@ -12,6 +12,6 @@
   $dealChoices = 12000;
   $gameControllerLog = true;
   $clearTableDelay = 2;
-  $version = '1.4:6'; // displayed in the header. change in version forces the browser to get the latest styles.
+  $version = '1.5:9'; // displayed in the header. change in version forces the browser to get the latest styles.
                       // M.m:s   M - Major version number, m - minor version number, s - styles version number.
 ?>
