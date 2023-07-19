@@ -2,6 +2,10 @@
   include_once('authorize.php');
   include_once('controllers/organize.php');
   include_once('config/config.php');
+  include_once('svc/group.php');
+  
+  if (!isset($group)) $group = parseGroup();
+
 ?>
 
 <!doctype html>
@@ -116,7 +120,10 @@
       </div>
     </div>
   </div>
-  <?php include('content/js/organize.php') ?>
+  <?php 
+    include('content/js/partials/app.php');
+    include('content/js/organize.php') 
+    ?>
 </body>
 
 </html>

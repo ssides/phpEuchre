@@ -6,49 +6,58 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="./content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="<?php echo './content/css/site.css?v='.$version  ?>">
+  <link rel="stylesheet" href="<?php echo './content/css/site.css?v='.$version ?>">
   <title>Sides Family Euchre</title>
-  <!-- jQuery + Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
+  <script src="./content/ko/knockout-3.5.1.js"></script>
 </head>
 
 <body>
 
-    <!-- Header -->
-    <?php include('header.php'); ?>
+  <?php include('header.php'); ?>
 
-    <div class="App">
-        <div class="vertical-center">
-          <div class="inner-block">
+  <div class="App">
+    <div class="vertical-center">
+      <div class="inner-block">
+        <form id="loginForm" action="" method="post">
+          <h3>Login</h3>
 
-                <form action="" method="post">
-                    <h3>Login</h3>
-
-                    <?php echo $sqlErr; ?>
-                    <?php echo $accountNotExistErr; ?>
-                    <?php echo $namePwdErr; ?>
-                    <?php echo $verificationRequiredErr; ?>
-                    <?php echo $name_empty_err; ?>
-                    <?php echo $pass_empty_err; ?>
-
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" class="form-control" name="name_signin" id="name_signin" />
-                    </div>
-
-                    <div class="form-group login-margin-bottom">
-                        <label>Password</label>
-                        <input type="password" class="form-control" name="password_signin" id="password_signin" />
-                    </div>
-
-                    <button type="submit" name="login" id="sign_in" class="btn btn-outline-primary btn-lg btn-block">Sign in</button>
-                </form>
-                <br>
-                <?php echo '<a href="'.$appUrl.'/resetPassword.php">Forgot password?</a>'; ?>
-            </div>
-        </div>
+          <div class="alert alert-danger" style="display:none" data-bind="visible: errorMessage().length > 0" >
+              <div data-bind="text: errorMessage"></div>
+          </div>
+          <table>
+            <tr>
+              <td style="width: 80px"><label for="name_signin">Name</label></td>
+              <td><input type="text" name="name_signin" id="name_signin" data-bind="value: name" /></td>
+            </tr>
+            <tr>
+              <td><label for="password_signin">Password</label></td>
+              <td><input type="password" name="password_signin" id="password_signin" data-bind="value: password" /></td>
+            </tr>
+            <tr>
+              <td><label for="selectgroup">Group</label></td>
+              <td>
+                <select id="selectgroup" data-bind="options: groups, optionsText: 'description', value: selectedGroup, optionsCaption:'Select'"></select>
+                <input type="hidden" data-bind="value: selectedGroup() ? selectedGroup().description : ''" id="group_signin" name="group_signin" />
+                <input type="hidden" data-bind="value: selectedGroup() ? selectedGroup().id : ''" id="group_id" name="group_id" />
+              </td>
+            </tr>
+          </table>
+          </br>
+          <button type="submit" name="login" id="sign_in" class="btn btn-outline-primary btn-lg btn-block" data-bind="click: validateSubmit">Sign in</button>
+          </br>
+          </br>
+          <?php echo '<a href="'.$appUrl.'resetPassword.php">Forgot password?</a>'; ?>
+        </form>
+      </div>
     </div>
+  </div>
+  
+  <?php
+    include('content/js/partials/app.php');
+    include('content/js/login.php')
+  ?>
 
 </body>
 

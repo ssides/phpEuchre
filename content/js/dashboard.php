@@ -83,7 +83,6 @@
     };
     
     self.initialize = function() {
-      console.log('start timer invitationTimer.');
       self.invitationTimer = setInterval(self.getInvitations, 1000);
       // start another timer to get games from the last three days 
       // that can be rejoined.
@@ -94,7 +93,6 @@
       
       $('.uxRefreshInvites').click(function(){ self.getInvitations(); });
       $('.uxRefreshReJoins').click(function(){ self.getRejoinableGames(); });
-
     }
     
     self.initialize();

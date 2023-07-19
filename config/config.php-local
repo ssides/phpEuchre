@@ -12,5 +12,5 @@
   $dealChoices = 12000;
   $gameControllerLog = true;
   $clearTableDelay = 2;
-  $version = '1.5:5';
+  $version = '1.6:1';
 ?>

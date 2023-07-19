@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
   
-  function player(name, id, thumbnailpath) {
+  function player(id, name, thumbnailpath) {
     this.name = name;
     this.id = id;
     this.thumbnailpath = thumbnailpath;
@@ -19,9 +19,10 @@
     }
   };
 
-  function organizeViewModel() {
+  function organizeViewModel(groupID) {
     var self = this;
     
+    self.groupID = groupID;
     self.getRSVPSTimer = null;
     self.getRSVPSInProgress = false;   // lets the $.ajax() call take more than a second to complete.
     self.users = ko.observableArray();
@@ -146,34 +147,43 @@
       }    
     };
     
-    self.initialize = function() {
+    self.getUsers = function() {
+      var pd = {};
+      Object.assign(pd, app.apiPostData);
+      pd.groupID = self.groupID;
       $.ajax({
         method: 'POST',
         url: 'api/getUsers.php',
-        data: { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"?> },
+        data: pd,
         success: function (response) {
           let data = JSON.parse(response);
           if (data.ErrorMsg) {
             console.log(data.ErrorMsg);
           }
           data.Users.forEach(function (i) {
-            self.users.push(new player(i[1], i[0], i[2]));
+            self.users.push(new player(i[0], i[1], i[2]));
           });
         },
         error: function (xhr, status, error) {
           console.log(error);
         }
       });
-      
+    };
+    
+    self.initialize = function() {
+      self.getUsers();
       self.getRSVPSTimer = setInterval(self.getRSVPs, 1000);
     };
     
     self.initialize();
   }
-
+  
+<?php if(!empty($group['ID'])): ?>
   $(function () {
-    
-    ko.applyBindings(new organizeViewModel());
-    
+    ko.applyBindings(new organizeViewModel('<?php echo $group['ID']; ?>'));
   });
+<?php endif; ?>
+
+
+  
 </script>
