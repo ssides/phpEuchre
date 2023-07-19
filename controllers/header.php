@@ -1,9 +1,10 @@
 <?php 
-  include('config/db.php');
-  include('config/config.php');
+  include_once('config/db.php');
+  include_once('config/config.php');
   include('svc/getThumbnailURL.php');
   
   $user = getUserInfo($_COOKIE[$cookieName]);
+  $hdrCtrlrError = is_null($connection) ? "No connection. " : "";
   
   function getUserInfo($playerID) {
     global $connection;
@@ -27,4 +28,5 @@
 
     return $user;
   }
+  
 ?>

@@ -367,3 +367,20 @@ table.dbgTable td {
   width: 50px;
   height: 50px;
 }
+
+.profilePadding {
+  margin: 10px;
+}
+
+.profileTablePadding {
+  padding: 0px 0px 0px 10px;
+}
+
+.manageGroupBlock {
+  width: 575px;
+}
+
+.headerText {
+  color: white;
+  font-size: 12px;
+}

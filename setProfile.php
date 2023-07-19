@@ -13,6 +13,7 @@
   <!-- jQuery + Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
+  <script src="./content/ko/knockout-3.5.1.js"></script>
 </head>
 
 <body>
@@ -22,12 +23,19 @@
   <div class="App">
     <div class="vertical-center">
       <div class="inner-block">
-        <?php echo $sqlErr; ?>
-        <?php echo $errorMsg; ?>
-        <?php echo $successMsg; ?>
-        <form action="" method="post">
-          <button type="submit" class="btn-close" aria-label="Close" name="close" id="close"></button>
-        </form>
+      
+        <div class="row">
+          <div class = "col-12">
+            <form class="float-end" action="" method="post">
+              <button type="submit" class="btn-close" aria-label="Close" name="close" id="close"></button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="alert alert-danger" style="display:none" data-bind="visible: errorMessage().length > 0" >
+          <div data-bind="text: errorMessage"></div>
+        </div>
+        
         <?php if(empty($thumbnailPath)): ?>
         <form action="" method="post" enctype="multipart/form-data">
           <div class="mb-3 profilePadding">
@@ -105,11 +113,38 @@
           </div>
         </div>
         <?php endif; ?>
-
-
+        
+        </br>
+        <div class="container border">
+          <div class="row">
+            <form action="" method="post">
+              <table class="profilePadding"> 
+                <tr>
+                  <td><label for="selectgroup">Group Name</label></td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td>                
+                    <select id="selectgroup" name="selectgroup" data-bind="options: groups, optionsText: 'description', value: selectedGroup, optionsCaption:'Select'"></select>
+                      <input type="hidden" data-bind="value: selectedGroup() ? selectedGroup().description : ''" id="group_description" name="group_description" />
+                      <input type="hidden" data-bind="value: selectedGroup() ? selectedGroup().id : ''" id="group_id" name="group_id" />
+                  </td>
+                  <td class="profileTablePadding">
+                    <button type="submit" name="joinrequest" id="joinrequest" class="btn btn-outline-primary btn-sm btn-block">Request to Join</button>
+                  </td>
+                </tr>
+              </table>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  <?php
+    include('content/js/partials/app.php');
+    include('content/js/setProfile.php')
+  ?>
 
 </body>
 

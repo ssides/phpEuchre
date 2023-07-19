@@ -7,9 +7,12 @@
     $result = false;
     
     if(!empty($id)) {
-      $nameCheckResult = mysqli_query($connection, "select * from `Player` where `ID` = '{$id}' and `IsActive` = '1'");
-      if ($nameCheckResult !== false) {
-        if (mysqli_num_rows($nameCheckResult) > 0) {
+      
+      $smt = mysqli_prepare($connection, "select `ID` from `Player` where `ID` = ? and `IsActive` = '1'");
+      mysqli_stmt_bind_param($smt, 's', $id);
+      if (mysqli_stmt_execute($smt) !== false) {
+        mysqli_stmt_store_result($smt);
+        if (mysqli_stmt_num_rows($smt) > 0) {
           $result = true;
         }
       }

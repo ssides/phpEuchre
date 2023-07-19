@@ -1,5 +1,10 @@
-<?php include('authorize.php'); ?>
-<?php include('controllers/dashboard.php'); ?>
+<?php 
+  include('authorize.php'); 
+  include('controllers/dashboard.php'); 
+  include_once('svc/group.php');
+  
+  $group = parseGroup();
+  ?>
 
 <!doctype html>
 <html lang="en">
@@ -39,7 +44,7 @@
               </tr>
             </tbody>
           </table>
-          <div class="dashboardRight"><button class="uxRefreshInvites btn btn-outline-secondary btn-sm">Refresh</button></div>
+          <!-- <div class="dashboardRight"><button class="uxRefreshInvites btn btn-outline-secondary btn-sm">Refresh</button></div> -->
         </div>
         <div class="org-border dashboardMargin" data-bind="visible: rejoinGames().length > 0">
           <table>
@@ -56,18 +61,24 @@
               </tr>
             </tbody>
           </table>
-          <div class="dashboardRight"><button class="uxRefreshReJoins btn btn-outline-secondary btn-sm">Refresh</button></div>
+          <!-- <div class="dashboardRight"><button class="uxRefreshReJoins btn btn-outline-secondary btn-sm">Refresh</button></div> -->
         </div>
-        <form action="" method="post">
-          <table>
-            <tr>
-              <td>
-                <button type="submit" name="organize" id="organize" class="btn btn-outline-primary btn-md btn-block">Start a Game</button>
-              </td>
-              <td><div class="dashboardPadding">You will be the organizer of the game.</div></td>
-            </tr>
-          </table>
-        </form>
+        <?php if(empty($group['ID'])): ?>
+          <div class="org-border dashboardMargin">
+            To start a game, log in to a group.
+          </div>
+        <?php else: ?>
+          <form action="" method="post">
+            <table>
+              <tr>
+                <td>
+                  <button type="submit" name="organize" id="organize" class="btn btn-outline-primary btn-md btn-block">Start a Game</button>
+                </td>
+                <td><div class="dashboardPadding">You will be the organizer of the game.</div></td>
+              </tr>
+            </table>
+          </form>
+        <?php endif; ?>
       </div>
     </div>
   </div>
