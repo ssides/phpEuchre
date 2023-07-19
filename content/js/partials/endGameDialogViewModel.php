@@ -8,7 +8,7 @@
     self.dateStr = ko.observable();
     
     self.ok = function(){
-      window.location.href = app.appURL + 'dashboard.php';
+      window.location.href = 'dashboard.php';
     };
     
     self.getWinner = function(){
