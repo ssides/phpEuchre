@@ -10,7 +10,7 @@
             <?php echo '<a class="nav-link" href="'.$appUrl.'dashboard.php">Start</a>'; ?>
             </li>
             <li class="nav-item">
-            <?php echo '<a class="nav-link" href="/reports/">Reports</a>'; ?>
+            <?php echo '<a class="nav-link" href="'.$reportsUrl.'index.php">Reports</a>'; ?>
             </li>
           </ul>
       </div>

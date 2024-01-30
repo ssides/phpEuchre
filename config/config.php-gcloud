@@ -1,6 +1,7 @@
 <?php
   // make sure there is a final path separator in paths.
   $appUrl = 'http://sidesfamilyeuchre.net/phpEuchre/';
+  $reportsUrl = $appUrl.'reports/';
   $cookieName = 'sidesEuchre_cookie';
   $thumbnailDim = 25;
   $positionDistance = 3;
