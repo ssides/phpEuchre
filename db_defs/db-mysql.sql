@@ -166,3 +166,47 @@ create table `GameControllerLog`
   constraint `FK_GameControllerLog_Game` foreign key (`GameID`) references `Game`(`ID`),
   constraint `FK_GameControllerLog_Deal` foreign key (`DealID`) references `Deal`(`ID`)
 );
+
+drop table if exists `Group`;
+create table `Group`
+(
+  `ID` varchar(38) not null primary key,
+  `Description` varchar(150) not null,
+  `ManagerID` varchar(38) not null,
+  `IsActive` enum('0','1') not null default '0',  -- if a group is marked inactive, no one can request to join it.
+  `InsertDate` datetime not null,
+  constraint `FK_Group_Player` foreign key (`ManagerID`) references `Player`(`ID`)
+);
+
+drop table if exists `GroupRequest`;
+create table `GroupRequest`
+(
+  `ID` varchar(38) not null primary key,
+  `PlayerID` varchar(38) not null,
+  `GroupID` varchar(38) not null,
+  `IsActive` enum('R','A','D') not null default 'R',  -- R)equested, A)ctive, D)eclined
+  `InsertDate` datetime not null,
+  constraint `FK_GroupRequest_Player` foreign key (`PlayerID`) references `Player`(`ID`),
+  constraint `FK_GroupRequest_Group` foreign key (`GroupID`) references `Group`(`ID`)
+);
+
+-- IsActive is inconsistently implemented throughout the app. Todo: fix it.
+-- `PlayerGroup`.`IsActive` can only be updated by running a sql statement.
+-- Setting it to '0' will prevent the player from being invited to a game
+-- of that group. But everything else will still work.  The player can log 
+-- in, request to join another group, and be added to other groups, and be 
+-- invited to games in other groups, etc.  This feature may never be needed.
+drop table if exists `PlayerGroup`;
+create table `PlayerGroup`
+(
+  `ID` varchar(38) not null primary key,
+  `PlayerID` varchar(38) not null,
+  `GroupID` varchar(38) not null,
+  `IsActive` enum('0','1') not null default '0', -- Player cannot be invited to a game if '0'.
+  `InsertDate` datetime not null,
+  constraint `FK_PlayerGroup_Player` foreign key (`PlayerID`) references `Player`(`ID`),
+  constraint `FK_PlayerGroup_Group` foreign key (`GroupID`) references `Group`(`ID`)
+);
+
+create unique index ix_PlayerGroup on `PlayerGroup`(`PlayerID`,`GroupID`);
+

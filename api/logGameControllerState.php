@@ -33,7 +33,7 @@
 
       $sql = "insert into `GameControllerLog` 
         (`ID`,`GameID`,`DealID`,`PositionID`,`GameControllerState`,`Message`,`OrganizerScore`,`OpponentScore`,`OrganizerTricks`,`OpponentTricks`,`Dealer`,`Turn`,`CardFaceUp`,`ACO`,`ACP`,`ACL`,`ACR`,`PO`,`PP`,`PL`,`PR`,`InsertDate`) 
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now())";
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,curtime(3))";
       
       $smt = mysqli_prepare($connection, $sql);
       mysqli_stmt_bind_param($smt, 'ssssssiiiisssssssssss', $id,$gameID,$dealID,$positionID,$state,$message,$organizerScore,$opponentScore,$organizerTricks,$opponentTricks,$dealer,$turn,$cardFaceUp,$aco,$acp,$acl,$acr,$po,$pp,$pl,$pr);
