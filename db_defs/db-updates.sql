@@ -1,51 +1,28 @@
-
-drop table if exists `GroupRequest`;
-drop table if exists `PlayerGroup`;
-drop table if exists `Group`;
-create table `Group`
+drop table if exists `GameControllerLog`;
+create table `GameControllerLog`
 (
-  `ID` varchar(38) not null primary key,
-  `Description` varchar(150) not null,
-  `ManagerID` varchar(38) not null,
-  `IsActive` enum('0','1') not null default '0',  -- if a group is marked inactive, no one can request to join it.
-  `InsertDate` datetime not null,
-  constraint `FK_Group_Player` foreign key (`ManagerID`) references `Player`(`ID`)
+  `ID` varchar(38) not null primary key, 
+  `GameID` varchar(38) not null,
+  `DealID` varchar(38) null,
+  `PositionID` varchar(1) not null,
+  `GameControllerState` varchar(100) not null,  -- todo: make this a reference to a GameControllerState table.
+  `Message` varchar(4096) null,  
+  `OrganizerScore` int not null, 
+  `OpponentScore` int not null, 
+  `OrganizerTricks` int not null,
+  `OpponentTricks` int not null,
+  `InsertDate` datetime(3) not null,
+  `Dealer` varchar(1) null,  --  'O'rganizer 'P'artner, 'L'eft, 'R'ight
+  `Turn` char(1) null,     -- positions: 'O'rganizer, 'P'artner, opponent 'L'eft, opponent 'R'ight
+  `CardFaceUp` char(5) null,  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined, ordered 'U'p, u'S'ed by dealer or dealer s'K'ipped. [3]: who ordered it up or who declared trump ('O','P','L','R').  [4]: The partner of the player who called it alone ('O','P','L','R'). (Stick the dealer is hard coded everywhere. CardFaceUp.length tells the js code what to display).
+  `ACO` varchar(3) null, -- Organizer acknowledges a card played by 'P'artner, 'L'eft, and 'R'ight.
+  `ACP` varchar(3) null, -- Partner 'A'cknowledges first Jack or scoring in progress or card played by 'O'rganizer, , 'L'eft, and 'R'ight.
+  `ACL` varchar(3) null, -- Left 'A'cknowledges first Jack or scoring in progress or card played by 'O'rganizer, , 'P'artner, and 'R'ight.
+  `ACR` varchar(3) null, -- Right 'A'cknowledges first Jack or scoring in progress or card played by 'O'rganizer, , 'P'artner, and 'L'eft.
+  `PO`  varchar(2) null, -- Card played by organizer.
+  `PP`  varchar(2) null, -- Card played by partner.
+  `PL`  varchar(2) null, -- Card played by left.
+  `PR`  varchar(2) null,  -- Card played by right.
+  constraint `FK_GameControllerLog_Game` foreign key (`GameID`) references `Game`(`ID`),
+  constraint `FK_GameControllerLog_Deal` foreign key (`DealID`) references `Deal`(`ID`)
 );
-
-create table `GroupRequest`
-(
-  `ID` varchar(38) not null primary key,
-  `PlayerID` varchar(38) not null,
-  `GroupID` varchar(38) not null,
-  `IsActive` enum('R','A','D') not null default 'R',  -- R)equested, A)ctive, D)eclined
-  `InsertDate` datetime not null,
-  constraint `FK_GroupRequest_Player` foreign key (`PlayerID`) references `Player`(`ID`),
-  constraint `FK_GroupRequest_Group` foreign key (`GroupID`) references `Group`(`ID`)
-);
-
--- IsActive is inconsistently implemented throughout the app. Todo: fix it.
--- `PlayerGroup`.`IsActive` can only be updated by running a sql statement.
--- Setting it to '0' will prevent the player from being invited to a game
--- of that group. But everything else will still work.  The player can log 
--- in, request to join another group, and be added to other groups, and be 
--- invited to games in other groups, etc.  This feature may never be needed.
-create table `PlayerGroup`
-(
-  `ID` varchar(38) not null primary key,
-  `PlayerID` varchar(38) not null,
-  `GroupID` varchar(38) not null,
-  `IsActive` enum('0','1') not null default '0', -- Player cannot be invited to a game if '0'.
-  `InsertDate` datetime not null,
-  constraint `FK_PlayerGroup_Player` foreign key (`PlayerID`) references `Player`(`ID`),
-  constraint `FK_PlayerGroup_Group` foreign key (`GroupID`) references `Group`(`ID`)
-);
-
-create unique index ix_PlayerGroup on `PlayerGroup`(`PlayerID`,`GroupID`);
-
--- this will be different during deployment.
-
-insert into `Group` (ID,Description,ManagerID,IsActive,InsertDate) values ('D7F84F8D-E653-41AD-8D7E-707F748EF2A6','Sides Family','38D91D69-2F1E-4D84-A16B-7918D8DEC187','1',now());
-
-insert into `PlayerGroup` (ID,PlayerID,GroupID,IsActive,InsertDate) values ('06AF98E5-2E4A-498A-95DC-C5F9A720D2C4','38D91D69-2F1E-4D84-A16B-7918D8DEC187','D7F84F8D-E653-41AD-8D7E-707F748EF2A6','1',now());
-
--- write inserts to `PlayerGroup` for everyone so the manager doesn't need to do it.
