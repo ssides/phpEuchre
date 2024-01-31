@@ -204,9 +204,17 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col pt-1">
+                    <div class="col-3 pt-1">
                       <button id="pass" type="button" style="display:none" data-bind="visible: showPassBtn, enable: enablePassBtn, click: pass">Pass</button>
-                      <button id="pickitup" type="button" style="display:none" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup, click: pickItUp">Pick it up</button>&nbsp;<input id="alone" type="checkbox" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup, checked: obsAlone" style="display:none" name="alone" value="alone" /><label id="lblAlone" style="display:none" for="alone" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup">&nbsp;Alone</label>
+                    </div>
+                    <div class="col-4 pt-1">
+                      <button id="pickitup" type="button" style="display:none" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup, click: pickItUp">Pick it up</button>
+                    </div>
+                    <div class="col-3 pt-1">
+                      <div class="form-check aloneMargin" data-bind="visible: showPickItUpGroup">
+                        <input class="form-check-input" type="checkbox" id="alone" data-bind="checked: obsAlone, enable: enablePickItUpGroup" name="alone" value="alone" />
+                        <label class="form-check-label" for="alone" id="lblAlone" data-bind="enable: enablePickItUpGroup">Alone</label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -240,12 +248,23 @@
                   </div>
                 </li>
               </ul>
-              &nbsp;&nbsp;&nbsp;<input id="alone" type="checkbox" name="alone" value="alone" data-bind="checked: alone" /><label id="lblAlone" for="alone">&nbsp;Alone</label>
+              <div class="ms-3 mt-1">
+                <div class="form-check form-check-inline">
+                  <label id="lblAlone">
+                    <input id="alone2" type="checkbox" name="alone2" value="alone" data-bind="checked: alone" />&nbsp;Alone</label>
+                </div>
+              </div>
             </div>
           </div>
           <div class="modal-footer">
-            <button id="bidmodalpass" type="button" class="btn btn-primary" data-bind="visible: showPassBtn, enable: enablePassBtn, click: pass">Pass</button>
-            <button id="bidmodalsubmit" type="button" class="btn btn-primary" data-bind="visible: showSubmitBtn, enable: enableSubmitBtn, click: submit">Submit</button>
+            <div class="row">
+              <div class="col-6">
+                <button id="bidmodalpass" type="button" class="btn btn-primary" data-bind="visible: showPassBtn, enable: enablePassBtn, click: pass">Pass</button>
+              </div>
+              <div class="col-6">
+                <button id="bidmodalsubmit" type="button" class="btn btn-primary" data-bind="visible: showSubmitBtn, enable: enableSubmitBtn, click: submit">Submit</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
