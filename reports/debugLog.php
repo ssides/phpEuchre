@@ -32,6 +32,7 @@
       <table class="reportTable">
       <thead>
       <tr>
+        <td class="reportCell" >Player ID</td>
         <td class="reportCell" >Position</td>
         <td class="reportCell" >State</td>
         <td class="reportCell" >Message</td>
@@ -56,6 +57,7 @@
       </thead>
       <tbody data-bind="foreach: log">
       <tr>
+        <td class="reportCell" data-bind="text: playerID"></td>
         <td class="reportCell" data-bind="text: positionID"></td>
         <td class="reportCell" data-bind="text: gameControllerState"></td>
         <td class="reportCell" data-bind="text: message"></td>

@@ -4,6 +4,7 @@
 
   function debugLog(data) {
     this.dealID = data.DealID || '';
+    this.playerID = data.PlayerID || '';
     this.gameControllerState = data.GameControllerState || '';
     this.insertDate = data.InsertDate || '';
     this.message = data.Message || '';
@@ -64,9 +65,7 @@
         }
       });
     };
-
-    
-  }    
+  }
   
   $(function () {
     ko.applyBindings(new debugLogViewModel());

@@ -9,7 +9,7 @@
       $log = array();
       $gameID = $_POST['gameID'];
 
-      $sql = "select `DealID`,`GameControllerState`,`InsertDate`,`Message`,`OpponentScore`,`OpponentTricks`,`OrganizerScore`,`OrganizerTricks`,`PositionID`,`Dealer`,`Turn`,`CardFaceUp`,`ACO`,`ACP`,`ACL`,`ACR`,`PO`,`PP`,`PL`,`PR`
+      $sql = "select `DealID`,`PlayerID`,`GameControllerState`,`InsertDate`,`Message`,`OpponentScore`,`OpponentTricks`,`OrganizerScore`,`OrganizerTricks`,`PositionID`,`Dealer`,`Turn`,`CardFaceUp`,`ACO`,`ACP`,`ACL`,`ACR`,`PO`,`PP`,`PL`,`PR`
         from `GameControllerLog` 
         where `GameID`='{$gameID}' order by `InsertDate`";
 
@@ -24,6 +24,7 @@
           $r['OrganizerTricks'] = $row['OrganizerTricks'];
           $r['OpponentTricks'] = $row['OpponentTricks'];
           $r['DealID'] = is_null($row['DealID']) ? '' : $row['DealID'];
+          $r['PlayerID'] = $row['PlayerID'];
           $r['GameControllerState'] = $row['GameControllerState'];
           $r['InsertDate'] = $row['InsertDate'];
           $r['Message'] = is_null($row['Message']) ? '' : $row['Message'];
