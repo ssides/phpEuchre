@@ -384,3 +384,7 @@ table.dbgTable td {
   color: white;
   font-size: 12px;
 }
+
+.aloneMargin {
+  min-height: 0 !important;
+}
