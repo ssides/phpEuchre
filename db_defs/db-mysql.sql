@@ -81,7 +81,6 @@ create table `Game`
   `PlayTo` int not null default 10, -- Game score to play to.
   `CardFaceUp` char(5) null,  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined, ordered 'U'p, u'S'ed by dealer or dealer s'K'ipped. [3]: who ordered it up or who declared trump ('O','P','L','R').  [4]: The partner of the player who called it alone ('O','P','L','R'). (Stick the dealer is hard coded everywhere. CardFaceUp.length tells the js code what to display).
   `ScoringInProgress` enum('0','1') not null default '0',  -- '1' if scoring is in progress, '0' otherwise.
-  `AcknowledgeScoring` varchar(3) null, -- P,L,R need to acknowledge scoring in progress.
   constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`),
   constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`),
   constraint `FK_GameLeft_Player` foreign key (`Left`) references `Player`(`ID`),
@@ -115,6 +114,7 @@ create table `Play` (
 );
 
 -- could let the organizer replay the hand or game someday. also helps with verifying that scoring is correct.
+-- why are columns CardFaceUp and Dealer duplicated here?  They should be stored in `Game`
 drop table if exists `GamePlay`;
 create table `GamePlay`
 (
@@ -132,7 +132,8 @@ create table `GamePlay`
   `OpponentScore` int not null,
   `OrganizerTricks` int not null,
   `OpponentTricks` int not null,
-  `Alone` char(1) not null, -- 'A'lone or '-' not alone.
+  `CardFaceUp` char(5) not null, 
+  `Dealer` varchar(1) not null, 
   `InsertDate` datetime not null,
   constraint `FK_GamePlay_Game` foreign key (`GameID`) references `Game`(`ID`),
   constraint `FK_GamePlay_Deal` foreign key (`DealID`) references `Deal`(`ID`)

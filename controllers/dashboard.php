@@ -39,10 +39,10 @@
       $state = 'pre-play';
       $message = 'Rejoining game';
       
-      $sql = "insert into `GameControllerLog` (`ID`,`GameID`,`PositionID`,`GameControllerState`,`Message`,`OrganizerScore`,`OpponentScore`,`OrganizerTricks`,`OpponentTricks`,`InsertDate`) values (?,?,?,?,?,0,0,0,0,now())";
+      $sql = "insert into `GameControllerLog` (`ID`,`GameID`,`PlayerID`,`PositionID`,`GameControllerState`,`Message`,`OrganizerScore`,`OpponentScore`,`OrganizerTricks`,`OpponentTricks`,`InsertDate`) values (?,?,?,?,?,?,0,0,0,0,now())";
       
       $smt = mysqli_prepare($conn, $sql);
-      mysqli_stmt_bind_param($smt, 'sssss', $id,$gameID,$positionID,$state,$message);
+      mysqli_stmt_bind_param($smt, 'ssssss', $id,$gameID,$playerID,$positionID,$state,$message);
       if (!mysqli_stmt_execute($smt)) {
         $err = mysqli_error($conn);
       }
