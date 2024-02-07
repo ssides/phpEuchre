@@ -113,8 +113,7 @@ create table `Play` (
   constraint `FK_Play_Game` foreign key (`GameID`) references `Game`(`ID`)
 );
 
--- could let the organizer replay the hand or game someday. also helps with verifying that scoring is correct.
--- why are columns CardFaceUp and Dealer duplicated here?  They should be stored in `Game`
+-- This is a log file used for reporting.  Todo: rename it `GamePlayLog`
 drop table if exists `GamePlay`;
 create table `GamePlay`
 (
