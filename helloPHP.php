@@ -20,14 +20,6 @@
 <body>
 
   <div class="helloPadding">
-  <?php 
-    use Google\Cloud\Logging\LoggingClient;
-    $logging = new LoggingClient([
-        'useful-memory-360712' => $projectId
-    ]);
-    $logger = $logging->psrLogger('phpEuchre');
-    $logger->error('some mysql exception');
-  ?>
   Check log for log entry.
   </div>
   
