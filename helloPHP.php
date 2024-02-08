@@ -23,10 +23,10 @@
   <?php 
     use Google\Cloud\Logging\LoggingClient;
     $logging = new LoggingClient([
-        'useful-memory-360712' => $projectId
+        'projectId' => 'useful-memory-360712'
     ]);
-    $logger = $logging->psrLogger('phpEuchre');
-    $logger->error('some mysql exception');
+    // $logger = $logging->psrLogger('phpEuchre');
+    // $logger->error('some mysql exception');
   ?>
   Check log for log entry.
   </div>
