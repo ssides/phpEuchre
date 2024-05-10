@@ -2,30 +2,33 @@
     include_once('config/db.php');
     include_once('config/config.php');
     
+    $controllerError = "";
+    
     if (empty($_COOKIE[$cookieName]) || empty($_SESSION['gameID'])) {
       header('Location: index.php');
-    } else {
+    } else if($_SERVER["REQUEST_METHOD"] === 'POST') {
       $gameID = $_SESSION['gameID'];
       if(isset($_POST['startGame'])) {
-        if (setGameStartDate($_COOKIE[$cookieName], $_SESSION['gameID'], $_POST['playTo'])) {
+        if (saveGameStartInfo($_COOKIE[$cookieName], $_SESSION['gameID'], $_POST['playTo'], $_POST['gameSpeed'])) {
           header('Location: play.php');
-        } 
-        else {
-          // todo: echo an error message instead of redirecting to index.
-          header('Location: index.php');
+        } else {
+          // $controllerError is displayed on the page through the view model.
         }
       }
     }
     
-    function setGameStartDate($playerID, $gameID, $playTo) {
-      global $connection;
+    function saveGameStartInfo($playerID, $gameID, $playTo, $gameSpeed) {
+      global $connection, $controllerError;
       $result = true;
       
-      $sql = "update `Game` set `GameStartDate` = now(),`PlayTo`={$playTo} where `Organizer` = '{$playerID}' and `ID` = '{$gameID}'";
-      mysqli_query($connection, "START TRANSACTION;");
+      $sql = "update `Game` set `GameStartDate` = now(),`PlayTo`={$playTo}, `Speed` = {$gameSpeed} where `Organizer` = '{$playerID}' and `ID` = '{$gameID}'";
       $result = mysqli_query($connection, $sql);
-      mysqli_query($connection, "COMMIT;");
-
+      if ($result === false) {
+        $controllerError = mysqli_error($connection);
+        mysqli_query($connection, "ROLLBACK;");
+      } else {
+        mysqli_query($connection, "COMMIT;");
+      }
       return $result;
     }
 ?>

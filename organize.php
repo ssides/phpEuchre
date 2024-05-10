@@ -29,6 +29,10 @@
   <div class="App">
     <div class="vertical-center">
       <div class="inner-block gamePlay">
+      
+        <div class="alert alert-danger" style="display:none" data-bind="visible: errorMessage().length > 0" >
+          <div data-bind="text: errorMessage"></div>
+        </div>
 
         <p class="text" data-bind="visible: allPlayers() === false && !allPlayersJoined()">Select players.</p>
         <p class="text" data-bind="visible: allPlayers() && !allPlayersJoined()">Invite players.</p>
@@ -111,10 +115,21 @@
           <button data-bind="click: inviteAll">Invite All Players</button>
         </div>
 
-        <div data-bind="visible: allPlayersJoined()">
+        <div class="org-border" data-bind="visible: allPlayersJoined()">
           <form action="" method="post">
+            <table>
+              <tr>
+                <td><label for="playTo">Play to:&nbsp;&nbsp;</label></td>
+                <td style="width: 54px"><input id="playTo" name="playTo" type="number" data-bind="value: playTo" style="width:50px" max="20" min="1"></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><label for="gameSpeed" class="form-label">Game speed:&nbsp;</label></td>
+                <td><input type="range" class="form-range" min="0" max="1" step="1" name="gameSpeed" id="gameSpeed" data-bind="value: gameSpeed"></td>
+                <td>&nbsp;&nbsp;<label class="form-label" data-bind="html: displayGameSpeed"></label></td>
+              </tr>
+            </table>
             <button type="submit" name="startGame" id="startGame">Start Game</button>
-            <label for="playTo">Play to:&nbsp;&nbsp;</label><input id="playTo" name="playTo" type="number" data-bind="value: playTo" style="width:60px" max="20" min="1">
           </form>
         </div>
       </div>

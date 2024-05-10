@@ -11,7 +11,9 @@
       $groups = array();
       
       // If there is an error, an exception will be thrown, and the api will return with response code 500.
-      // Fine for an API, but in the controller I would use a try catch block.
+      // I need to set it up so that when I'm running locally, errors are displayed on the screen, and when
+      // I'm running in the cloud, errors are logged.  None of that is set up.  I should have set that up
+      // first before using prepared statements.
       mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
       $conn = mysqli_connect($hostname, $username, $password, $dbname);
       

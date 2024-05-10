@@ -40,6 +40,7 @@
         ,`PL`
         ,`PR`
         ,`ScoringInProgress`
+        ,`Speed`
         ,ou.`ThumbnailPath` `OThumbnailPath`,substr(op.`Name`,1,8) `OName`
         ,pu.`ThumbnailPath` `PThumbnailPath`,substr(pp.`Name`,1,8) `PName`
         ,lu.`ThumbnailPath` `LThumbnailPath`,substr(lp.`Name`,1,8) `LName`
@@ -94,6 +95,7 @@
           $game['PL'] = is_null($row['PL']) ? '' : $row['PL'];
           $game['PR'] = is_null($row['PR']) ? '' : $row['PR'];
           $game['ScoringInProgress'] = $row['ScoringInProgress'];
+          $game['Speed'] = $row['Speed'];
           $game['OThumbnailPath'] = $row['OThumbnailPath'];
           $game['OThumbnailURL'] = is_null($row['OThumbnailPath']) ? '' : getThumbnailURL($row['OThumbnailPath']);
           $game['OName'] = $row['OName'];

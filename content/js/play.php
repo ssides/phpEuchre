@@ -69,13 +69,15 @@
     };
     
     self.updateScoresAndInfo = function() {
-      self.whatsTrumpVM.update(self.game);
-      self.nPlayerInfoVM.update(self.game);
-      self.ePlayerInfoVM.update(self.game);
-      self.wPlayerInfoVM.update(self.game);
-      self.playerInfoVM.update(self.game, self.delay);
-      self.myScoreVM.update(self.game);
-      self.opponentScoreVM.update(self.game);
+      if (self.delay == 0) {
+        self.whatsTrumpVM.update(self.game);
+        self.nPlayerInfoVM.update(self.game);
+        self.ePlayerInfoVM.update(self.game);
+        self.wPlayerInfoVM.update(self.game);
+        self.playerInfoVM.update(self.game);
+        self.myScoreVM.update(self.game);
+        self.opponentScoreVM.update(self.game);
+      }
       if (self.game.OpponentTrump || self.game.OrganizerTrump) {
         $('#cardFaceUp').hide();
       } else if (self.game.CardFaceUp.length == 2) {
@@ -699,11 +701,16 @@
       
       if (self.game.allCardsHaveBeenPlayed() || self.game.ScoringInProgress) {
         if (self.position == 'O') {
-          self.delay = 1;
+          self.delay = self.game.Speed > 0 ? 1 : 0;
           self.setExecutionPoint('scoreHand');
         } else {
-          self.delay = app.clearTableDelay;
-          self.setExecutionPoint('delayAsPlayer');
+          if (self.game.Speed == 0) {
+            self.delay = app.clearTableDelay;
+            self.setExecutionPoint('delayAsPlayer');
+          } else {
+            self.delay = 0;
+            self.setExecutionPoint('clearTableAsPlayer');
+          }
         }
       }
     };
