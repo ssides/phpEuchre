@@ -35,6 +35,7 @@
     this.RName = data.RName || '';
     this.GameStartDate = data.GameStartDate || '';
     this.GameFinishDate = data.GameFinishDate || '';
+    this.GameEndDate = data.GameEndDate || '';
     this.ScoringInProgress = (data.ScoringInProgress || '') === '1';
     this.Speed = parseInt(data.Speed || '0');
     this.DealID = data.DealID || '';

@@ -271,8 +271,8 @@
     </div>
   </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="endGameModal" tabindex="-1" aria-hidden="true">
+  <!-- Modals -->
+  <div class="modal fade" id="finishGameModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -309,6 +309,29 @@
     </div>
   </div>
 
+  <div class="modal fade" id="endGameModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Game Over</h1>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+              <div>
+                The organizer has ended the game.<br /><br />
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="app.gameEnded()" >OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <?php
   include('content/js/partials/app.php');
@@ -319,7 +342,7 @@
   include('content/js/partials/scoreViewModel.php');
   include('content/js/partials/playViewModel.php');
   include('content/js/partials/bidDialogViewModel.php');
-  include('content/js/partials/endGameDialogViewModel.php');
+  include('content/js/partials/finishGameDialogViewModel.php');
 
   include('content/js/play.php')
   ?>

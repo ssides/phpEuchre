@@ -2,12 +2,15 @@
   include_once('../config/db.php');
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
-  
+  include('../svc/services.php');
+
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
       
       $playerID = $_POST[$cookieName];
       $invitations = array();
+      $d = cutoffDate();
+
       $sql = "select
             g.`ID` `GameID`
             ,org.Name `OrganizerName`
@@ -19,9 +22,11 @@
             end `Position`
           from `Game` g
           join `Player` org on g.Organizer = org.ID
-          where (`Partner` = '{$playerID}' and PartnerJoinDate is null)
-            or (`Left` = '{$playerID}' and LeftJoinDate is null)
-            or (`Right` = '{$playerID}' and RightJoinDate is null)
+          where ((`Partner` = '{$playerID}' and PartnerJoinDate is null)
+              or (`Left` = '{$playerID}' and LeftJoinDate is null)
+              or (`Right` = '{$playerID}' and RightJoinDate is null))
+            and g.`InsertDate` >= '{$d}'
+            and g.`GameEndDate` is null
           order by g.`InsertDate` desc";
 
       $results = mysqli_query($connection, $sql);

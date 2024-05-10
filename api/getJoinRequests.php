@@ -13,7 +13,8 @@
       mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
       $conn = mysqli_connect($hostname, $username, $password, $dbname);
       
-      $sql = "select p.`ID`,p.`Name` from `GroupRequest` gr 
+      $sql = "select p.`ID`,p.`Name` 
+        from `GroupRequest` gr 
         join `Player` p on gr.`PlayerID` = p.`ID`
         where gr.`GroupID` = ? and gr.`IsActive` = 'R'";
 
