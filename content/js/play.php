@@ -17,6 +17,7 @@
     self.position = null;
     self.playerID = '<?php echo "{$_COOKIE[$cookieName]}"; ?>';
     self.bidModal = new bootstrap.Modal($('#bidModal'));
+    self.finishGameModal = new bootstrap.Modal($('#finishGameModal'));
     self.endGameModal = new bootstrap.Modal($('#endGameModal'));
     self.whatsTrumpVM = new whatsTrumpViewModel();
     self.nPlayerInfoVM = new playerInfoViewModel();
@@ -27,7 +28,7 @@
     self.opponentScoreVM = new scoreViewModel();
     self.playVM = new playViewModel();
     self.bidDialogVM = new bidDialogViewModel();
-    self.endGameDialogVM = new endGameDialogViewModel();
+    self.finishGameDialogVM = new finishGameDialogViewModel();
     self.getGameTimer = null;
     self.getGameInProgress = false;   // lets the $.ajax() call take more than a second to complete.
     self.getNextStartCardTimer = null;
@@ -431,8 +432,12 @@
                 console.log(data.ErrorMsg);
               } else {
                 self.game = new gameModel(data.Game);
-                self.updateScoresAndInfo();
-                self.gameExecution[self.executionPoint].fn();
+                if (self.game.GameEndDate) {
+                  self.endGame();
+                } else {
+                  self.updateScoresAndInfo();
+                  self.gameExecution[self.executionPoint].fn();
+                }
               }
             } catch (error) {
               console.log('Error ' + ': ' + error.message || error);
@@ -451,11 +456,11 @@
       }
     };
     
-    self.endGame = function(){
-      console.log('endGame()');
+    self.finishGame = function(){
+      console.log('finishGame()');
       $.ajax({
         method: 'POST',
-        url: 'api/endGame.php',
+        url: 'api/finishGame.php',
         data: app.apiPostData,
         success: function (response) {
           try {
@@ -474,6 +479,19 @@
         }
       });
     };
+    
+    self.endGame = function() {
+      if (self.getGameTimer) {
+        clearInterval(self.getGameTimer);
+      }
+      if (self.getCurrentStartCardTimer) {
+        clearInterval(self.getCurrentStartCardTimer);
+      }
+      if (self.getNextStartCardTimer) {
+        clearInterval(self.getNextStartCardTimer);
+      }
+      self.endGameModal.show();
+    }
     
     self.scoringFinished = function(){
       console.log('scoringFinished()');
@@ -619,9 +637,6 @@
       }
     };
     
-    self.idleFn = function(){
-    };
-    
     self.dealOrWaitForCardFaceUpFn = function(){
       if (self.position === self.game.Dealer) {
         self.deal();
@@ -759,7 +774,7 @@
           var playTo = parseInt(self.game.PlayTo);
           
           if (oppScore >= playTo || orgScore >= playTo) {
-            self.endGame();
+            self.finishGame();
             self.setExecutionPoint('showGameOverDialog');
           } else {
             self.setExecutionPoint('dealOrWaitForCardFaceUp');
@@ -777,8 +792,8 @@
     };
     
     self.showGameOverDialogFn = function(){
-      self.endGameDialogVM.update();
-      self.endGameModal.show();
+      self.finishGameDialogVM.update();
+      self.finishGameModal.show();
       clearInterval(self.getGameTimer);
     };
     
@@ -786,7 +801,6 @@
       { id: 'initialize', fn: self.initializeFn },
       { id: 'selectFirstJack', fn: self.selectFirstJackFn },
       { id: 'waitForAcknowledgments', fn: self.waitForAcknowledgmentsFn },
-      { id: 'idle', fn: self.idleFn },
       { id: 'dealOrWaitForCardFaceUp', fn: self.dealOrWaitForCardFaceUpFn },
       { id: 'waitForCardFaceUp', fn: self.waitForCardFaceUpFn },
       { id: 'waitForTrump', fn: self.waitForTrumpFn },
@@ -821,7 +835,7 @@
     ko.applyBindings(gc.playVM, $('#PlayTable')[0]);
     ko.applyBindings(gc.playerInfoVM, $('#SouthInfo')[0]);
     ko.applyBindings(gc.bidDialogVM, $('#bidModal')[0]);
-    ko.applyBindings(gc.endGameDialogVM, $('#endGameModal')[0]);
+    ko.applyBindings(gc.finishGameDialogVM, $('#finishGameModal')[0]);
   });
   
 </script>

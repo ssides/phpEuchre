@@ -31,6 +31,7 @@
               or (`Right` = '{$playerID}' and RightJoinDate is not null and RightJoinDate >= '{$d}')
               or (`Organizer` = '{$playerID}' and GameStartDate is not null and GameStartDate >= '{$d}'))
             and g.`GameFinishDate` is null
+            and g.`GameEndDate` is null
           order by g.`InsertDate` desc";
             
       $results = mysqli_query($connection, $sql);

@@ -25,4 +25,7 @@
   
   app.clearTableDelay = <?php echo $clearTableDelay; ?>;
   
+  app.gameEnded = function () {
+      window.location.href = 'dashboard.php';
+    }
 </script>

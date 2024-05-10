@@ -47,6 +47,7 @@
         ,ru.`ThumbnailPath` `RThumbnailPath`,substr(rp.`Name`,1,8) `RName`
         ,`GameStartDate`
         ,`GameFinishDate`
+        ,`GameEndDate`
         ,gd.`DealID`
       from `Game` g
       left join (select `DealID`,`GameID` from `GameDeal` where `GameID` = '{$gameID}' and `IsActive` = '1') gd on g.`ID` = gd.`GameID`
@@ -107,6 +108,7 @@
           $game['RName'] = $row['RName'];
           $game['GameStartDate'] = $row['GameStartDate'];
           $game['GameFinishDate'] = is_null($row['GameFinishDate']) ? '' : $row['GameFinishDate'];
+          $game['GameEndDate'] = is_null($row['GameEndDate']) ? '' : $row['GameEndDate'];
           $game['DealID'] = is_null($row['DealID']) ? '' : $row['DealID'];
         }
       }

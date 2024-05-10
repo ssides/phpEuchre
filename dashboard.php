@@ -29,38 +29,56 @@
     <div class="vertical-center">
       <div class="inner-block">
         <?php echo $sqlErr; ?>
+
         <div class="org-border dashboardMargin" data-bind="visible: invitations().length > 0">
-          <table style="width: 100%">
-            <tbody data-bind="foreach: invitations">
-              <tr>
-                <td><span data-bind="text: organizerName"></span> is inviting you to play as <span data-bind="text: position"></span>.</td>
-                <td>
-                  <form action="" method="post">
-                    <input type="hidden" name="gameid" id="gameid" data-bind="value: gameID">
-                    <input type="hidden" name="identifier" id="identifier" data-bind="value: position">
-                    <button type="submit" name="join" id="join" class="btn btn-outline-primary">Join</button>
-                  </form>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div data-bind="foreach: invitations">
+            <div class="row w-100">
+              <div class="col-10"><span data-bind="text: organizerName"></span> is inviting you to play as <span data-bind="text: position"></span>.
+              </div>
+              <div class="col-2">
+                <form action="" method="post">
+                  <input type="hidden" name="gameid" id="gameid" data-bind="value: gameID">
+                  <input type="hidden" name="identifier" id="identifier" data-bind="value: position">
+                  <button type="submit" name="join" id="join" class="btn btn-outline-primary">Join</button>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
+        
         <div class="org-border dashboardMargin" data-bind="visible: rejoinGames().length > 0">
-          <table>
-            <tbody data-bind="foreach: rejoinGames">
-              <tr>
-                <td>Would you like to return to the game organized by <span data-bind="text: organizerName"></span>? You were playing as <span data-bind="text: position"></span>.</td>
-                <td>
-                  <form action="" method="post">
-                    <input type="hidden" name="gameid" id="gameid" data-bind="value: gameID">
-                    <input type="hidden" name="identifier" id="identifier" data-bind="value: position">
-                    <button type="submit" name="rejoin" id="rejoin" class="btn btn-outline-primary">Return</button>
-                  </form>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div data-bind="foreach: rejoinGames">
+            <div class="row w-100" >
+              <div class="col-8">
+                Would you like to return to the game organized by <span data-bind="text: organizerName"></span>? You were playing as <span data-bind="text: position"></span>.
+              </div>
+              <div class="col-2">
+                <form action="" method="post">
+                  <input type="hidden" name="gameid" id="gameid" data-bind="value: gameID">
+                  <input type="hidden" name="identifier" id="identifier" data-bind="value: position">
+                  <button type="submit" name="rejoin" id="rejoin" class="btn btn-outline-primary">Return</button>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
+        
+        <div class="org-border dashboardMargin container" data-bind="visible: endgameGames().length > 0">
+          <div data-bind="foreach: endgameGames">
+            <div class="row w-100" >
+              <div class="col-9">
+                End the game you organized</br>on <span data-bind="text: insertDate"></span>?</br>The score is <span data-bind="text: organizerScore"></span> to <span data-bind="text: opponentScore"></span>.
+              </div>
+              <div class="col-2">
+                <form action="" method="post">
+                <input type="hidden" name="gameid" id="gameid" data-bind="value: gameID">
+                <button type="submit" name="endgame" id="endgame" class="btn btn-outline-primary">End&nbsp;game</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <?php if(empty($group['ID'])): ?>
           <div class="org-border dashboardMargin">
             To start a game, log in to a group.

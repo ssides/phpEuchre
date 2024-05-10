@@ -1,6 +1,6 @@
 <script type="text/javascript">
 
-  function endGameDialogViewModel() {
+  function finishGameDialogViewModel() {
     var self = this;
     
     self.winner = ko.observable();

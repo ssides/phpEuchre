@@ -3,11 +3,13 @@
     include_once('config/config.php');
     include_once('svc/services.php');
     
+    $sqlErr = "";
+    
     if (empty($_COOKIE[$cookieName])) {
       header('Location: index.php');
     } else {
       if(isset($_POST['organize'])) {
-        $gameID = startGame($_COOKIE[$cookieName]);
+        $gameID = createGame($_COOKIE[$cookieName]);
         if (!empty($gameID)) {
           $_SESSION['gameID'] = $gameID;
           header("Location: organize.php");
@@ -26,6 +28,10 @@
         if (strlen($sqlErr) == 0 && joinGame($gameID, $playerID, $identifier)) {
           header("Location: play.php");
         }
+      } else if (isset($_POST['endgame'])) {
+        $gameID = $_POST['gameid'];
+        
+        endGame($gameID, $playerID);
       }
     }
     
@@ -108,18 +114,37 @@
       return $result;
     }
     
-    function startGame($playerID) {
+    function createGame($playerID) {
       global $sqlErr,$connection;
       $gameID = GUID();
-      $zero = 0;
-      $smt = mysqli_prepare($connection, "insert into `Game` (`ID` , `Organizer`, `OrganizerScore`, `OpponentScore`, `OrganizerTricks`,`OpponentTricks`,`InsertDate`) values (?,?,?,?,?,?,now())");
-      mysqli_stmt_bind_param($smt, 'ssiiii', $gameID, $playerID, $zero,$zero,$zero,$zero);
-      if (!mysqli_stmt_execute($smt)){
-        $sqlErr = mysqli_error($connection);
-        $gameID = '';
-      }
-      mysqli_stmt_close($smt);
 
+      $sql = "insert into `Game` (`ID`,`Organizer`,`OrganizerScore`,`OrganizerTricks`,`OpponentScore`,`OpponentTricks`,`InsertDate`) values ('{$gameID}','{$playerID}',0,0,0,0,now())";
+      mysqli_query($connection, "START TRANSACTION;");
+      $result = mysqli_query($connection, $sql);
+      if ($result === false) {
+        $sqlErr = mysqli_error($connection);
+        mysqli_query($connection, "ROLLBACK;");
+      } else {
+        mysqli_query($connection, "COMMIT;");
+      }
+      
       return $gameID;
     }
+    
+    function endGame($gameID) {
+      global $sqlErr,$connection;
+      
+      $sql = "update `Game` set `GameEndDate` = now() where `ID`='{$gameID}'";
+      mysqli_query($connection, "START TRANSACTION;");
+      $result = mysqli_query($connection, $sql);
+      if ($result === false) {
+        $sqlErr = mysqli_error($connection);
+        mysqli_query($connection, "ROLLBACK;");
+      } else {
+        mysqli_query($connection, "COMMIT;");
+      }
+
+      return $result;
+    }
+
 ?>
