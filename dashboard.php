@@ -44,7 +44,6 @@
               </tr>
             </tbody>
           </table>
-          <!-- <div class="dashboardRight"><button class="uxRefreshInvites btn btn-outline-secondary btn-sm">Refresh</button></div> -->
         </div>
         <div class="org-border dashboardMargin" data-bind="visible: rejoinGames().length > 0">
           <table>
@@ -61,7 +60,6 @@
               </tr>
             </tbody>
           </table>
-          <!-- <div class="dashboardRight"><button class="uxRefreshReJoins btn btn-outline-secondary btn-sm">Refresh</button></div> -->
         </div>
         <?php if(empty($group['ID'])): ?>
           <div class="org-border dashboardMargin">

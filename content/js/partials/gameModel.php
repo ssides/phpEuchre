@@ -36,9 +36,10 @@
     this.GameStartDate = data.GameStartDate || '';
     this.GameFinishDate = data.GameFinishDate || '';
     this.ScoringInProgress = (data.ScoringInProgress || '') === '1';
+    this.Speed = parseInt(data.Speed || '0');
     this.DealID = data.DealID || '';
     
-    this.getAllCards = function(){ return this.PO + this.PP + this.PL + this.PR;  };
+    this.getAllCards = function(){ return this.PO + this.PP + this.PL + this.PR; };
     
     // Acknowledgements of played cards.
     this.getAllAcknowledgments = function(){ return this.ACO + this.ACP + this.ACL + this.ACR; };

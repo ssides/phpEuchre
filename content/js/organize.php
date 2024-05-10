@@ -36,7 +36,9 @@
     self.partnerInvited = ko.observable(false);
     self.partnerJoined = ko.observable(false);
     self.playTo = ko.observable('10');
-    self.allPlayers = ko.computed(function () {
+    self.gameSpeed = ko.observable('0');
+    self.errorMessage = ko.observable('');
+    self.allPlayers = ko.computed(function() {
       if ((self.selectedLeft() !== undefined)
         && (self.selectedRight() !== undefined)
         && (self.selectedPartner() !== undefined)) {
@@ -44,6 +46,13 @@
       } else {
         return false;
       };
+    });
+    self.displayGameSpeed = ko.computed(function() {
+      if (self.gameSpeed() == '1') {
+        return 'fast';
+      } else {
+        return 'slow';
+      }
     });
     self.allPlayersJoined = ko.computed(function(){
       return self.leftJoined() && self.rightJoined() && self.partnerJoined();
@@ -170,6 +179,10 @@
       });
     };
     
+    self.setErrorMessage = function(e){
+      self.errorMessage(e);
+    };
+
     self.initialize = function() {
       self.getUsers();
       self.getRSVPSTimer = setInterval(self.getRSVPs, 1000);
@@ -180,10 +193,17 @@
   
 <?php if(!empty($group['ID'])): ?>
   $(function () {
-    ko.applyBindings(new organizeViewModel('<?php echo $group['ID']; ?>'));
-  });
-<?php endif; ?>
+    var vm = new organizeViewModel('<?php echo $group['ID']; ?>');
+    ko.applyBindings(vm);
 
+    var controllerError = '<?php echo str_replace("'", "\'", $controllerError); ?>';
+    if (controllerError.length > 0) {
+      vm.setErrorMessage(controllerError);
+    }
+  });
+  
+
+<?php endif; ?>
 
   
 </script>

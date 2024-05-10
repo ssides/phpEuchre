@@ -14,7 +14,6 @@
       $group_id  = $_POST['group_id'];
       $group = array();
       $groupFail = false;
-      // errors in controller POSTs get thrown away. Todo: fix it somehow.
       $loginError = is_null($connection) ? "No connection. " : "";;
       
       if(empty($name_signin)){
