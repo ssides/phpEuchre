@@ -14,8 +14,9 @@
       $playerID = $_POST[$cookieName];
       $card = array();
       
-      $dealID = getDealID($gameID);
-      if (is_null($dealID)) {
+      $f = getDealID($gameID);
+      $errorMsg .= $f['ErrorMsg'];
+      if (strlen($f['DealID']) == 0) {
         $d = getRandomFDeal();
         insertFDeal($gameID, $d['DealID']);
         $card['ID'] = substr($d['Cards'], 0, 2);

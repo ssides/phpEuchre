@@ -15,7 +15,12 @@
       
       $conn = mysqli_connect($hostname, $username, $password, $dbname);
 
-      $hand = getHand($gameID, $positionID);
+      mysqli_query($conn, "START TRANSACTION;");
+
+      $hand = getHand($conn, $gameID, $positionID);
+      if (strlen($hand['ErrorMsg']) > 0) {
+        $response['ErrorMsg'] .= $hand['ErrorMsg'];
+      }
       $cardNumber = getCardNumber($hand, $cardID);
       $cards = "";
       
@@ -35,17 +40,24 @@
       if (strlen($hand['PlayID']) > 0 && $cardNumber != '0' && strlen($positionID) == 1) {
         $p = $cardID.'P';
         $sql = "update `Play` set `CardID{$cardNumber}` = '{$p}' where `ID`='{$hand['PlayID']}'";
-        runInTrans($conn, $response, $sql);
+        run($conn, $response, $sql);
         
         $sql = "update `Game` set `P{$positionID}` = '{$cardID}' where `ID`='{$gameID}'";
-        runInTrans($conn, $response, $sql);
+        run($conn, $response, $sql);
         
         if (strlen($cards) == 0) {
           $sql = "update `Game` set `Lead` = '{$positionID}' where `ID`='{$gameID}'";
-          runInTrans($conn, $response, $sql);
+          run($conn, $response, $sql);
         }
       } else {
         $response['ErrorMsg'] .= "Play state error.";
+      }
+      
+      
+      if (strlen($response['ErrorMsg']) > 0) {
+        mysqli_query($conn, "ROLLBACK;");
+      } else {
+        mysqli_query($conn, "COMMIT;");
       }
       
       mysqli_close($conn);
@@ -61,14 +73,10 @@
     echo "Expecting request method: POST";
   }
 
-  function runInTrans($conn, $response, $sql) {
-    mysqli_query($conn, "START TRANSACTION;");
+  function run($conn, $response, $sql) {
     $results = mysqli_query($conn, $sql);
     if ($results === false) {
       $response['ErrorMsg'] .= mysqli_error($conn);
-      mysqli_query($conn, "ROLLBACK;");
-    } else {
-      mysqli_query($conn, "COMMIT;");
     }
   }
 ?>

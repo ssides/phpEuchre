@@ -7,7 +7,9 @@
   function getDealID($gameID) {
     global $hostname, $username, $password, $dbname;
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
-    $dealID = null;
+    $response = array();
+    $response['ErrorMsg'] = "";
+    $response['DealID'] = "";
     
     $sql = "select `DealID` 
       from `GameDeal` gd
@@ -15,13 +17,17 @@
       where gd.`GameID` = '{$gameID}' and d.`PurposeCode` = 'J'";
     
     $results = mysqli_query($conn, $sql);
-    
-    while ($row = mysqli_fetch_array($results)) {
-      $dealID = $row['DealID'];
+    if ($results === false) {
+      $response['ErrorMsg'] .= mysqli_error($conn);
+    } else {
+      while ($row = mysqli_fetch_array($results)) {
+        $response['DealID'] = is_null($row['DealID']) ? '' : $row['DealID'];
+      }
     }
 
     mysqli_close($conn);
-    return $dealID;
+    
+    return $response;
   }
   
   function getCurrentFDeal($gameID) {

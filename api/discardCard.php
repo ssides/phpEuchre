@@ -19,11 +19,15 @@
       $dealer = '';
       $cardFaceUp = '';
       
+      $conn =  mysqli_connect($hostname, $username, $password, $dbname);
+      
+      mysqli_query($conn, "START TRANSACTION;");
+      
       $sql = "select `Dealer`,`CardFaceUp` from `Game` where `ID`='{$gameID}'";
 
-      $results = mysqli_query($connection, $sql);
+      $results = mysqli_query($conn, $sql);
       if ($results === false) {
-        $response['ErrorMsg'] .= mysqli_error($connection);
+        $response['ErrorMsg'] .= mysqli_error($conn);
       } else {
         while ($row = mysqli_fetch_array($results)) {
           $dealer = is_null($row['Dealer']) ? '' : $row['Dealer'];
@@ -32,7 +36,11 @@
       }
       
       if (strlen($dealer) > 0 && $dealer == $positionID && strlen($cardFaceUp) > 3 && $cardFaceUp[2] == 'U') {
-        $hand = getHand($gameID, $positionID);
+        $hand = getHand($conn, $gameID, $positionID);
+        if (strlen($hand['ErrorMsg']) > 0) {
+          $response['ErrorMsg'] .= $hand['ErrorMsg'];
+        }
+
         $cardNumber = getCardNumber($hand, $cardID);
         
         if ($cardNumber == '0') {
@@ -40,11 +48,19 @@
           $response['ErrorMsg'] .= "Card not found '{$cardID}'. ";
         } else {
           // save the hand and set trump based on who ordered it up. Turn goes to left of dealer.
-          $response['ErrorMsg'] .= saveHandSetTurn($hand, $cardNumber, $cardFaceUp, $gameID, $dealer);
+          $response['ErrorMsg'] .= saveHandSetTurn($conn, $hand, $cardNumber, $cardFaceUp, $gameID, $dealer);
         }
       } else {
-        $response['ErrorMsg'] .= "Wrong state error. ";
+        $response['ErrorMsg'] .= "discardCard: Wrong state error.";
       }
+
+      if (strlen($response['ErrorMsg']) > 0) {
+        mysqli_query($conn, "ROLLBACK;");
+      } else {
+        mysqli_query($conn, "COMMIT;");
+      }
+
+      mysqli_close($conn);
 
       http_response_code(200);
       
@@ -58,17 +74,13 @@
   }
 
   // save the hand and set trump based on who ordered it up.
-  function saveHandSetTurn($hand, $cardNumber, $cardFaceUp, $gameID, $dealer) {
-    global $connection;
-    
+  function saveHandSetTurn($conn, $hand, $cardNumber, $cardFaceUp, $gameID, $dealer) {
     $response = "";
     $cardID = substr($cardFaceUp,0,2);
     $trump = substr($cardFaceUp,1,1);
     $playerID = substr($cardFaceUp,3,1);
     $trumpColumn = $playerID == 'O' || $playerID == 'P' ? 'OrganizerTrump' : 'OpponentTrump';
     $turn = getNextTurn($dealer);
-
-    mysqli_query($connection, "START TRANSACTION;");
 
     if (getAlone($cardFaceUp)) {
       $skipped = getSkippedPosition($cardFaceUp[3]);
@@ -78,22 +90,16 @@
     }
     
     $sql = "update `Play` set `CardID{$cardNumber}` = '{$cardID}' where `ID`='{$hand['PlayID']}'";
-    $results = mysqli_query($connection, $sql);
+    $results = mysqli_query($conn, $sql);
     if ($results === false) {
-      $response .= mysqli_error($connection);
+      $response .= mysqli_error($conn);
     }
     
     $cardFaceUp = $cardID.'S'.substr($cardFaceUp,3);
     $sql = "update `Game` set `{$trumpColumn}` = '{$trump}',`CardFaceUp` = '{$cardFaceUp}',`Turn` = '{$turn}' where `ID`='{$gameID}'";
-    $results = mysqli_query($connection, $sql);
+    $results = mysqli_query($conn, $sql);
     if ($results === false) {
-      $response .= mysqli_error($connection);
-    }
-    
-    if (strlen($response) == 0) {
-      mysqli_query($connection, "COMMIT;");
-    } else {
-      mysqli_query($connection, "ROLLBACK;");
+      $response .= mysqli_error($conn);
     }
     
     return $response;

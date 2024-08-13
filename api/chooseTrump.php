@@ -18,13 +18,15 @@
       $dealer = '';
       $cardFaceUp = '';
       
-      $sql = "select `Dealer`,`CardFaceUp`
-        from `Game` 
-        where `ID`='{$gameID}'";
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
 
-      $results = mysqli_query($connection, $sql);
+      mysqli_query($conn, "START TRANSACTION;");
+
+      $sql = "select `Dealer`,`CardFaceUp` from `Game` where `ID`='{$gameID}'";
+
+      $results = mysqli_query($conn, $sql);
       if ($results === false) {
-        $response['ErrorMsg'] .= mysqli_error($connection);
+        $response['ErrorMsg'] .= mysqli_error($conn);
       } else {
         while ($row = mysqli_fetch_array($results)) {
           $dealer = is_null($row['Dealer']) ? '' : $row['Dealer'];
@@ -33,7 +35,6 @@
       }
       
       if (strlen($cardFaceUp) == 3 && $cardFaceUp[2] == 'D') {
-        
         $cardFaceUp = getCardFaceUp($cardFaceUp, $positionID, $alone);
         $turn = getTurn($cardFaceUp, $alone, $dealer);
 
@@ -45,18 +46,21 @@
           $sql = "update `Game` set `OpponentTrump` = '{$trumpID}'".$sqlTail;
         }
         
-        mysqli_query($connection, "START TRANSACTION;");
-        if (mysqli_query($connection, $sql) === false) {
-          $response['ErrorMsg'] .= mysqli_error($connection);
-          mysqli_query($connection, "ROLLBACK;");
-        } else {
-          mysqli_query($connection, "COMMIT;");
+        if (mysqli_query($conn, $sql) === false) {
+          $response['ErrorMsg'] .= mysqli_error($conn);
         }
-
       } else {
-        $response['ErrorMsg'] .= "Wrong state error. ";
+        $response['ErrorMsg'] .= "chooseTrump: Wrong state error. ";
       }
       
+      if (strlen($response['ErrorMsg']) > 0) {
+        mysqli_query($conn, "ROLLBACK;");
+      } else {
+        mysqli_query($conn, "COMMIT;");
+      }
+
+      mysqli_close($conn);
+
       http_response_code(200);
       
       echo json_encode($response);
