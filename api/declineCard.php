@@ -48,7 +48,7 @@
           }
         }
       } else {
-        $response['ErrorMsg'] .= "Wrong state error. ";
+        $response['ErrorMsg'] .= "declineCard: Wrong state error.";
       }
 
       http_response_code(200);

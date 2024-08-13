@@ -85,7 +85,7 @@
                     </tr>
                     <tr style="height: 42px">
                       <td>
-                        <div id="sfeW" style="display:none" class="flip-container-l" ">
+                        <div id="sfeW" style="display:none" class="flip-container-l">
                           <div class="flipper-l">
                             <div class="back-l">
                               <img src="<?php echo $appUrl; ?>content/images/cards/cardback.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg;">
@@ -221,13 +221,34 @@
               </div>
             </td>
           </tr>
-        </table>
+          <tr>
+            <td colspan=3>
+              <div id="ErrorInfo">
+                <p class="d-inline-flex gap-1">
+                  <button class="btn btn-primary btn-xsm" type="button" data-bs-toggle="collapse" data-bs-target="#errorList" aria-expanded="false" aria-controls="errorList">
+                    Errors (<span data-bind="text: errorsCount"></span>)
+                  </button>
+                </p>
+                <div class="collapse" id="errorList">
+                  <div class="card card-body">
+                    <button class="btn btn-secondary btn-xsm" data-bind="click: clear, visible: errorsCount() > 0" type="button">Clear</button>
 
+                    <div data-bind='foreach: errors'>
+                      <div>
+                        <span data-bind="text: message"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- Modals -->
   <div class="modal fade" id="bidModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
@@ -271,7 +292,6 @@
     </div>
   </div>
 
-  <!-- Modals -->
   <div class="modal fade" id="finishGameModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -332,7 +352,6 @@
     </div>
   </div>
 
-
   <?php
   include('content/js/partials/app.php');
   include('content/js/partials/gameModel.php');
@@ -343,6 +362,7 @@
   include('content/js/partials/playViewModel.php');
   include('content/js/partials/bidDialogViewModel.php');
   include('content/js/partials/finishGameDialogViewModel.php');
+  include('content/js/partials/errorViewModel.php');
 
   include('content/js/play.php')
   ?>

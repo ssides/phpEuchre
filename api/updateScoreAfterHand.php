@@ -16,13 +16,15 @@
       $organizerScore = $_POST['organizerScore'];
       $winner = $_POST['winner'];
       
-      $conn1 = mysqli_connect($hostname, $username, $password, $dbname);
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
     
+      mysqli_query($conn, "START TRANSACTION;");
+
       $sql = "update `Game` set 
-        `OrganizerTricks` = ?
-        ,`OrganizerScore` = ?
-        ,`OpponentTricks` = ?
-        ,`OpponentScore` = ?
+        `OrganizerTricks` = {$organizerTricks}
+        ,`OrganizerScore` = {$organizerScore}
+        ,`OpponentTricks` = {$opponentTricks}
+        ,`OpponentScore` = {$opponentScore}
         ,`ACO` = null
         ,`ACP` = null
         ,`ACL` = null
@@ -32,67 +34,45 @@
         ,`PL` = null
         ,`PR` = null
         ,`ScoringInProgress` = '1'
-        where `ID`= ?";
+        where `ID`= '{$gameID}'";
       
-      mysqli_query($conn1, "START TRANSACTION;");
-      $smt = mysqli_prepare($conn1, $sql);
-      mysqli_stmt_bind_param($smt, 'iiiis', $organizerTricks,$organizerScore,$opponentTricks,$opponentScore,$gameID);
-      if (!mysqli_stmt_execute($smt)){
-        $response['ErrorMsg'] .= mysqli_error($conn1);
-        mysqli_query($conn1, "ROLLBACK;");
-      } else {
-        mysqli_query($conn1, "COMMIT;");
+      $results = mysqli_query($conn, $sql);
+      if ($results === false) {
+        $response['ErrorMsg'] .= mysqli_error($conn);
       }
 
-      mysqli_stmt_close($smt);
-      mysqli_close($conn1);
-      
-      $conn2 = mysqli_connect($hostname, $username, $password, $dbname);
-
       if ($opponentTricks == 0 && $organizerTricks == 0) {
-        $response['ErrorMsg'] .= setDealInActive($gameID);
-        $dealer = "";
-        $sql = "select `Dealer` from `Game` where `ID`='{$gameID}'";
-
-        $results = mysqli_query($conn2, $sql);
-        if ($results === false) {
-          $response['ErrorMsg'] .= mysqli_error($conn2);
-        } else {
-          while ($row = mysqli_fetch_array($results)) {
-            $dealer = is_null($row['Dealer']) ? '' : $row['Dealer'];
-          }
-        }
+        $response['ErrorMsg'] .= setDealInActive($conn, $gameID);
+        $d = getDealer($conn, $gameID);
+        $response['ErrorMsg'] .= $d['ErrorMsg'];
+        $dealer = $d['Dealer'];
         
         if (strlen($dealer) == 1) {
           $dealer = getNextTurn($dealer);
           $turn = getNextTurn($dealer);
           $sql = "update `Game` set `Dealer` = '{$dealer}',`Lead` = null,`Turn` = '{$turn}',`OrganizerTrump` = null,`OpponentTrump` = null where `ID`='{$gameID}'";
               
-          mysqli_query($conn2, "START TRANSACTION;");
-          $result = mysqli_query($conn2, $sql);
+          $result = mysqli_query($conn, $sql);
           if ($result === false) {
-            $response['ErrorMsg'] .= mysqli_error($conn2);
-            mysqli_query($conn2, "ROLLBACK;");
-          } else {
-            mysqli_query($conn2, "COMMIT;");
+            $response['ErrorMsg'] .= mysqli_error($conn);
           }
         } else {
             $response['ErrorMsg'] .= "Invalid dealer: '{$dealer}'";
         }
       } else {
         $sql = "update `Game` set `Lead` = null,`Turn` = '{$winner}' where `ID`='{$gameID}'";
-
-        mysqli_query($conn2, "START TRANSACTION;");
-        $result = mysqli_query($conn2, $sql);
-        if ($result === false) {
-          $response['ErrorMsg'] .= mysqli_error($conn2);
-          mysqli_query($conn2, "ROLLBACK;");
-        } else {
-          mysqli_query($conn2, "COMMIT;");
+        if (mysqli_query($conn, $sql) === false) {
+          $response['ErrorMsg'] .= mysqli_error($conn);
         }
       }
       
-      mysqli_close($conn2);
+      if (strlen($response['ErrorMsg']) > 0) {
+        mysqli_query($conn, "ROLLBACK;");
+      } else {
+        mysqli_query($conn, "COMMIT;");
+      }
+      
+      mysqli_close($conn);
 
       http_response_code(200);
       
@@ -105,9 +85,26 @@
     echo "Expecting request method: POST";
   }
   
-  function setDealInActive($gameID){
-    global $hostname, $username, $password, $dbname;
-    $conn = mysqli_connect($hostname, $username, $password, $dbname);
+  function getDealer($conn, $gameID) {
+    $response = array();
+    $response['ErrorMsg'] = "";
+    $response['Dealer'] = "";
+
+    $sql = "select `Dealer` from `Game` where `ID`='{$gameID}'";
+
+    $results = mysqli_query($conn, $sql);
+    if ($results === false) {
+      $response['ErrorMsg'] .= mysqli_error($conn);
+    } else {
+      while ($row = mysqli_fetch_array($results)) {
+        $response['Dealer'] = is_null($row['Dealer']) ? '' : $row['Dealer'];
+      }
+    }
+        
+    return $response;
+  }
+  
+  function setDealInActive($conn, $gameID){
     $errorMsg = "";
     
     $sql = "update `GameDeal` set `IsActive` = '0' where `GameID` = '{$gameID}' and `IsActive` = '1'";

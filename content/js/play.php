@@ -105,7 +105,7 @@
           console.log('acknowledge response', response);
         },
         error: function (xhr, status, error) {
-          console.log(xhr.responseText);
+          app.errorVM.add(xhr.responseText);
         }
       });
     };
@@ -125,14 +125,14 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              console.log(data.ErrorMsg);
+              app.errorVM.add(data.ErrorMsg);
             }
           } catch(error) {
-            console.log('Could not parse response from acknowledgeCard. ' + error + ': ' + response);
+            app.errorVM.add('Could not parse response from acknowledgeCard. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          console.log(xhr.responseText);
+          app.errorVM.add(xhr.responseText);
         }
       });
     };
@@ -164,13 +164,13 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) 
-              console.log(data.ErrorMsg);
+              app.errorVM.add(data.ErrorMsg);
           } catch(error) {
-            console.log('Could not parse response from logHand. ' + error + ': ' + response);
+            app.errorVM.add('Could not parse response from logHand. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          console.log(xhr.responseText);
+          app.errorVM.add(xhr.responseText);
         }
       });
     };
@@ -238,16 +238,16 @@
                   self.setExecutionPoint('waitForAcknowledgments');
                   clearInterval(self.getCurrentStartCardTimer);
                 }
-              } else {
-                console.log(data.ErrorMsg);
+              } else if (data.ErrorMsg) {
+                app.errorVM.add(data.ErrorMsg);
               }
             } catch (error) {
-              console.log('Could not parse response from getCurrentStartCard. ' + error + ': ' + response);
+              app.errorVM.add('Could not parse response from getCurrentStartCard. ' + error + ': ' + response + ': Game stopped.');
               clearInterval(self.getCurrentStartCardTimer);
             }
           },
           error: function (xhr, status, error) {
-            console.log(xhr.responseText);
+            app.errorVM.add(xhr.responseText + ': Game stopped.');
             clearInterval(self.getCurrentStartCardTimer);
           },
           complete: function(){
@@ -277,12 +277,12 @@
                 clearInterval(self.getNextStartCardTimer);
               }
             } catch (error) {
-              console.log('Could not parse response from getNextStartCard. ' + error + ': ' + response);
+              app.errorVM.add('Could not parse response from getNextStartCard. ' + error + ': ' + response + ': Game stopped.');
               clearInterval(self.getNextStartCardTimer);
             }
           },
           error: function (xhr, status, error) {
-            console.log(xhr.responseText);
+            app.errorVM.add(xhr.responseText + ': Game stopped.');
             clearInterval(self.getNextStartCardTimer);
           },
           complete: function(){
@@ -306,15 +306,15 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              console.log(data.ErrorMsg);
+              app.errorVM.add(data.ErrorMsg);
             } 
           } catch (error) {
-            console.log('Could not parse response from deal. ' + error + ': ' + response);
+            app.errorVM.add('Could not parse response from deal. ' + error + ': ' + response + ': Game stopped.');
             clearInterval(self.getGameTimer);
           }
         },
         error: function (xhr, status, error) {
-          console.log(xhr.responseText);
+          app.errorVM.add(xhr.responseText + ': Game stopped.');
           clearInterval(self.getGameTimer);
         }
       });
@@ -338,7 +338,7 @@
           // wait for the dealer to deal.
         },
         error: function (xhr, status, error) {
-          console.log(xhr.responseText);
+          app.errorVM.add(xhr.responseText + ': Game stopped.');
           clearInterval(self.getGameTimer);
         }
       });
@@ -360,11 +360,11 @@
         success: function(response){
           let data = JSON.parse(response);
           if (data.ErrorMsg) {
-            console.log(data.ErrorMsg);
+            app.errorVM.add(data.ErrorMsg);
           }
         },
         error: function (xhr, status, error) {
-          console.log(xhr.responseText);
+          app.errorVM.add(xhr.responseText + ': Game stopped.');
           clearInterval(self.getGameTimer);
         }
       });
@@ -429,7 +429,7 @@
             try {
               let data = JSON.parse(response);
               if (data.ErrorMsg) {
-                console.log(data.ErrorMsg);
+                app.errorVM.add(data.ErrorMsg);
               } else {
                 self.game = new gameModel(data.Game);
                 if (self.game.GameEndDate) {
@@ -440,13 +440,13 @@
                 }
               }
             } catch (error) {
-              console.log('Error ' + ': ' + error.message || error);
-              console.log(error.stack);
+              app.errorVM.add('Error in getGame(): ' + error.message || error + ': Game stopped.');
               clearInterval(self.getGameTimer);
             }
           },
           error: function (xhr, status, error) {
             console.log(xhr.responseText);
+            app.errorVM.add(xhr.responseText + ': Game stopped.');
             clearInterval(self.getGameTimer);
           },
           complete: function(){
@@ -466,15 +466,15 @@
           try {
             var data = JSON.parse(response);
             if (data.ErrorMsg) 
-              console.log(data.ErrorMsg);
+              app.errorVM.add(data.ErrorMsg);
           } catch (error) {
-            console.log('Error ' + ': ' + error.message || error);
+            app.errorVM.add('Error ' + ': ' + error.message || error + ': Game stopped.');
             console.log(error.stack);
             clearInterval(self.getGameTimer);
           }
         },
         error: function (xhr, status, error) {
-          console.log(xhr.responseText);
+          app.errorVM.add(xhr.responseText + ': Game stopped.');
           clearInterval(self.getGameTimer);
         }
       });
@@ -503,15 +503,15 @@
           try {
             var data = JSON.parse(response);
             if (data.ErrorMsg) {
-              console.log(data.ErrorMsg);
+              app.errorVM.add(data.ErrorMsg);
             }
           } catch (error) {
-            console.log('Error ' + ': ' + error.message || error);
+            app.errorVM.add('Error ' + ': ' + error.message || error);
             console.log(error.stack);
           }
         },
         error: function (xhr, status, error) {
-          console.log(xhr.responseText);
+          app.errorVM.add(xhr.responseText);
         }
       });
     };
@@ -548,15 +548,15 @@
           try {
             var data = JSON.parse(response);
             if (data.ErrorMsg) {
-              console.log(data.ErrorMsg);
+              app.errorVM.add(data.ErrorMsg);
             }
           } catch (error) {
-            console.log('Error ' + ': ' + error.message || error);
+            app.errorVM.add('Error ' + ': ' + error.message || error);
             console.log(error.stack);
           }
         },
         error: function (xhr, status, error) {
-          console.log(xhr.responseText);
+          app.errorVM.add(xhr.responseText);
         }
       });
     };
@@ -570,15 +570,15 @@
           try {
             var data = JSON.parse(response);
             if (data.ErrorMsg) {
-              console.log(data.ErrorMsg);
+              app.errorVM.add(data.ErrorMsg);
             }
           } catch (error) {
-            console.log('Error ' + ': ' + error.message || error);
+            app.errorVM.add('Error ' + ': ' + error.message || error);
             console.log(error.stack);
           }
         },
         error: function (xhr, status, error) {
-          console.log(xhr.responseText);
+          app.errorVM.add(xhr.responseText);
         }
       });
     };
@@ -836,6 +836,8 @@
     ko.applyBindings(gc.playerInfoVM, $('#SouthInfo')[0]);
     ko.applyBindings(gc.bidDialogVM, $('#bidModal')[0]);
     ko.applyBindings(gc.finishGameDialogVM, $('#finishGameModal')[0]);
+    app.errorVM = new errorViewModel();
+    ko.applyBindings(app.errorVM, $('#ErrorInfo')[0]);
   });
   
 </script>

@@ -3,16 +3,15 @@
   include_once('../config/db.php');
   include_once('../config/config.php');
 
-  function getHand($gameID, $positionID) {
-    global $connection;
+  function getHand($conn, $gameID, $positionID) {
 
     $play = array();
     $play['ErrorMsg'] = "";
     
     $sql = "select `ID`,`CardID1`,`CardID2`,`CardID3`,`CardID4`,`CardID5` from `Play` where `Position` = '{$positionID}' and `GameID` = '{$gameID}' order by `InsertDate` desc limit 1";
-    $results = mysqli_query($connection, $sql);
+    $results = mysqli_query($conn, $sql);
     if ($results === false) {
-      $play['ErrorMsg'] .= mysqli_error($connection);
+      $play['ErrorMsg'] .= mysqli_error($conn);
     } else {
       while ($row = mysqli_fetch_array($results)) {
         $play['PlayID'] = $row['ID'];

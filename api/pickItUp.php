@@ -43,7 +43,7 @@
         }
         
       } else {
-        $response['ErrorMsg'] .= "Wrong state error. CardFaceUp: {$cardFaceUp} ";
+        $response['ErrorMsg'] .= "pickItUp: Wrong state error. CardFaceUp: {$cardFaceUp} ";
       }
 
       http_response_code(200);

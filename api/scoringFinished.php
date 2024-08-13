@@ -9,19 +9,21 @@
       $response = array();
       $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
-          
-      mysqli_query($connection, "START TRANSACTION;");
-      $smt = mysqli_prepare($connection, "update `Game` set `ScoringInProgress` = '0',`ACO` = null,`ACP` = null,`ACL` = null,`ACR` = null  where `ID`= ?");
-      mysqli_stmt_bind_param($smt, 's', $gameID);
-      if (!mysqli_stmt_execute($smt)){
-        $response['ErrorMsg'] .= mysqli_error($connection);
-        mysqli_query($connection, "ROLLBACK;");
+      
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
+
+      mysqli_query($conn, "START TRANSACTION;");
+      
+      $sql = "update `Game` set `ScoringInProgress` = '0',`ACO` = null,`ACP` = null,`ACL` = null,`ACR` = null  where `ID`= '{$gameID}'";
+      
+      $results = mysqli_query($conn, $sql);
+      if ($results === false) {
+        $response['ErrorMsg'] .= mysqli_error($conn);
+        mysqli_query($conn, "ROLLBACK;");
       } else {
-        mysqli_query($connection, "COMMIT;");
+        mysqli_query($conn, "COMMIT;");
       }
-
-      mysqli_stmt_close($smt);
-
+      
       http_response_code(200);
       
       echo json_encode($response);

@@ -12,15 +12,15 @@
       $playerID = $_POST[$cookieName];
       $card = array();
       
-      $dealID = getDealID($gameID);
-      if (!is_null($dealID)) {
+      $d = getDealID($gameID);
+      $errorMsg .= $d['ErrorMsg'];
+      if (strlen($d['DealID']) > 0) {
         $c = getCurrentFDeal($gameID);
         $card['ID'] = substr($c['Cards'], $c['Index'], 2);
         $card['Position'] = $c['Position'];
       } else {
         $card['ID'] = '';
         $card['Position'] = '';
-        $errorMsg = 'No dealID';
       }
       
       $card['ErrorMsg'] = $errorMsg;
