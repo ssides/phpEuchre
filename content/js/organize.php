@@ -57,6 +57,14 @@
     self.allPlayersJoined = ko.computed(function(){
       return self.leftJoined() && self.rightJoined() && self.partnerJoined();
     });
+
+    self.toggleSpeed = function(){
+      if (self.gameSpeed() == '1') {
+        self.gameSpeed('0');
+      } else {
+        self.gameSpeed('1');
+      }
+    };
     
     self.setInvited = function(identifier) {
       if (identifier == 'partner') {
