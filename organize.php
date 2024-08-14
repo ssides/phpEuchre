@@ -124,9 +124,9 @@
                 <td></td>
               </tr>
               <tr>
-                <td><label for="gameSpeed" class="form-label">Game speed:&nbsp;</label></td>
+                <td><label for="gameSpeed" class="form-label" data-bind="click: toggleSpeed">Game speed:&nbsp;</label></td>
                 <td><input type="range" class="form-range" min="0" max="1" step="1" name="gameSpeed" id="gameSpeed" data-bind="value: gameSpeed"></td>
-                <td>&nbsp;&nbsp;<label class="form-label" data-bind="html: displayGameSpeed"></label></td>
+                <td><span data-bind="click: toggleSpeed">&nbsp;&nbsp;<label class="form-label" data-bind="html: displayGameSpeed"></label></span></td>
               </tr>
             </table>
             <button type="submit" name="startGame" id="startGame">Start Game</button>
