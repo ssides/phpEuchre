@@ -4,9 +4,7 @@
   include_once('../config/config.php');
 
 
-  function getDealID($gameID) {
-    global $hostname, $username, $password, $dbname;
-    $conn = mysqli_connect($hostname, $username, $password, $dbname);
+  function getDealID($conn, $gameID) {
     $response = array();
     $response['ErrorMsg'] = "";
     $response['DealID'] = "";
@@ -24,16 +22,13 @@
         $response['DealID'] = is_null($row['DealID']) ? '' : $row['DealID'];
       }
     }
-
-    mysqli_close($conn);
     
     return $response;
   }
   
-  function getCurrentFDeal($gameID) {
-    global $errorMsg, $hostname, $username, $password, $dbname;
-    $conn = mysqli_connect($hostname, $username, $password, $dbname);
+  function getCurrentFDeal($conn, $gameID) {
     $fdeal = array();
+    $fdeal['ErrorMsg'] = "";
     
     $sql = "select `FirstJackIndex`,`FirstJackPosition`,d.`Cards`
       from `Game` g
@@ -42,13 +37,16 @@
       where g.ID = '{$gameID}'";
 
     $results = mysqli_query($conn, $sql);
-    while ($row = mysqli_fetch_array($results)) {
-      $fdeal['Index'] = $row['FirstJackIndex'];
-      $fdeal['Cards'] = $row['Cards'];
-      $fdeal['Position'] = $row['FirstJackPosition'];
+    if ($results === false) {
+      $fdeal['ErrorMsg'] .= mysqli_error($conn);
+    } else {
+      while ($row = mysqli_fetch_array($results)) {
+        $fdeal['Index'] = $row['FirstJackIndex'];
+        $fdeal['Cards'] = $row['Cards'];
+        $fdeal['Position'] = $row['FirstJackPosition'];
+      }
     }
     
-    mysqli_close($conn);
     return $fdeal;
   }
 
