@@ -16,8 +16,7 @@
       
       $sql = "update `Game` set `ScoringInProgress` = '0',`ACO` = null,`ACP` = null,`ACL` = null,`ACR` = null  where `ID`= '{$gameID}'";
       
-      $results = mysqli_query($conn, $sql);
-      if ($results === false) {
+      if (mysqli_query($conn, $sql) === false) {
         $response['ErrorMsg'] .= mysqli_error($conn);
         mysqli_query($conn, "ROLLBACK;");
       } else {

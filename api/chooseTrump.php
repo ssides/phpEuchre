@@ -50,7 +50,7 @@
           $response['ErrorMsg'] .= mysqli_error($conn);
         }
       } else {
-        $response['ErrorMsg'] .= "chooseTrump: Wrong state error. ";
+        $response['ErrorMsg'] .= "chooseTrump: Invalid game state. ";
       }
       
       if (strlen($response['ErrorMsg']) > 0) {

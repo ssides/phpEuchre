@@ -7,7 +7,8 @@
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName]) && isset($_POST['position'])) {
       
-      $errorMsg = "";
+      $response = array();
+      $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
       $position = $_POST['position'];
       $isFirst = isset($_POST['isFirst']);
@@ -21,18 +22,22 @@
         $sql = "update `Game` set `Dealer`='{$position}', `Turn`='{$turn}', `CardFaceUp`=null where `ID`='{$gameID}'";
       }
       
-      mysqli_query($connection, "START TRANSACTION;");
-      $result = mysqli_query($connection, $sql);
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
+      
+      mysqli_query($conn, "START TRANSACTION;");
+      $result = mysqli_query($conn, $sql);
       if ($result === false) {
-        $errorMsg = mysqli_error($connection);
-        mysqli_query($connection, "ROLLBACK;");
+        $response['ErrorMsg'] .= mysqli_error($conn);
+        mysqli_query($conn, "ROLLBACK;");
       } else {
-        $errorMsg = 'OK';
-        mysqli_query($connection, "COMMIT;");
+        mysqli_query($conn, "COMMIT;");
       }
       
+      mysqli_close($conn);
+
       http_response_code(200);
-      echo $errorMsg;
+      
+      echo json_encode($response);
       
     } else {
       echo "ID or position invalid or missing.";

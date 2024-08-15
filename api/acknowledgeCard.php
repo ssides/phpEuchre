@@ -39,7 +39,12 @@
         $response['ErrorMsg'] .= "{$positionID} already acknowledged card played by {$playerID}.";
       }
       
-      mysqli_query($conn, "COMMIT;");
+      if (strlen($response['ErrorMsg']) > 0) {
+        mysqli_query($conn, "ROLLBACK;");
+      } else {
+        mysqli_query($conn, "COMMIT;");
+      }
+      
       mysqli_close($conn);
 
       http_response_code(200);

@@ -38,6 +38,7 @@
       }
      
       http_response_code(200);
+      
       echo $msg;
 
     } else {

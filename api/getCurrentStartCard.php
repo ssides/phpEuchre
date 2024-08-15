@@ -36,6 +36,8 @@
         mysqli_query($conn, "COMMIT;");
       }
 
+      mysqli_close($conn);
+
       http_response_code(200);
       
       echo json_encode($card);

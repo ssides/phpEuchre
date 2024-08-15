@@ -51,7 +51,7 @@
           $response['ErrorMsg'] .= saveHandSetTurn($conn, $hand, $cardNumber, $cardFaceUp, $gameID, $dealer);
         }
       } else {
-        $response['ErrorMsg'] .= "discardCard: Wrong state error.";
+        $response['ErrorMsg'] .= "discardCard: Invalid game state.";
       }
 
       if (strlen($response['ErrorMsg']) > 0) {
