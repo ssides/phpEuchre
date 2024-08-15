@@ -15,13 +15,17 @@
       $dealer = '';
       $cardFaceUp = '';
       
+      $conn =  mysqli_connect($hostname, $username, $password, $dbname);
+      
+      mysqli_query($conn, "START TRANSACTION;");
+
       $sql = "select `Dealer`,`CardFaceUp`
         from `Game` 
         where `ID`='{$gameID}'";
 
-      $results = mysqli_query($connection, $sql);
+      $results = mysqli_query($conn, $sql);
       if ($results === false) {
-        $response['ErrorMsg'] .= mysqli_error($connection);
+        $response['ErrorMsg'] .= mysqli_error($conn);
       } else {
         while ($row = mysqli_fetch_array($results)) {
           $dealer = is_null($row['Dealer']) ? '' : $row['Dealer'];
@@ -31,25 +35,29 @@
       
       if (strlen($dealer) > 0 && strlen($cardFaceUp) > 0) {
         if ($dealer != $positionID) {
-          $response['ErrorMsg'] .= "Dealer: {$dealer} PositionID: {$positionID}. ";
+          $response['ErrorMsg'] .= "Invalid PositionID: Dealer: {$dealer} PositionID: {$positionID}. ";
         } else {
           $cardFaceUp .= 'D';
           $turn = getNextTurn($positionID);
 
           $sql = "update `Game` set `CardFaceUp` = '{$cardFaceUp}', `Turn` = '{$turn}' where `ID`='{$gameID}'";
           
-          mysqli_query($connection, "START TRANSACTION;");
-          $results = mysqli_query($connection, $sql);
+          $results = mysqli_query($conn, $sql);
           if ($results === false) {
-            $response['ErrorMsg'] .= mysqli_error($connection);
-            mysqli_query($connection, "ROLLBACK;");
-          } else {
-            mysqli_query($connection, "COMMIT;");
+            $response['ErrorMsg'] .= mysqli_error($conn);
           }
         }
       } else {
-        $response['ErrorMsg'] .= "declineCard: Wrong state error.";
+        $response['ErrorMsg'] .= "declineCard: Invalid game state.";
       }
+
+      if (strlen($response['ErrorMsg']) > 0) {
+        mysqli_query($conn, "ROLLBACK;");
+      } else {
+        mysqli_query($conn, "COMMIT;");
+      }
+
+      mysqli_close($conn);
 
       http_response_code(200);
       

@@ -17,9 +17,11 @@
       
       $sql = "select `CardFaceUp` from `Game` where `ID`='{$gameID}'";
 
-      $results = mysqli_query($connection, $sql);
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
+
+      $results = mysqli_query($conn, $sql);
       if ($results === false) {
-        $response['ErrorMsg'] .= mysqli_error($connection);
+        $response['ErrorMsg'] .= mysqli_error($conn);
       } else {
         while ($row = mysqli_fetch_array($results)) {
           $cardFaceUp = is_null($row['CardFaceUp']) ? '' : $row['CardFaceUp'];
@@ -33,18 +35,20 @@
         }
         $sql = "update `Game` set `CardFaceUp` = '{$cardFaceUp}' where `ID`='{$gameID}'";
         
-        mysqli_query($connection, "START TRANSACTION;");
-        $results = mysqli_query($connection, $sql);
+        mysqli_query($conn, "START TRANSACTION;");
+        $results = mysqli_query($conn, $sql);
         if ($results === false) {
-          $response['ErrorMsg'] .= mysqli_error($connection);
-          mysqli_query($connection, "ROLLBACK;");
+          $response['ErrorMsg'] .= mysqli_error($conn);
+          mysqli_query($conn, "ROLLBACK;");
         } else {
-          mysqli_query($connection, "COMMIT;");
+          mysqli_query($conn, "COMMIT;");
         }
         
       } else {
-        $response['ErrorMsg'] .= "pickItUp: Wrong state error. CardFaceUp: {$cardFaceUp} ";
+        $response['ErrorMsg'] .= "pickItUp: Invalid game state. CardFaceUp: {$cardFaceUp} ";
       }
+
+      mysqli_close($conn);
 
       http_response_code(200);
       

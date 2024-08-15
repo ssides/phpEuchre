@@ -14,20 +14,26 @@
       $playerID = $_POST[$cookieName];
       $card = array();
       
-      $f = getDealID($gameID);
+      $conn =  mysqli_connect($hostname, $username, $password, $dbname);
+      
+      mysqli_query($conn, "START TRANSACTION;");
+      
+      $f = getDealID($conn, $gameID);
       $errorMsg .= $f['ErrorMsg'];
       if (strlen($f['DealID']) == 0) {
-        $d = getRandomFDeal();
-        insertFDeal($gameID, $d['DealID']);
+        $d = getRandomFDeal($conn);
+        $errorMsg .= $d['ErrorMsg'];
+        $errorMsg .= insertFDeal($conn, $gameID, $d['DealID']);
         $card['ID'] = substr($d['Cards'], 0, 2);
         $card['Position'] = 'L';
       } else {
-        $c = getCurrentFDeal($gameID);
+        $c = getCurrentFDeal($conn, $gameID);
+        $errorMsg .= $c['ErrorMsg'];
         if ($c['Cards'][$c['Index']] != 'J') {
           $c['Index'] += 3;
           $card['ID'] = substr($c['Cards'], $c['Index'], 2);
           $card['Position'] = getNextPosition($c['Position']);
-          updateFDeal($gameID, $c['Index'], $card['Position']);
+          $errorMsg .= updateFDeal($conn, $gameID, $c['Index'], $card['Position']);
         } else {
           $card['ID'] = substr($c['Cards'], $c['Index'], 2);
           $card['Position'] = $c['Position'];
@@ -36,7 +42,16 @@
       
       $card['ErrorMsg'] = $errorMsg;
       
+      if (strlen($errorMsg) > 0) {
+        mysqli_query($conn, "ROLLBACK;");
+      } else {
+        mysqli_query($conn, "COMMIT;");
+      }
+
+      mysqli_close($conn);
+
       http_response_code(200);
+      
       echo json_encode($card);
       
     } else {
@@ -46,19 +61,18 @@
     echo "Expecting request method: POST";
   }
 
-  function updateFDeal($gameID, $ix, $position) {
-    global $errorMsg, $hostname, $username, $password, $dbname;
-    $conn = mysqli_connect($hostname, $username, $password, $dbname);
-    mysqli_query($conn, "START TRANSACTION;");
-    $result = mysqli_query($conn,"update `Game` set `FirstJackIndex`={$ix}, `FirstJackPosition`='{$position}' where `ID` = '{$gameID}'");
-    mysqli_query($conn, "COMMIT;");
-    mysqli_close($conn);
-    return $result;
+  function updateFDeal($conn, $gameID, $ix, $position) {
+    $errorMsg = "";
+    $sql = "update `Game` set `FirstJackIndex`={$ix}, `FirstJackPosition`='{$position}' where `ID` = '{$gameID}'";
+    $result = mysqli_query($conn, $sql);
+    if ($result === false) {
+      $errorMsg .= mysqli_error($conn);
+    }
+    return $errorMsg;
   }
   
-  function insertFDeal($gameID, $dealID) {
-    global $errorMsg, $hostname, $username, $password, $dbname;
-    $conn = mysqli_connect($hostname, $username, $password, $dbname);
+  function insertFDeal($conn, $gameID, $dealID) {
+    $errorMsg = "";
     $ID = GUID();
     
     $sql = "insert into `GameDeal` (`ID`, `DealID`, `GameID`,`InsertDate`) values ('{$ID}','{$dealID}','{$gameID}',now())";
@@ -67,23 +81,18 @@
     } else {
       $sql = "update `Game` set `FirstJackIndex` = 0, `FirstJackPosition`='L' where `ID`='{$gameID}'";
       
-      mysqli_query($conn, "START TRANSACTION;");
       if (mysqli_query($conn, $sql) === false) {
         $errorMsg .= mysqli_error($conn);
-        mysqli_query($conn, "ROLLBACK;");
-      } else {
-        mysqli_query($conn, "COMMIT;");
       }
     }
 
-    mysqli_close($conn);
-    return $result;
+    return $errorMsg;
   }
   
-  function getRandomFDeal() {
-    global $errorMsg, $hostname, $username, $password, $dbname, $firstJackChoices;
-    $conn = mysqli_connect($hostname, $username, $password, $dbname);
+  function getRandomFDeal($conn) {
+    global $firstJackChoices;
     $fdeal = array();
+    $fdeal['ErrorMsg'] = "";
     $r = mt_rand(0, $firstJackChoices - 1);
     
     $sql = "
@@ -94,12 +103,15 @@
       limit 1 offset {$r}";
       
     $results = mysqli_query($conn, $sql);
-    while ($row = mysqli_fetch_array($results)) {
-      $fdeal['DealID'] = $row['ID'];
-      $fdeal['Cards'] = $row['Cards'];
+    if ($results === false) {
+      $fdeal['ErrorMsg'] .= mysqli_error($conn);
+    } else {
+      while ($row = mysqli_fetch_array($results)) {
+        $fdeal['DealID'] = $row['ID'];
+        $fdeal['Cards'] = $row['Cards'];
+      }
     }
 
-    mysqli_close($conn);
     return $fdeal;
   }
   

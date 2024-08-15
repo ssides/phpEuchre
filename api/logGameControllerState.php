@@ -12,14 +12,14 @@
       $id = GUID();
       $playerID = $_POST[$cookieName];
       $gameID = $_POST['gameID'];
-      $dealID = strlen($_POST['dealID']) > 0 ? $_POST['dealID'] : null;
+      $dealID = strlen($_POST['dealID']) > 0 ? "'".$_POST['dealID']."'" : 'null';
       $positionID = $_POST['positionID'];
       $state = $_POST['state'];
-      $message = strlen($_POST['message']) > 0 ? $_POST['message'] : null;
-      $organizerScore = $_POST['organizerScore'];
-      $opponentScore = $_POST['opponentScore'];
-      $organizerTricks = $_POST['organizerTricks'];
-      $opponentTricks = $_POST['opponentTricks'];
+      $message = strlen($_POST['message']) > 0 ? "'".$_POST['message']."'" : 'null';
+      $organizerScore = strlen($_POST['organizerScore']) > 0 ? $_POST['organizerScore'] : '0';
+      $opponentScore = strlen($_POST['opponentScore']) > 0 ? $_POST['opponentScore'] : '0';
+      $organizerTricks = strlen($_POST['organizerTricks']) > 0 ? $_POST['organizerTricks'] : '0';
+      $opponentTricks = strlen($_POST['opponentTricks']) > 0 ? $_POST['opponentTricks'] : '0';
       $dealer = $_POST['dealer'];
       $turn = $_POST['turn'];
       $cardFaceUp = $_POST['cardFaceUp'];
@@ -34,15 +34,15 @@
 
       $sql = "insert into `GameControllerLog` 
         (`ID`,`GameID`,`DealID`,`PlayerID`,`PositionID`,`GameControllerState`,`Message`,`OrganizerScore`,`OpponentScore`,`OrganizerTricks`,`OpponentTricks`,`Dealer`,`Turn`,`CardFaceUp`,`ACO`,`ACP`,`ACL`,`ACR`,`PO`,`PP`,`PL`,`PR`,`InsertDate`) 
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,curtime(3))";
+        values ('{$id}','{$gameID}',{$dealID},'{$playerID}','{$positionID}','{$state}',{$message},{$organizerScore},{$opponentScore},{$organizerTricks},{$opponentTricks},'{$dealer}','{$turn}','{$cardFaceUp}','{$aco}','{$acp}','{$acl}','{$acr}','{$po}','{$pp}','{$pl}','{$pr}',curtime(3))";
       
-      $smt = mysqli_prepare($connection, $sql);
-      mysqli_stmt_bind_param($smt, 'sssssssiiiisssssssssss', $id,$gameID,$dealID,$playerID,$positionID,$state,$message,$organizerScore,$opponentScore,$organizerTricks,$opponentTricks,$dealer,$turn,$cardFaceUp,$aco,$acp,$acl,$acr,$po,$pp,$pl,$pr);
-      if (!mysqli_stmt_execute($smt)){
-        $response['ErrorMsg'] .= mysqli_error($connection);
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
+
+      if (mysqli_query($conn, $sql) === false) {
+        $response['ErrorMsg'] .= mysqli_error($conn);
       }
       
-      mysqli_stmt_close($smt);
+      mysqli_close($conn);
 
       http_response_code(200);
       

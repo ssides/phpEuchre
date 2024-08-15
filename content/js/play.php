@@ -62,9 +62,10 @@
     };
     
     self.setExecutionPoint = function(id) {
-      console.log('execution point: ' + id);
       if (app.gameControllerLog) {
         self.logGameControllerState(id, null);
+      } else {
+        console.log('execution point: ' + id);
       }
       self.executionPoint = self.getExecutionPointIndex(id);
     };
@@ -102,7 +103,14 @@
         url: 'api/acknowledge.php',
         data: pd,
         success: function (response) {
-          console.log('acknowledge response', response);
+          try {
+            let data = JSON.parse(response);
+            if (data.ErrorMsg) {
+              app.errorVM.add(data.ErrorMsg);
+            }
+          } catch(error) {
+            app.errorVM.add('Could not parse response from acknowledge. ' + error + ': ' + response);
+          }
         },
         error: function (xhr, status, error) {
           app.errorVM.add(xhr.responseText);
@@ -335,7 +343,14 @@
         url: 'api/setDealPosition.php',
         data: pd,
         success: function(response){
-          // wait for the dealer to deal.
+          try {
+            let data = JSON.parse(response);
+            if (data.ErrorMsg) {
+              app.errorVM.add(data.ErrorMsg);
+            } 
+          } catch (error) {
+            app.errorVM.add('Could not parse response from setDealPosition. ' + error + ': ' + response);
+          }
         },
         error: function (xhr, status, error) {
           app.errorVM.add(xhr.responseText + ': Game stopped.');
@@ -517,7 +532,7 @@
     };
 
     self.logGameControllerState = function(state, message) {
-      console.log('logGameControllerState()');
+      // console.log('logGameControllerState()');
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.dealID = self.game.DealID;

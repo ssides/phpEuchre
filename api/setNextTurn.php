@@ -6,25 +6,30 @@
 
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
-      
+
+      $response = array();
+      $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
       $playerID = $_POST[$cookieName];
       $positionID = $_POST['positionID'];
-      $response = array();
-      $response['ErrorMsg'] = "";
 
       $turn = getNextTurn($positionID);
       
       $sql = "update `Game` set `Turn` = '{$turn}' where `ID`='{$gameID}'";
-         
-      mysqli_query($connection, "START TRANSACTION;");
-      $results = mysqli_query($connection, $sql);
+      
+      $conn = mysqli_connect($hostname, $username, $password, $dbname);
+      
+      mysqli_query($conn, "START TRANSACTION;");
+      
+      $results = mysqli_query($conn, $sql);
       if ($results === false) {
-        $response['ErrorMsg'] = mysqli_error($connection);
-        mysqli_query($connection, "ROLLBACK;");
+        $response['ErrorMsg'] .= mysqli_error($conn);
+        mysqli_query($conn, "ROLLBACK;");
       } else {
-        mysqli_query($connection, "COMMIT;");
+        mysqli_query($conn, "COMMIT;");
       }
+
+      mysqli_close($conn);
 
       http_response_code(200);
       
