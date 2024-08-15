@@ -197,6 +197,7 @@
                           </div>
                         </li>
                       </ul>
+                      <span data-bind="visible: iamSkipped">Your partner is taking the hand alone.</span>
                     </div>
                     <div class="col">
                       <button id="discard" type="button" style="display:none" data-bind="visible: showDiscardBtn, enable: enableDiscardBtn, click: discard">Discard</button>
