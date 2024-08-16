@@ -27,7 +27,8 @@
       
       while ($row = mysqli_fetch_array($results)) {
         $et = toEasternTime($row['InsertDate']);
-        array_push($games, array($row['GameID'],$et->format('m-d-Y H:i'),$row['OrganizerScore'],$row['OpponentScore']));
+        $fet = $et->format('m-d-Y h:i a')." et";
+        array_push($games, array($row['GameID'],$fet,$row['OrganizerScore'],$row['OpponentScore']));
       }
 
       http_response_code(200);
