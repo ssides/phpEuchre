@@ -578,7 +578,7 @@
     };
 
     self.play = function() {
-      console.log('play()');
+      // console.log('play()');
       var cardID = self.cards().length == 1 ?  self.cards()[0].id : self.getSelectedCard();
       if (cardID) {
         self.enablePlayBtn(false);
@@ -765,7 +765,6 @@
     };
 
     self.initialize = function(selfPosition, game){
-      console.log('currentPlayerInfoViewModel.initialize(' + selfPosition + ')');
       self.gameData = new gameModel(game);
       self.myPosition = selfPosition;
       

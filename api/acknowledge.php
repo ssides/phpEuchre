@@ -3,7 +3,7 @@
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
   
-  // As "position" I am acknowledge that I've seen the Jack or that Scoring is in progress.
+  // As "position" I am acknowledging that I've seen the Jack or that Scoring is in progress.
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
     if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName]) && isset($_POST['position'])) {
       
