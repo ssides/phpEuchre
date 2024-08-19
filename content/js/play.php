@@ -4,8 +4,23 @@
 
 <script type="text/javascript">
   
+  function timerOp() {
+    var self = this;
+
+    self.isStarted = false;
+    self.succeeded = false;
+    self.expirationTime = null;
+    self.fn = null;
+    
+    self.start = function(expirationTime) {
+      self.isStarted = true;
+      self.succeeded = false;
+      self.expirationTime = expirationTime;
+    }
+  }
+
   // The gameController is responsible for calling on viewmodels to update the score, and do animations on 
-  // the play table.  The main interval timer is the getGameTimer which runs throughout the game.
+  // the play table.  The main loop in initialize() runs throughout the game.
   // The computer used by the Organizer does the scoring of the game.  So if the Organizer's Partner goes
   // alone, the Organizer's gameController must continue to be active. (I say that because when my iPhone
   // goes to sleep, javascript processes stop running.)
@@ -29,14 +44,13 @@
     self.playVM = new playViewModel();
     self.bidDialogVM = new bidDialogViewModel();
     self.finishGameDialogVM = new finishGameDialogViewModel();
-    self.getGameTimer = null;
-    self.getGameInProgress = false;   // lets the $.ajax() call take more than a second to complete.
-    self.getNextStartCardTimer = null;
-    self.getNextStartCardInProgress = false;
-    self.getCurrentStartCardTimer = null;
-    self.getCurrentStartCardInProgress = false;
+    self.heartbeatTimer = null;
+    self.heartbeatOp = new timerOp();
+    self.firstjackTimer = null;  // first jack operations run at a faster rate than the heartbeat stuff.
+    self.firstjackOp = new timerOp();
     self.firstDealer = ' ';
     self.delay = 0;
+    self.ackSent = '';
     
     self.setThisPlayerPosition = function(gameData){
       if ((self.playerID === gameData.Organizer)) {
@@ -94,10 +108,10 @@
     };
 
     self.acknowledge = function(position) {
+      // console.log('acknowledge()');
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.position = position;
-      console.log('acknowledge()');
       $.ajax({
         method: 'POST',
         url: 'api/acknowledge.php',
@@ -119,7 +133,7 @@
     };
 
     self.acknowledgeCard = function(playerID) {
-      console.log('acknowledgeCard()');
+      self.acknowledgmentSent(playerID);
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.positionID = self.position;
@@ -146,7 +160,7 @@
     };
     
     self.logHand = function(newScore) {
-      console.log('logHand()');
+      // console.log('logHand()');
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.dealID = self.game.DealID;
@@ -200,26 +214,38 @@
       }
     };
     
-    self.acknowledgmentAccepted = function(playerID){
-        switch (self.position) {
-          case 'O':
-            return self.game.ACO.includes(playerID);
-          case 'P':
-            return self.game.ACP.includes(playerID);
-          case 'L':
-            return self.game.ACL.includes(playerID);
-          case 'R':
-            return self.game.ACR.includes(playerID);
-          default:
-            return false;
-        }
+    self.acknowledgmentHasBeenSent = function(playerID){
+      return self.ackSent.includes(playerID);
     };
     
+    self.acknowledgmentSent = function(playerID){
+      self.ackSent += playerID;
+    };
+    
+    self.clearAcknowledgments = function(){
+      self.ackSent = '';
+    };
+    
+    self.acknowledgmentAccepted = function(playerID){
+      switch (self.position) {
+        case 'O':
+          return self.game.ACO.includes(playerID);
+        case 'P':
+          return self.game.ACP.includes(playerID);
+        case 'L':
+          return self.game.ACL.includes(playerID);
+        case 'R':
+          return self.game.ACR.includes(playerID);
+        default:
+          return false;
+      }
+    };
+
     self.placeCardWithAcknowledge = function(card, playerID){
       if (card) {
         self.placeCard[app.positions.indexOf(self.position)](card, playerID);
         if (self.position != playerID && !self.iamTheSkippedPlayer()) {
-          if (!self.acknowledgmentAccepted(playerID)) {
+          if (!self.acknowledgmentAccepted(playerID) && !self.acknowledgmentHasBeenSent(playerID)) {
             self.acknowledgeCard(playerID);
           }
         }
@@ -227,84 +253,73 @@
     };
     
     self.getCurrentStartCard = function(){
-      if (!self.getCurrentStartCardInProgress) {
-        console.log('getCurrentStartCard()');
-        
-        self.getCurrentStartCardInProgress = true;
-        $.ajax({
-          method: 'POST',
-          url: 'api/getCurrentStartCard.php',
-          data: app.apiPostData,
-          success: function (response) {
-            try {
-              let data = JSON.parse(response);
-              if (data.ID) {
-                var i = app.positions.indexOf(self.position);
-                self.placeCard[i](data.ID, data.Position);
-                if (data.ID[0] == 'J') {
-                  self.acknowledge(self.position);
-                  self.setExecutionPoint('waitForAcknowledgments');
-                  clearInterval(self.getCurrentStartCardTimer);
-                }
-              } else if (data.ErrorMsg) {
-                app.errorVM.add(data.ErrorMsg);
-              }
-            } catch (error) {
-              app.errorVM.add('Could not parse response from getCurrentStartCard. ' + error + ': ' + response + ': Game stopped.');
-              clearInterval(self.getCurrentStartCardTimer);
-            }
-          },
-          error: function (xhr, status, error) {
-            app.errorVM.add(xhr.responseText + ': Game stopped.');
-            clearInterval(self.getCurrentStartCardTimer);
-          },
-          complete: function(){
-            self.getCurrentStartCardInProgress = false;
-          }
-        });
-      }
-    };
-    
-    self.getNextStartCard = function(){
-      if (!self.getNextStartCardInProgress) {
-        console.log('getNextStartCard()');
-        
-        self.getNextStartCardInProgress = true;
-        $.ajax({
-          method: 'POST',
-          url: 'api/getNextStartCard.php',
-          data: app.apiPostData,
-          success: function (response) {
-            try {
-              let data = JSON.parse(response);
+      // console.log('getCurrentStartCard()');
+      $.ajax({
+        method: 'POST',
+        url: 'api/getCurrentStartCard.php',
+        data: app.apiPostData,
+        success: function (response) {
+          try {
+            let data = JSON.parse(response);
+            self.firstjackOp.succeeded = true;
+            if (data.ID) {
               var i = app.positions.indexOf(self.position);
               self.placeCard[i](data.ID, data.Position);
               if (data.ID[0] == 'J') {
-                self.firstDealer = data.Position;
+                self.acknowledge(self.position);
                 self.setExecutionPoint('waitForAcknowledgments');
-                clearInterval(self.getNextStartCardTimer);
+                clearInterval(self.firstjackTimer);
               }
-            } catch (error) {
-              app.errorVM.add('Could not parse response from getNextStartCard. ' + error + ': ' + response + ': Game stopped.');
-              clearInterval(self.getNextStartCardTimer);
+            } else if (data.ErrorMsg) {
+              app.errorVM.add(data.ErrorMsg);
             }
-          },
-          error: function (xhr, status, error) {
-            app.errorVM.add(xhr.responseText + ': Game stopped.');
-            clearInterval(self.getNextStartCardTimer);
-          },
-          complete: function(){
-            self.getNextStartCardInProgress = false;
+          } catch (error) {
+            app.errorVM.add('Could not parse response from getCurrentStartCard. ' + error + ': ' + response + ': Game stopped.');
+            clearInterval(self.firstjackTimer);
           }
-        });
-      }
+        },
+        error: function (xhr, status, error) {
+          app.errorVM.add(xhr.responseText + ': Game stopped.');
+          clearInterval(self.firstjackTimer);
+        }
+      });
+    };
+    
+    self.getNextStartCard = function(){
+      // console.log('getNextStartCard()');
+      $.ajax({
+        method: 'POST',
+        url: 'api/getNextStartCard.php',
+        data: app.apiPostData,
+        success: function (response) {
+          try {
+            let data = JSON.parse(response);
+            var i = app.positions.indexOf(self.position);
+            self.placeCard[i](data.ID, data.Position);
+            if (data.ID[0] == 'J') {
+              self.firstDealer = data.Position;
+              self.setExecutionPoint('waitForAcknowledgments');
+              clearInterval(self.firstjackTimer);
+            } else {
+              self.firstjackOp.succeeded = true;
+            }
+          } catch (error) {
+            app.errorVM.add('Could not parse response from getNextStartCard. ' + error + ': ' + response);
+            clearInterval(self.firstjackTimer);
+          }
+        },
+        error: function (xhr, status, error) {
+          app.errorVM.add(xhr.responseText);
+          clearInterval(self.firstjackTimer);
+        }
+      });
     };
 
     // Turn and Dealer have been set in self.game.  self.position is the dealer. 
     // The deal api selects a random deal where `PurposeCode` = 'D' and DealID has not yet been used in this game.
     // It distributes cards to players in table `Play`. The dealer calls self.deal().
     self.deal = function(){
-      console.log('deal()');
+      // console.log('deal()');
 
       $.ajax({
         method: 'POST',
@@ -318,19 +333,18 @@
             } 
           } catch (error) {
             app.errorVM.add('Could not parse response from deal. ' + error + ': ' + response + ': Game stopped.');
-            clearInterval(self.getGameTimer);
+            clearInterval(self.heartbeatTimer);
           }
         },
         error: function (xhr, status, error) {
           app.errorVM.add(xhr.responseText + ': Game stopped.');
-          clearInterval(self.getGameTimer);
+          clearInterval(self.heartbeatTimer);
         }
       });
     };
 
     self.setDealPosition = function(position, isFirst){
-      console.log('setDealPosition()');
-
+      // console.log('setDealPosition()');
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.position = position;
@@ -354,7 +368,7 @@
         },
         error: function (xhr, status, error) {
           app.errorVM.add(xhr.responseText + ': Game stopped.');
-          clearInterval(self.getGameTimer);
+          clearInterval(self.heartbeatTimer);
         }
       });
     };
@@ -380,7 +394,7 @@
         },
         error: function (xhr, status, error) {
           app.errorVM.add(xhr.responseText + ': Game stopped.');
-          clearInterval(self.getGameTimer);
+          clearInterval(self.heartbeatTimer);
         }
       });
     };
@@ -434,45 +448,38 @@
     };
 
     self.getGame = function(){
-      if (!self.getGameInProgress) {
-        self.getGameInProgress = true;
-        $.ajax({
-          method: 'POST',
-          url: 'api/getGame.php',
-          data: app.apiPostData,
-          success: function (response) {
-            try {
-              let data = JSON.parse(response);
-              if (data.ErrorMsg) {
-                app.errorVM.add(data.ErrorMsg);
+      $.ajax({
+        method: 'POST',
+        url: 'api/getGame.php',
+        data: app.apiPostData,
+        success: function (response) {
+          try {
+            let data = JSON.parse(response);
+            if (data.ErrorMsg) {
+              app.errorVM.add(data.ErrorMsg);
+            } else {
+              self.game = new gameModel(data.Game);
+              if (self.game.GameEndDate) {
+                self.endGame();
               } else {
-                self.game = new gameModel(data.Game);
-                if (self.game.GameEndDate) {
-                  self.endGame();
-                } else {
-                  self.updateScoresAndInfo();
-                  self.gameExecution[self.executionPoint].fn();
-                }
+                self.updateScoresAndInfo();
+                self.gameExecution[self.executionPoint].fn();
+                self.heartbeatOp.succeeded = true;
               }
-            } catch (error) {
-              app.errorVM.add('Error in getGame(): ' + error.message || error + ': Game stopped.');
-              clearInterval(self.getGameTimer);
             }
-          },
-          error: function (xhr, status, error) {
-            console.log(xhr.responseText);
-            app.errorVM.add(xhr.responseText + ': Game stopped.');
-            clearInterval(self.getGameTimer);
-          },
-          complete: function(){
-            self.getGameInProgress = false;
+          } catch (error) {
+            app.errorVM.add('Error in getGame(): ' + error.message || error + ': Game stopped.');
           }
-        });
-      }
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr.responseText);
+          app.errorVM.add(xhr.responseText);
+        }
+      });
     };
     
     self.finishGame = function(){
-      console.log('finishGame()');
+      // console.log('finishGame()');
       $.ajax({
         method: 'POST',
         url: 'api/finishGame.php',
@@ -485,31 +492,28 @@
           } catch (error) {
             app.errorVM.add('Error ' + ': ' + error.message || error + ': Game stopped.');
             console.log(error.stack);
-            clearInterval(self.getGameTimer);
+            clearInterval(self.heartbeatTimer);
           }
         },
         error: function (xhr, status, error) {
           app.errorVM.add(xhr.responseText + ': Game stopped.');
-          clearInterval(self.getGameTimer);
+          clearInterval(self.heartbeatTimer);
         }
       });
     };
     
     self.endGame = function() {
-      if (self.getGameTimer) {
-        clearInterval(self.getGameTimer);
+      if (self.heartbeatTimer) {
+        clearInterval(self.heartbeatTimer);
       }
-      if (self.getCurrentStartCardTimer) {
-        clearInterval(self.getCurrentStartCardTimer);
-      }
-      if (self.getNextStartCardTimer) {
-        clearInterval(self.getNextStartCardTimer);
+      if (self.firstjackTimer) {
+        clearInterval(self.firstjackTimer);
       }
       self.endGameModal.show();
     }
     
     self.scoringFinished = function(){
-      console.log('scoringFinished()');
+      // console.log('scoringFinished()');
       $.ajax({
         method: 'POST',
         url: 'api/scoringFinished.php',
@@ -622,6 +626,7 @@
         } else {
           if (self.game.OpponentTrump || self.game.OrganizerTrump) {
             // trump has been established.
+            self.clearAcknowledgments();
             self.setExecutionPoint('waitForPlay');
           } else {
             self.setExecutionPoint('waitForTrump');
@@ -641,14 +646,14 @@
       if (self.game.Dealer)
         throw "selectFirstJackFn(): dealer is already set.";
       
-      if ((self.position == 'O') && (self.getNextStartCardTimer === null)) {
-        console.log('Starting the first Jack selection timer.');
-        self.getNextStartCardTimer = setInterval(self.getNextStartCard, app.times.firstJackTime);
+      if ((self.position == 'O') && (self.firstjackTimer === null)) {
+        self.firstjackOp.fn = self.getNextStartCard;
+        self.firstjackTimer = setInterval(self.firstjack, 100);
       }
       
-      if ((self.position != 'O') && (self.getCurrentStartCardTimer === null)) {
-        console.log('Starting the first Jack query timer.');
-        self.getCurrentStartCardTimer = setInterval(self.getCurrentStartCard, app.times.firstJackTime);
+      if ((self.position != 'O') && (self.firstjackTimer === null)) {
+        self.firstjackOp.fn = self.getCurrentStartCard;
+        self.firstjackTimer = setInterval(self.firstjack, 100);
       }
     };
     
@@ -677,7 +682,7 @@
     };
     
     self.waitForTrumpFn = function(){
-      // The getGameTimer is running and will cause the page to be updated.
+      // The heartbeat loop is running and will cause the page to be updated.
       // The currentPlayerInfoViewModel.update() method is called on 
       // every heartbeat.  That VM needs to be smart enough to work
       // efficiently based on the game state determined by several
@@ -699,12 +704,14 @@
           if (self.position == 'O') {
             self.setTurnDealerSkipped();
           }
+          self.clearAcknowledgments();
           self.setExecutionPoint('waitForPlay');
         } else {
           self.setExecutionPoint('waitForDiscard');
         }
       }
       if (trump) {
+        self.clearAcknowledgments();
         self.setExecutionPoint('waitForPlay');
       }
     };
@@ -795,6 +802,7 @@
             self.setExecutionPoint('dealOrWaitForCardFaceUp');
           }
         } else {
+          self.clearAcknowledgments();
           self.setExecutionPoint('waitForPlay');
         }
       }
@@ -802,6 +810,7 @@
     
     self.waitForDiscardFn = function(){
       if (self.game.CardFaceUp.length > 3 && self.game.CardFaceUp[2] == 'S') {
+          self.clearAcknowledgments();
           self.setExecutionPoint('waitForPlay');
       }
     };
@@ -809,7 +818,26 @@
     self.showGameOverDialogFn = function(){
       self.finishGameDialogVM.update();
       self.finishGameModal.show();
-      clearInterval(self.getGameTimer);
+      clearInterval(self.heartbeatTimer);
+    };
+    
+    self.firstjack = function(){
+      if (!self.firstjackOp.isStarted) {
+        // console.log('starting firstjackOp ...');
+        self.firstjackOp.start(Date.now() + app.times.firstJackTime);
+        self.firstjackOp.fn();
+      } else if (self.firstjackOp.succeeded === true && Date.now() > self.firstjackOp.expirationTime) {
+        self.firstjackOp.isStarted = false;
+      }
+    };
+    
+    self.heartbeat = function(){
+      if (!self.heartbeatOp.isStarted) {
+        self.heartbeatOp.start(Date.now() + app.times.gameTime);
+        self.getGame();
+      } else if (self.heartbeatOp.succeeded === true && Date.now() > self.heartbeatOp.expirationTime) {
+        self.heartbeatOp.isStarted = false;
+      }
     };
     
     self.gameExecution = [
@@ -832,11 +860,11 @@
     
     self.initialize = function(){
       self.setExecutionPoint('initialize');
-      self.getGameTimer = setInterval(self.getGame, app.times.gameTime);
+      self.heartbeatTimer = setInterval(self.heartbeat, 100);
     }
     
     self.initialize();
-
+    
   }
   
   $(function (){
