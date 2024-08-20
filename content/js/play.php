@@ -601,6 +601,11 @@
         }
       });
     };
+    
+    self.gotoWaitForPlay = function(){
+      self.clearAcknowledgments();
+      self.setExecutionPoint('waitForPlay');
+    };
 
     self.initializeFn = function(){
       self.setThisPlayerPosition(self.game);
@@ -626,8 +631,7 @@
         } else {
           if (self.game.OpponentTrump || self.game.OrganizerTrump) {
             // trump has been established.
-            self.clearAcknowledgments();
-            self.setExecutionPoint('waitForPlay');
+            self.gotoWaitForPlay();
           } else {
             self.setExecutionPoint('waitForTrump');
           }
@@ -704,15 +708,13 @@
           if (self.position == 'O') {
             self.setTurnDealerSkipped();
           }
-          self.clearAcknowledgments();
-          self.setExecutionPoint('waitForPlay');
+          self.gotoWaitForPlay();
         } else {
           self.setExecutionPoint('waitForDiscard');
         }
       }
       if (trump) {
-        self.clearAcknowledgments();
-        self.setExecutionPoint('waitForPlay');
+        self.gotoWaitForPlay();
       }
     };
     
@@ -802,16 +804,14 @@
             self.setExecutionPoint('dealOrWaitForCardFaceUp');
           }
         } else {
-          self.clearAcknowledgments();
-          self.setExecutionPoint('waitForPlay');
+          self.gotoWaitForPlay();
         }
       }
     };
     
     self.waitForDiscardFn = function(){
       if (self.game.CardFaceUp.length > 3 && self.game.CardFaceUp[2] == 'S') {
-          self.clearAcknowledgments();
-          self.setExecutionPoint('waitForPlay');
+          self.gotoWaitForPlay();
       }
     };
     
