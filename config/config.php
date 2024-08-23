@@ -1,8 +1,8 @@
 <?php
   // make sure there is a final path separator in paths.
-  $appUrl = 'http://localhost:8080/';
+  $appUrl = 'http://192.168.254.148:8080/';
   $reportsUrl = $appUrl.'reports/';
-  $cookieName = 'sidesLocalEuchre_cookie';
+  $cookieName = 'sidesLocalEuchre1';
   $thumbnailDim = 25;
   $positionDistance = 3;
   // the images folder must be called images and it must be in root.
@@ -15,4 +15,5 @@
   $clearTableDelay = 2;
   $version = '1.7:10'; // displayed in the header. change in version forces the browser to get the latest styles.
                        // M.m:s   M - Major version number, m - minor version number, s - styles version number.
+  $$a = array();
 ?>

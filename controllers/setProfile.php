@@ -3,11 +3,11 @@
     include_once('config/config.php');
     include_once('svc/services.php');
     include_once('svc/thumbnailServices.php');
-
-    if (empty($_COOKIE[$cookieName])) {
-      header('Location: index.php');
-    } else {
-      $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+    include_once('controllers/isAuthenticated.php'); // for readAuthCookie()
+    
+    if (!empty($_COOKIE[$cookieName])) {
+      readAuthCookie();
+      $userProfile = getUserProfileSummaryArray($$a['r']);
       $thumbnailPath = $userProfile['thumbnailPath'];
       if(isset($_POST['upload'])) {
         $controllerError = is_null($connection) ? "No connection. " : "";
@@ -35,9 +35,9 @@
                 $contentType = $_FILES['profileImage']['type'];
                 
                 $hofs = $vofs = 0;
-                deleteExistingImage($_COOKIE[$cookieName]);
+                deleteExistingImage($$a['r']);
                 $smt = mysqli_prepare($connection, 'insert into `UserProfile` (`ID` , `PlayerID` ,`OriginalName` , `OriginalSavedPath`,`OriginalContentType` ,`ThumbnailPath`, `OriginalFileSize`, `HOffset`,`VOffset`,`OriginalScale`,`DisplayScale`,`InsertDate` ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())');
-                mysqli_stmt_bind_param($smt, 'ssssssiiidd', GUID(), $_COOKIE[$cookieName], $_FILES['profileImage']['name'], $destPath, $contentType, $thumbnailPath, $size, $hofs, $vofs, $scale, $scale);
+                mysqli_stmt_bind_param($smt, 'ssssssiiidd', GUID(), $$a['r'], $_FILES['profileImage']['name'], $destPath, $contentType, $thumbnailPath, $size, $hofs, $vofs, $scale, $scale);
                 if (!mysqli_stmt_execute($smt)){
                   $controllerError .= mysqli_error($connection);
                 }
@@ -49,34 +49,34 @@
           $controllerError .= 'File could not be uploaded.';
         }
       } else if(isset($_POST['change'])) {
-        deleteExistingImage($_COOKIE[$cookieName]);
+        deleteExistingImage($$a['r']);
         $thumbnailPath = '';
       } else if(isset($_POST['zoomin'])) {
-        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $userProfile = getUserProfileSummaryArray($$a['r']);
         $fivepct = $userProfile['displayScale'] * 0.05;
         $userProfile['displayScale'] += $fivepct;
-        updateThumbnail($_COOKIE[$cookieName], $userProfile);
+        updateThumbnail($$a['r'], $userProfile);
       } else if(isset($_POST['zoomout'])) {
-        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $userProfile = getUserProfileSummaryArray($$a['r']);
         $fivepct = $userProfile['displayScale'] * 0.05;
         $userProfile['displayScale'] -= $fivepct;
-        updateThumbnail($_COOKIE[$cookieName], $userProfile);
+        updateThumbnail($$a['r'], $userProfile);
       }else if(isset($_POST['right'])) {
-        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $userProfile = getUserProfileSummaryArray($$a['r']);
         $userProfile['hOffset'] -= $positionDistance;
-        updateThumbnail($_COOKIE[$cookieName], $userProfile);
+        updateThumbnail($$a['r'], $userProfile);
       } else if(isset($_POST['left'])) {
-        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $userProfile = getUserProfileSummaryArray($$a['r']);
         $userProfile['hOffset'] += $positionDistance;
-        updateThumbnail($_COOKIE[$cookieName], $userProfile);
+        updateThumbnail($$a['r'], $userProfile);
       } else if(isset($_POST['up'])) {
-        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $userProfile = getUserProfileSummaryArray($$a['r']);
         $userProfile['vOffset'] += $positionDistance;
-        updateThumbnail($_COOKIE[$cookieName], $userProfile);
+        updateThumbnail($$a['r'], $userProfile);
       } else if(isset($_POST['down'])) {
-        $userProfile = getUserProfileSummaryArray($_COOKIE[$cookieName]);
+        $userProfile = getUserProfileSummaryArray($$a['r']);
         $userProfile['vOffset'] -= $positionDistance;
-        updateThumbnail($_COOKIE[$cookieName], $userProfile);
+        updateThumbnail($$a['r'], $userProfile);
       } else if(isset($_POST['close'])) {
         header('Location: dashboard.php');
       } else if(isset($_POST['joinrequest'])) {
@@ -86,7 +86,7 @@
         if (empty($group_description) && empty($group_id)) {
           $controllerError .= "No group selected.";
         } else {
-          sendJoinRequest($_COOKIE[$cookieName], $group_id);
+          sendJoinRequest($$a['r'], $group_id);
         }
       }
     }

@@ -5,7 +5,7 @@
   include('../svc/getThumbnailURL.php');
 
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST[$cookieName]) && isset($_POST['groupID']) && isAuthenticated($_POST[$cookieName])) {
+    if (isset($_POST['r']) && isset($_POST['groupID']) && isAuthenticated($_POST['r'])) {
 
       $response = array();
       $users = array();
@@ -13,7 +13,7 @@
       mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
       $conn = mysqli_connect($hostname, $username, $password, $dbname);
 
-      $pid = $_POST[$cookieName];
+      $pid = $_POST['r'];
       $gid = $_POST['groupID'];
 
       $sql = "select p.`ID`,substr(`Name`,1,8) `Name`,u.`ThumbnailPath`

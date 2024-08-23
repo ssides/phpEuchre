@@ -11,10 +11,10 @@
     }
   }
   
-  function setLoginCookie($pid) {
+  function setLoginCookie($l) {
     global $cookieName;
     $expirationDays = 3;
-    return setcookie($cookieName, $pid, [
+    return setcookie($cookieName, base64_encode(serialize($l)), [
       'expires' => time() + ($expirationDays * 24 * 60 * 60),
       'samesite' => 'Lax',
     ]);

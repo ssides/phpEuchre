@@ -1,10 +1,8 @@
 <?php 
-  include('authorize.php'); 
+  require('authorize.php'); 
   include('controllers/dashboard.php'); 
   include_once('svc/group.php');
-  
-  $group = parseGroup();
-  ?>
+?>
 
 <!doctype html>
 <html lang="en">
@@ -79,7 +77,7 @@
           </div>
         </div>
 
-        <?php if(empty($group['ID'])): ?>
+        <?php if(empty($$a['k'])): ?>
           <div class="org-border dashboardMargin">
             To start a game, log in to a group.
           </div>

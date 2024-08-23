@@ -14,7 +14,7 @@
   app.positions = 'OPLR';
   app.appURL = '<?php echo $appUrl; ?>';
 
-  app.apiPostData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"
+  app.apiPostData = { <?php echo 'r:'."'{$$a['r']}'"
                    .",gameID:'{$_SESSION['gameID']}'"   ?>  };
 
   app.getCardURL = function(cardID){

@@ -5,11 +5,11 @@
   include('../svc/getDealServices.php');
   
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
+    if (isset($_POST['r']) && isAuthenticated($_POST['r'])) {
       
       $errorMsg = "";
       $gameID = $_POST['gameID'];
-      $playerID = $_POST[$cookieName];
+      $playerID = $_POST['r'];
       $card = array();
       
       $conn =  mysqli_connect($hostname, $username, $password, $dbname);

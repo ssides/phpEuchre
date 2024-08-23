@@ -5,12 +5,12 @@
   include('../svc/getNextTurn.php');
 
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
+    if (isset($_POST['r']) && isAuthenticated($_POST['r'])) {
       
       $response = array();
       $response['ErrorMsg'] = "";
       $gameID = $_POST['gameID'];
-      $playerID = $_POST[$cookieName];
+      $playerID = $_POST['r'];
       $positionID = $_POST['positionID']; // who ordered it up.
       $alone = $_POST['alone'] == 'true'; 
       $cardFaceUp = '';

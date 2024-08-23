@@ -1,7 +1,7 @@
 <?php
   // make sure there is a final path separator in paths.
   $appUrl = 'http://104.198.42.120/phpEuchre/';
-  $cookieName = 'sidesEuchre_cookie_prod';
+  $cookieName = 'sidesEuchre_cookie_prod1';
   $thumbnailDim = 25;
   $positionDistance = 3;
   // the images folder must be called images and it must be in root.
@@ -13,4 +13,5 @@
   $gameControllerLog = false;
   $clearTableDelay = 2;
   $version = '1.5:5';
+  $$a = array();
 ?>

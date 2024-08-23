@@ -1,15 +1,5 @@
 <?php 
 
-  function setGroup($group) {
-    $_SESSION['group'] = "ID={$group['ID']}&Description={$group['Description']}";
-  }
-  
-  function parseGroup() {
-    $g = array();
-    parse_str($_SESSION['group'], $g);
-    return $g;
-  }
-
   function isManager($playerID, $groupID) {
     global $controllerError, $hostname, $username, $password, $dbname;
     $retVal = false;

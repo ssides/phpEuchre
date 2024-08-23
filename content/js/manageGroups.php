@@ -81,10 +81,10 @@
     self.initialize();
   }
   
-<?php if(!empty($group['ID']) && $isManager): ?>
+<?php if(!empty($$a['k']) && $isManager): ?>
   $(function () {
 
-    var vm = new manageGroupsViewModel('<?php echo $group['ID']; ?>');
+    var vm = new manageGroupsViewModel('<?php echo $$a['k']; ?>');
     ko.applyBindings(vm);
     
     var controllerError = '<?php echo str_replace("'", "\'", $controllerError); ?>';

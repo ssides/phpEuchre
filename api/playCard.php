@@ -5,7 +5,7 @@
   include('../svc/getHand.php');
   
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
+    if (isset($_POST['r']) && isAuthenticated($_POST['r'])) {
       
       $response = array();
       $response['ErrorMsg'] = "";

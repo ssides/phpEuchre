@@ -1,8 +1,7 @@
 <?php
-  include('controllers/isAuthenticated.php');
+  include_once('controllers/isAuthenticated.php');
   
-  if (isAuthenticated($_COOKIE[$cookieName]) === false)
-  {
+  if (isAppAuthenticated() === false) {
     header('Location: index.php');
   }
 ?>

@@ -5,12 +5,9 @@
   include('controllers/header.php'); ?>
   
 <?php 
-  $userIsAuthenticated = isAuthenticated($_COOKIE[$cookieName]); 
-  
-  $group = parseGroup();
-  $isManager = isManager($_COOKIE[$cookieName], $group['ID']);
-
-  ?>
+  $userIsAuthenticated = isAppAuthenticated(); 
+  $isManager = isManager($$a['r'], $$a['k']);
+?>
 
   <nav class="navbar navbar-expand navbar-dark bg-primary fixed-top text-nowrap">
     <div class="container">
@@ -22,10 +19,10 @@
               <span class="headerText"><img src="<?php echo $user['ThumbnailURL']; ?>" alt="Thumbnail"></span>&nbsp;
             <?php endif; ?>
             <span class="headerText"><?php echo 'Hi '.$user['Name'].'!' ?></span>&nbsp;
-            <?php if(empty($group['ID'])): ?>
+            <?php if(empty($$a['k'])): ?>
               <span class="headerText"><?php echo 'You are not logged in to any group.' ?></span>&nbsp;
             <?php else: ?>
-              <span class="headerText"><?php echo 'You are logged in to group '.$group['Description'] ?></span>&nbsp;
+              <span class="headerText"><?php echo 'You are logged in to group '.$$a['l'] ?></span>&nbsp;
             <?php endif; ?>
           <?php endif; ?>
           <ul class="navbar-nav me-auto">
