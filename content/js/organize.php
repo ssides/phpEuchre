@@ -94,7 +94,7 @@
     };
 
     self.invitePartner = function() {
-      var postData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"
+      var postData = { <?php echo 'r:'."'{$$a['r']}'"
                             .",gameID:'{$_SESSION['gameID']}'"   ?>
                 ,identifier: 'partner' 
                 ,player: this.selectedPartner().id};
@@ -102,7 +102,7 @@
     };
     
     self.inviteLeft = function() {
-      var postData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"
+      var postData = { <?php echo 'r:'."'{$$a['r']}'"
                             .",gameID:'{$_SESSION['gameID']}'"   ?>
                 ,identifier: 'left' 
                 ,player: this.selectedLeft().id};
@@ -110,7 +110,7 @@
     };
     
     self.inviteRight = function() {
-      var postData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"
+      var postData = { <?php echo 'r:'."'{$$a['r']}'"
                             .",gameID:'{$_SESSION['gameID']}'"   ?>
                 ,identifier: 'right' 
                 ,player: this.selectedRight().id};
@@ -120,7 +120,7 @@
     self.getRSVPs = function() {
       if (!self.getRSVPSInProgress){
         self.getRSVPSInProgress = true;
-        var postData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'"
+        var postData = { <?php echo 'r:'."'{$$a['r']}'"
                       .",gameID:'{$_SESSION['gameID']}'"   ?> };
         self.getRSVPSInProgress = $.ajax({
           method: 'POST',
@@ -199,9 +199,9 @@
     self.initialize();
   }
   
-<?php if(!empty($group['ID'])): ?>
+<?php if(!empty($$a['k'])): ?>
   $(function () {
-    var vm = new organizeViewModel('<?php echo $group['ID']; ?>');
+    var vm = new organizeViewModel('<?php echo $$a['k']; ?>');
     ko.applyBindings(vm);
 
     var controllerError = '<?php echo str_replace("'", "\'", $controllerError); ?>';

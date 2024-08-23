@@ -19,7 +19,7 @@
     self.cutoffDate = ko.observable();
     
     self.getFinishedGames = function() {
-      var postData = { <?php echo $cookieName.':'."'{$_COOKIE[$cookieName]}'" ?> };
+      var postData = { <?php echo 'r:'."'{$$a['r']}'" ?> };
       $.ajax({
         method: 'POST',
         url: '../api/reports/getFinishedGames.php',

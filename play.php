@@ -1,5 +1,5 @@
 ﻿<?php
-  include('authorize.php');
+  require('authorize.php');
   include('controllers/play.php');
   include_once('config/config.php');
  ?>

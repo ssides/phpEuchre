@@ -4,7 +4,7 @@
   include('../controllers/isAuthenticated.php');
   
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
+    if (isset($_POST['r']) && isAuthenticated($_POST['r'])) {
 
       $game = array();
       $sql = "select `LeftJoinDate`,`RightJoinDate`,`PartnerJoinDate` from `Game` where `ID` = '{$_POST['gameID']}'";

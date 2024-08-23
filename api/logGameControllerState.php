@@ -5,12 +5,12 @@
   include('../svc/services.php'); // for GUID
 
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
+    if (isset($_POST['r']) && isAuthenticated($_POST['r'])) {
       
       $response = array();
       $response['ErrorMsg'] = "";
       $id = GUID();
-      $playerID = $_POST[$cookieName];
+      $playerID = $_POST['r'];
       $gameID = $_POST['gameID'];
       $dealID = strlen($_POST['dealID']) > 0 ? "'".$_POST['dealID']."'" : 'null';
       $positionID = $_POST['positionID'];

@@ -21,23 +21,22 @@
 
   <div class="helloPadding">
   <?php 
-    use Google\Cloud\Logging\LoggingClient;
-    $logging = new LoggingClient([
-        'projectId' => 'useful-memory-360712'
-    ]);
-    // $logger = $logging->psrLogger('phpEuchre');
-    // $logger->error('some mysql exception');
+    $$d = array();
+    $$d['r'] = "46C058D6-695B-47EF-AD84-095D16D020A2";
+    $$d['k'] = "16052C21-7E42-466B-BB56-9D3FEDD3E1AF";
+    
+    $e = base64_encode(serialize($$d));
+    echo $e;
+    echo '<br>';
+
+    $$a = unserialize(base64_decode($e));
+    echo 'r: '.$$a['r'];
+    echo '<br>';
+    echo 'k: '.$$a['k'];
+    echo '<br>';
   ?>
-  Check log for log entry.
   </div>
   
-<script type="text/javascript">
-
-  $(function(){
-    
-  });
-  
-</script>
 </body>
 
 </html>

@@ -1,4 +1,4 @@
-<?php include('controllers/loginCheck.php'); ?>
+<?php require('authorize.php'); ?>
 <!doctype html>
 <html lang="en">
 

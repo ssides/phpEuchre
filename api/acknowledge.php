@@ -5,7 +5,7 @@
   
   // As "position" I am acknowledging that I've seen the Jack or that Scoring is in progress.
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName]) && isset($_POST['position'])) {
+    if (isset($_POST['r']) && isAuthenticated($_POST['r']) && isset($_POST['position'])) {
       
       $response = array();
       $response['ErrorMsg'] = "";

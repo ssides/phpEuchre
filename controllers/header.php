@@ -1,9 +1,11 @@
 <?php 
   include_once('config/db.php');
   include_once('config/config.php');
+  include_once('controllers/isAuthenticated.php');
   include('svc/getThumbnailURL.php');
   
-  $user = getUserInfo($_COOKIE[$cookieName]);
+  readAuthCookie();
+  $user = getUserInfo($$a['r']);
   $hdrCtrlrError = is_null($connection) ? "No connection. " : "";
   
   function getUserInfo($playerID) {

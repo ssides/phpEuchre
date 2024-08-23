@@ -5,7 +5,7 @@
 
   // I as positionID am acknowledging that I have seen the card played by playerID.
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
+    if (isset($_POST['r']) && isAuthenticated($_POST['r'])) {
       
       $response = array();
       $response['ErrorMsg'] = "";

@@ -5,7 +5,7 @@
   include_once('svc/group.php');
   include('svc/cookie.php');
   
-  if (isAuthenticated($_COOKIE[$cookieName])) {
+  if (isAppAuthenticated()) {
     header('Location: dashboard.php');
   } else if($_SERVER["REQUEST_METHOD"] === 'POST') {
       $name_signin      = $_POST['name_signin'];
@@ -13,8 +13,10 @@
       $group_signin  = $_POST['group_signin'];
       $group_id  = $_POST['group_id'];
       $group = array();
+      $group['ID'] = "";
+      $group['Description'] = "";
       $groupFail = false;
-      $loginError = is_null($connection) ? "No connection. " : "";;
+      $loginError = is_null($connection) ? "No connection. " : "";
       
       if(empty($name_signin)){
         $loginError .= "Name missing.";
@@ -124,11 +126,12 @@
     $result = false;
     if (function_exists('setcookie') === true)
     {
-      $s = setLoginCookie($pid);
-      if ($s) {
-        setGroup($group);
-        $result = true;
-      }
+      $s = setLoginCookie([
+        'r' => $pid,
+        'k' => $group['ID'],
+        'l' => $group['Description']
+      ]);
+      $result = true;
     }
     return $result;
   }

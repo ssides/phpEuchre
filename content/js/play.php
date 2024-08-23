@@ -30,7 +30,7 @@
     self.game = new gameModel({});
     self.executionPoint = 0;
     self.position = null;
-    self.playerID = '<?php echo "{$_COOKIE[$cookieName]}"; ?>';
+    self.playerID = '<?php echo "{$$a['r']}"; ?>';
     self.bidModal = new bootstrap.Modal($('#bidModal'));
     self.finishGameModal = new bootstrap.Modal($('#finishGameModal'));
     self.endGameModal = new bootstrap.Modal($('#endGameModal'));

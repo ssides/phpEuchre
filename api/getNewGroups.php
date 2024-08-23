@@ -5,9 +5,9 @@
 
   // Select groups I'm not a member of and have no pending requests to join or the pending requests were all declined.
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
+    if (isset($_POST['r']) && isAuthenticated($_POST['r'])) {
       
-      $pid = $_POST[$cookieName];
+      $pid = $_POST['r'];
       $groups = array();
       
       // If there is an error, an exception will be thrown, and the api will return with response code 500.

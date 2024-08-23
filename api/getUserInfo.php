@@ -5,13 +5,13 @@
   include('../svc/getThumbnailURL.php');
 
   if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST[$cookieName]) && isAuthenticated($_POST[$cookieName])) {
+    if (isset($_POST['r']) && isAuthenticated($_POST['r'])) {
       
       $user = array();
       $sql = "select `ID`,`Name`,u.`ThumbnailPath`
               from `Player` p
               left join `UserProfile` u on u.`PlayerID` = p.`ID`
-              where `ID` = '{$_POST[$cookieName]}'";
+              where `ID` = '{$_POST['r']}'";
       $results = mysqli_query($connection, $sql);
 
       while ($row = mysqli_fetch_array($results)) {

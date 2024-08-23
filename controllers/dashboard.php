@@ -9,7 +9,7 @@
       header('Location: index.php');
     } else {
       if(isset($_POST['organize'])) {
-        $gameID = createGame($_COOKIE[$cookieName]);
+        $gameID = createGame($$a['r']);
         if (!empty($gameID)) {
           $_SESSION['gameID'] = $gameID;
           header("Location: organize.php");
@@ -17,7 +17,7 @@
       } else if (isset($_POST['join']) || isset($_POST['rejoin'])) {
         $gameID = $_POST['gameid'];
         $identifier = $_POST['identifier'];
-        $playerID = $_COOKIE[$cookieName];
+        $playerID = $$a['r'];
       
         $_SESSION['gameID'] = $gameID;
         

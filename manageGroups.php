@@ -1,8 +1,8 @@
-<?php   
+<?php
+  require('authorize.php'); 
   include_once('svc/group.php');
-  
-  $group = parseGroup();
-  $isManager = isManager($_COOKIE[$cookieName], $group['ID']);
+
+  $isManager = isManager($$a['r'], $$a['k']);
 ?>
 <!doctype html>
 <html lang="en">
@@ -30,7 +30,7 @@
           <div data-bind="text: errorMessage"></div>
         </div>
 
-        <?php if(empty($group['ID']) || !$isManager): ?>
+        <?php if(empty($$a['k']) || !$isManager): ?>
           <div class="org-border dashboardMargin">
             To use this page you need to be a manager of the group you are logged in to.
           </div>

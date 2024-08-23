@@ -1,10 +1,8 @@
 <?php
-  include_once('authorize.php');
+  require('authorize.php');
   include_once('controllers/organize.php');
   include_once('config/config.php');
   include_once('svc/group.php');
-  
-  if (!isset($group)) $group = parseGroup();
 
 ?>
 

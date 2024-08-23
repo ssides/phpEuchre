@@ -1,6 +1,4 @@
-<?php include('authorize.php'); ?>
-<?php include('controllers/dashboard.php'); ?>
-
+<?php require('authorize.php'); ?>
 <!doctype html>
 <html lang="en">
 
@@ -24,7 +22,7 @@
       <br>
       <h3 class="card-title">Debug Log</h3>
       <div>
-        <label for="gameID">Game ID:&nbsp;</label><input name="gameID" size="40" maxlength="40" type="text" data-bind="value: gameID">
+        <label for="gameID">Game ID:&nbsp;</label><input id="gameID" name="gameID" size="40" maxlength="40" type="text" data-bind="value: gameID">
         <button data-bind="click: getLogData">Get Log</button>
         <br>
         <br>

@@ -1,4 +1,4 @@
-<?php include('authorize.php'); ?>
+<?php require('authorize.php'); ?>
 <?php include('controllers/setProfile.php'); ?>
 <!doctype html>
 <html lang="en">

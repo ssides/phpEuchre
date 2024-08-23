@@ -2,7 +2,7 @@
   // make sure there is a final path separator in paths.
   $appUrl = 'http://sidesfamilyeuchre.net/phpEuchre/';
   $reportsUrl = $appUrl.'reports/';
-  $cookieName = 'sidesEuchre_cookie';
+  $cookieName = 'sidesEuchre1';
   $thumbnailDim = 25;
   $positionDistance = 3;
   // the images folder must be called images and it must be in root.
@@ -13,5 +13,6 @@
   $dealChoices = 12000;
   $gameControllerLog = true;
   $clearTableDelay = 2;
-  $version = '1.9:3';
+  $version = '1.9.3:3';
+  $$a = array();
 ?>

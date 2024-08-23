@@ -1,6 +1,7 @@
 <?php  
     include_once('config/db.php');
     include_once('config/config.php');
+    include_once('');
     
     $controllerError = "";
     
@@ -9,7 +10,8 @@
     } else if($_SERVER["REQUEST_METHOD"] === 'POST') {
       $gameID = $_SESSION['gameID'];
       if(isset($_POST['startGame'])) {
-        if (saveGameStartInfo($_COOKIE[$cookieName], $_SESSION['gameID'], $_POST['playTo'], $_POST['gameSpeed'])) {
+        
+        if (saveGameStartInfo($$a['r'], $_SESSION['gameID'], $_POST['playTo'], $_POST['gameSpeed'])) {
           header('Location: play.php');
         } else {
           // $controllerError is displayed on the page through the view model.
