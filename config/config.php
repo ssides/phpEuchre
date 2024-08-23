@@ -1,6 +1,6 @@
 <?php
   // make sure there is a final path separator in paths.
-  $appUrl = 'http://192.168.254.148:8080/';
+  $appUrl = 'http://localhost:8080/';
   $reportsUrl = $appUrl.'reports/';
   $cookieName = 'sidesLocalEuchre1';
   $thumbnailDim = 25;
