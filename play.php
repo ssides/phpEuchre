@@ -11,6 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="./content/bootstrap-5.0.2-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="<?php echo './content/css/site.css?v='.$version ?>">
+  <link rel="stylesheet" href="<?php echo './content/css/cards'.$cardFaces.'.css?v='.$version ?>">
   <title>Sides Family Euchre - Play</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="./content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
@@ -67,88 +68,34 @@
                       <td>
                       </td>
                       <td>
-                        <div id="sfeN" style="display:none" class="flip-container-p">
-                          <div class="flipper-p">
-                            <div class="back-p">
-                              <img src="<?php echo $appUrl; ?>content/images/cards/cardback.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
-                            </div>
-                            <div class="front-p">
-                              <img src="<?php echo $appUrl; ?>content/images/cards/AS.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
-                            </div>
-                          </div>
-                        </div>
                         <div data-bind="visible: nCardURL().length > 0">
-                          <img data-bind="attr: {src: nCardURL}" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 180deg;" />
+                          <img data-bind="attr: {src: nCardURL}" class="cardImageSize" style="rotate: 180deg;" />
                         </div>
                       </td>
                       <td></td>
                     </tr>
                     <tr style="height: 42px">
                       <td>
-                        <div id="sfeW" style="display:none" class="flip-container-l">
-                          <div class="flipper-l">
-                            <div class="back-l">
-                              <img src="<?php echo $appUrl; ?>content/images/cards/cardback.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg;">
-                            </div>
-                            <div class="front-l">
-                              <img src="<?php echo $appUrl; ?>content/images/cards/AC.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg; transform: translate(<?php echo $cardImageWidth; ?>px,0);">
-                            </div>
-                          </div>
-                        </div>
                         <div data-bind="visible: wCardURL().length > 0">
-                          <img data-bind="attr: {src: wCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: 90deg; transform: translate(0,-11px);" />
+                          <img data-bind="attr: {src: wCardURL }" class="cardImageSize" style="rotate: 90deg; transform: translate(0,-11px);" />
                         </div>
                       </td>
                       <td>
                         <div id="cardFaceUp" style="display:none" data-bind="visible: faceupCardURL().length > 0">
-                          <img data-bind="attr: {src: faceupCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;" />
+                          <img data-bind="attr: {src: faceupCardURL }" class="centerCardImageSize" />
                         </div>
-
-                        <!-- this works on every device except iPad.  :-(
-                        <div id="cardFaceUp" style="display:none" class="flip-container-p">
-                          <div class="flipper-p">
-                            <div class="back-p">
-                              <img src="<?php echo $appUrl; ?>content/images/cards/cardback.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
-                            </div>
-                            <div class="front-p">
-                              <img data-bind="attr: {src: faceupCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
-                            </div>
-                          </div>
-                        </div>
-                        -->
-
                       </td>
                       <td>
-                        <div id="sfeE" style="display:none" class="flip-container-l">
-                          <div class="flipper-l">
-                            <div class="back-l">
-                              <img src="<?php echo $appUrl; ?>content/images/cards/cardback.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg;">
-                            </div>
-                            <div class="front-l">
-                              <img src="<?php echo $appUrl; ?>content/images/cards/AH.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg; transform: translate(-<?php echo $cardImageWidth; ?>px,0); ">
-                            </div>
-                          </div>
-                        </div>
                         <div data-bind="visible: eCardURL().length > 0">
-                          <img data-bind="attr: {src: eCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px; rotate: -90deg; transform: translate(0,11px);" />
+                          <img data-bind="attr: {src: eCardURL }" class="cardImageSize" style="rotate: -90deg; transform: translate(0,11px);" >
                         </div>
                       </td>
                     </tr>
                     <tr style="height: 58px">
                       <td></td>
                       <td>
-                        <div id="sfeS" style="display:none" class="flip-container-p">
-                          <div class="flipper-p">
-                            <div class="back-p">
-                              <img src="<?php echo $appUrl; ?>content/images/cards/cardback.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
-                            </div>
-                            <div class="front-p">
-                              <img src="<?php echo $appUrl; ?>content/images/cards/AS.png" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;">
-                            </div>
-                          </div>
-                        </div>
                         <div data-bind="visible: sCardURL().length > 0">
-                          <img data-bind="attr: {src: sCardURL }" style="width:<?php echo $cardImageWidth; ?>px;height:<?php echo $cardImageHeight; ?>px;" />
+                          <img data-bind="attr: {src: sCardURL }" class="cardImageSize" >
                         </div>
                       </td>
                       <td></td>
@@ -190,8 +137,8 @@
                         <li class="list-group-item p-0" style="height:29px; width: 29px" data-bind="click: $parent.selectCard">
                           <div class="cardSelectionContainer">
                             <div class="cardSelecter" data-bind="class: isSelected() ? 'cardSelected' : ''">
-                              <div style="margin: 2px; padding: 0px;" class="cardContainer" data-bind="class: isPlayable() ? '' : 'cardNotPlayable'">
-                                <img class="clipCard" data-bind="attr: {src: url}" />
+                              <div style="margin: 0px; padding: 0px;" class="cardContainer" >
+                                <img class="clipCard" data-bind="attr: {src: url}, class: isPlayable() ? '' : 'cardNotPlayable'" />
                               </div>
                             </div>
                           </div>

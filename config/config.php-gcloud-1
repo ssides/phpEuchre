@@ -6,8 +6,7 @@
   $positionDistance = 3;
   // the images folder must be called images and it must be in root.
   $uploadsDir = '/var/www/html/phpEuchre/images/';
-  $cardImageWidth = 40; // px
-  $cardImageHeight = 55; // px ratio: 0.73958
+  $cardFaces = "1"; // can be any number 1 to 5.  Selects different card faces.
   $firstJackChoices = 500;
   $dealChoices = 12000;
   $gameControllerLog = false;
