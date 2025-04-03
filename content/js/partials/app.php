@@ -18,7 +18,7 @@
                    .",gameID:'{$_SESSION['gameID']}'"   ?>  };
 
   app.getCardURL = function(cardID){
-      return app.appURL + 'content/images/cards/' + cardID + '.png';
+      return app.appURL + 'content/images/cards<?php echo $cardFaces; ?>/' + cardID + '.png';
     };
   
   app.gameControllerLog = <?php echo $gameControllerLog ? 'true' : 'false'; ?>;

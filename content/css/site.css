@@ -289,16 +289,13 @@ table.dbgTable td {
   background-color: #006F2D;
 }
 
-.clipCard {
-  position: absolute;
-  transform: scale(80%);
-  clip: rect(1px, 30px, 30px, 1px);
-}
-
 .cardContainer {
   position: absolute;
-  top: -10px;
-  left: -7px;
+  top: 0;
+  left: -1px;
+  overflow: hidden;
+  height: 28px;
+  width: 28px;
 }
 
 .cardSelectionContainer {
@@ -310,6 +307,26 @@ table.dbgTable td {
 .cardSelecter {
   width: 28px;
   height: 28px;
+}
+
+.cardImageSize {
+  width:  40px;
+  height: 55px;
+}
+
+.centerCardImageSize {
+  width:  60px;
+  height: 83px;
+}
+
+/* translation must match cardImageSize.width. */
+.cardTranslateSouth {
+  transform: translate(-40px,0);
+}
+
+/* translation must match cardImageSize.width. */
+.cardTranslateNorth {
+  transform: translate(40px,0);
 }
 
 .cardSelected {
@@ -394,3 +411,4 @@ table.dbgTable td {
   font-size: .5rem;
   border-radius: .1rem;
 }
+
