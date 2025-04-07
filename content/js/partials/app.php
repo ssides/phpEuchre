@@ -18,7 +18,7 @@
                    .",gameID:'{$_SESSION['gameID']}'"   ?>  };
 
   app.getCardURL = function(cardID){
-      return app.appURL + 'content/images/cards<?php echo $cardFaces; ?>/' + cardID + '.png';
+      return (cardID ? app.appURL + 'content/images/cards<?php echo $cardFaces; ?>/' + cardID + '.png' : '');
     };
   
   app.gameControllerLog = <?php echo $gameControllerLog ? 'true' : 'false'; ?>;
@@ -28,4 +28,9 @@
   app.gameEnded = function () {
       window.location.href = 'dashboard.php';
     }
+    
+  app.replayReportGameEnd = function () {
+    window.location.href = 'reports/replay-game-end.php';
+  }
+
 </script>

@@ -52,6 +52,6 @@
 <script type="text/javascript">
   var hdrCtrlrError = '<?php echo str_replace("'", "\'", $hdrCtrlrError); ?>';
   if (hdrCtrlrError.length > 0) {
-    console.log('header: ', hdrCtrlrError);
+    console.log('header error: ', hdrCtrlrError);
   }
 </script>

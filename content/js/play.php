@@ -43,6 +43,7 @@
     self.opponentScoreVM = new scoreViewModel();
     self.playVM = new playViewModel();
     self.bidDialogVM = new bidDialogViewModel();
+    self.replayVM = new replayButtonViewModel();
     self.finishGameDialogVM = new finishGameDialogViewModel();
     self.heartbeatTimer = null;
     self.heartbeatOp = new timerOp();
@@ -91,6 +92,7 @@
         self.ePlayerInfoVM.update(self.game);
         self.wPlayerInfoVM.update(self.game);
         self.playerInfoVM.update(self.game);
+        self.replayVM.setReplayButtonVisibility(self.position != self.game.Turn);
         self.myScoreVM.update(self.game);
         self.opponentScoreVM.update(self.game);
       }
@@ -877,6 +879,7 @@
     ko.applyBindings(gc.opponentScoreVM, $('#OpponentScore')[0]);
     ko.applyBindings(gc.playVM, $('#PlayTable')[0]);
     ko.applyBindings(gc.playerInfoVM, $('#SouthInfo')[0]);
+    ko.applyBindings(gc.replayVM, $('#ReplayReport')[0]);
     ko.applyBindings(gc.bidDialogVM, $('#bidModal')[0]);
     ko.applyBindings(gc.finishGameDialogVM, $('#finishGameModal')[0]);
     app.errorVM = new errorViewModel();

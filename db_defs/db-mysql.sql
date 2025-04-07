@@ -79,7 +79,7 @@ create table `Game`
   `PR`  varchar(2) null, -- Card played by right.
   `InsertDate` datetime not null,
   `PlayTo` int not null default 10, -- Game score to play to.
-  `CardFaceUp` char(5) null,  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined, ordered 'U'p, u'S'ed by dealer or dealer s'K'ipped. [3]: who ordered it up or who declared trump ('O','P','L','R').  [4]: The partner of the player who called it alone ('O','P','L','R'). (Stick the dealer is hard coded everywhere. CardFaceUp.length tells the js code what to display).
+  `CardFaceUp` char(5) null,  -- [0..1] CardID turned face up at the end of the deal. [2]: 'D'eclined, u'S'ed by dealer or dealer s'K'ipped (this happens when the partner of the dealer goes alone). [3]: who ordered it up or who declared trump ('O','P','L','R').  [4]: The partner of the player who called it alone ('O','P','L','R'). (Stick the dealer is hard coded everywhere. CardFaceUp.length tells the js code what to display).
   `ScoringInProgress` enum('0','1') not null default '0',  -- '1' if scoring is in progress, '0' otherwise.
   constraint `FK_GameOrg_Player` foreign key (`Organizer`) references `Player`(`ID`),
   constraint `FK_GameParter_Player` foreign key (`Partner`) references `Player`(`ID`),
