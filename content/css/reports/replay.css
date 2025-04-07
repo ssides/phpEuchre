@@ -1,0 +1,33 @@
+.controlsBorder {
+  border: 1px solid #b9bdf6;
+  padding: 6px;
+  border-radius: 5px;
+  background: #f0fae3;
+  width: 95%;
+}
+
+.cardFaceUpBorder {
+  border: 1px solid #b9bdf6;
+  margin: 0 0 5px 10px ;
+  padding: 2px;
+  border-radius: 5px;
+  background: white;
+}
+
+.lead {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #3928F0;
+}
+
+.controlsFS {
+  font-size: 0.7rem;
+}
+
+.playerName {
+  vertical-align: middle;font-size: 0.7rem;
+}
+
+.replayWidth {
+  width: 570px;
+}

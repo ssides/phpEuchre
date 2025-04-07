@@ -105,8 +105,15 @@
               </div>
             </td>
             <td>
-              <div id="EastInfo">
-                <?php include('partials/playerInfo.php'); ?>
+              <div style="height: 168px">
+                <div style="height: 68px">&nbsp;</div>
+                <div id="EastInfo">
+                  <?php include('partials/playerInfo.php'); ?>
+                </div>
+                <div style="height: 48px">&nbsp;</div>
+                <div id="ReplayReport" >
+                  <button id="replay" type="button" class="btn btn-secondary btn-xsm" style="display:none" data-bind="visible: showReplayButton, click: replay">Replay Report</button>
+                </div>
               </div>
             </td>
           </tr>
@@ -269,6 +276,14 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col">
+              <div class="float-end">
+                  <button id="replay-end" type="button" class="btn btn-secondary btn-xsm" onclick="app.replayReportGameEnd()">Replay Report</button>
+              </div>
+            </div>
+          </div>
+
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-bind="click: ok">OK</button>
           </div>
@@ -291,6 +306,13 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col">
+              <div class="float-end">
+                  <button id="replay-end" type="button" class="btn btn-secondary btn-xsm" onclick="app.replayReportGameEnd()">Replay Report</button>
+              </div>
+            </div>
+          </div>
           
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" onclick="app.gameEnded()" >OK</button>
@@ -302,10 +324,12 @@
 
   <?php
   include('content/js/partials/app.php');
+  include('content/js/partials/cardSort.php');
   include('content/js/partials/gameModel.php');
   include('content/js/partials/currentPlayerInfoViewModel.php');
   include('content/js/partials/whatsTrumpViewModel.php');
   include('content/js/partials/playerInfoViewModel.php');
+  include('content/js/reports/replay/partials/replayButtonViewModel.php');
   include('content/js/partials/scoreViewModel.php');
   include('content/js/partials/playViewModel.php');
   include('content/js/partials/bidDialogViewModel.php');

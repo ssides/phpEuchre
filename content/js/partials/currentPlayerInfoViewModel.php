@@ -32,9 +32,8 @@
     self.obsAlone = ko.observable();
     self.trumpURL = ko.observable('');
     self.cards = ko.observableArray();
-    self.sortCardsCompareFn = function(a,b){ return a.suit === b.suit ? (a.rank == b.rank ? 0 : a.rank < b.rank ? -1 : 1) : a.suit < b.suit ? -1 : 1; };
     self.sortedCards = ko.pureComputed(function(){
-      return self.cards.slice().sort(self.sortCardsCompareFn);
+      return self.cards.slice().sort(cardSort.sortCardsCompareFn);
     });
     self.iamDealer = false;
     
@@ -127,102 +126,6 @@
       }
     };
     
-    self.getSuitOrder = function(c) {
-      if (self.trump) {
-        var order = 5;
-        if (c[0] == 'J') {
-          switch(self.trump) {
-            case 'D':
-            case 'H':
-              if (c[1] == 'D' || c[1] == 'H') {
-                order = 1;
-              } else {
-                switch(self.trump) {
-                  case 'H':
-                    order = c[1] == 'C' ? 4 : 2;
-                    break;
-                  case 'D':
-                    order = c[1] == 'C' ? 4 : 3;
-                    break;
-                }
-              }
-              break;
-            case 'S':
-            case 'C':
-              if (c[1] == 'S' || c[1] == 'C') {
-                order = 1;
-              } else {
-                switch(self.trump) {
-                  case 'S':
-                    order = c[1] == 'D' ? 3 : 2;
-                    break;
-                  case 'C':
-                    order = c[1] == 'D' ? 4 : 2;
-                    break;
-                }
-              }
-              break;
-          }
-        } else {
-          switch(self.trump) {
-            case 'D':
-              order = c[1] == 'D' ? 1 : c[1] == 'C' ? 4 : c[1] == 'H' ? 2 : 3;
-              break;
-            case 'H':
-              order = c[1] == 'D' ? 3 : c[1] == 'C' ? 4 : c[1] == 'H' ? 1 : 2;
-              break;
-            case 'S':
-              order = c[1] == 'D' ? 3 : c[1] == 'C' ? 4 : c[1] == 'H' ? 2 : 1;
-              break;
-            case 'C':
-              order = c[1] == 'D' ? 4 : c[1] == 'C' ? 1 : c[1] == 'H' ? 2 : 3;
-              break;
-          }
-        }
-        return order;
-      } else {
-        var s = c[1];
-        return s == 'D' ? 1 : s == 'C' ? 2 : s == 'H' ? 3 : 4;
-      }
-    };
-    
-    self.getRank = function(c) {
-      if (self.trump && c[0] == 'J') {
-        var order = 15;
-        switch(self.trump) {
-          case 'D':
-            order = c[1] == 'D' ? 1 : c[1] == 'H' ? 2 : 12;
-            break;
-          case 'H':
-            order = c[1] == 'D' ? 2 : c[1] == 'H' ? 1 : 12;
-            break;
-          case 'S':
-            order = c[1] == 'S' ? 1 : c[1] == 'C' ? 2 : 12;
-            break;
-          case 'C':
-            order = c[1] == 'S' ? 2 : c[1] == 'C' ? 1 : 12;
-            break;
-        }
-        return order;
-      } else {
-        var r = c[0];
-        return r == '9' ? 14 : r == '1' ? 13 : r == 'J' ? 12 : r == 'Q' ? 11 :r == 'K' ? 10 : 9;
-      }
-    };
-
-    self.getCardObject = function(c) {
-      var o = {
-        id: c, 
-        url: app.getCardURL(c),
-        suit: self.getSuitOrder(c),
-        rank: self.getRank(c),
-        isPlayable: ko.observable(true),
-        isSelected: ko.observable(false)
-      };
-      
-      return o;
-    };
-    
     self.getSuit = function(c) {
       if (c[0] == 'J') {
         switch (self.trump) {
@@ -305,18 +208,18 @@
               var c = [];
               
               if (data.Cards.CardID1.length == 2)
-                c.push(self.getCardObject(data.Cards.CardID1.substr(0,2)));
+                c.push(cardSort.getCardObject(self.trump, data.Cards.CardID1.substr(0,2)));
               if (data.Cards.CardID2.length == 2)
-                c.push(self.getCardObject(data.Cards.CardID2.substr(0,2)));
+                c.push(cardSort.getCardObject(self.trump, data.Cards.CardID2.substr(0,2)));
               if (data.Cards.CardID3.length == 2)
-                c.push(self.getCardObject(data.Cards.CardID3.substr(0,2)));
+                c.push(cardSort.getCardObject(self.trump, data.Cards.CardID3.substr(0,2)));
               if (data.Cards.CardID4.length == 2)
-                c.push(self.getCardObject(data.Cards.CardID4.substr(0,2)));
+                c.push(cardSort.getCardObject(self.trump, data.Cards.CardID4.substr(0,2)));
               if (data.Cards.CardID5.length == 2)
-                c.push(self.getCardObject(data.Cards.CardID5.substr(0,2)));
+                c.push(cardSort.getCardObject(self.trump, data.Cards.CardID5.substr(0,2)));
               
               if (self.pickingItUp) {
-                var card = self.getCardObject(self.gameData.CardFaceUp.substr(0,2));
+                var card = cardSort.getCardObject(self.trump, self.gameData.CardFaceUp.substr(0,2));
                 card.isPlayable(false);
                 c.push(card);
               }
@@ -610,8 +513,8 @@
       var o = {
         id: c,         // card played
         positionID: p, // who played it
-        suit: self.getSuitOrder(c),
-        rank: self.getRank(c),
+        suit: cardSort.getSuitOrder(self.trump, c),
+        rank: cardSort.getRank(self.trump, c),
       };
       
       return o;
@@ -631,7 +534,7 @@
       if (self.gameData.Lead != 'R' && self.followsSuit(leadCard, self.gameData.PR))
         cards.push(self.getCardObjectForScoring(self.gameData.PR, 'R'));
       
-      cards.sort(self.sortCardsCompareFn);
+      cards.sort(cardSort.sortCardsCompareFn);
       
       return cards[0].positionID;
     };

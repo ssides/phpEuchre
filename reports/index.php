@@ -11,7 +11,6 @@
   <!-- jQuery + Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="../content/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
-  <script src="../content/ko/knockout-3.5.1.js"></script>
 </head>
 
 <body>
@@ -26,8 +25,9 @@
       <?php echo '<a class="nav-link" href="'.$appUrl.'reports/finishedGames.php">Finished Games</a>'; ?>
       <!-- <?php echo '<a class="nav-link" href="'.$appUrl.'reports/invitations.php">Invitations</a>'; ?> -->
       <!-- <?php echo '<a class="nav-link" href="'.$appUrl.'reports/reJoins.php">Games to be rejoined</a>'; ?> -->
-      <?php echo '<a class="nav-link" href="'.$appUrl.'reports/scores.php">Scores report</a>'; ?>
-      <?php echo '<a class="nav-link" href="'.$appUrl.'reports/debugLog.php">Debug Log report</a>'; ?>
+      <?php echo '<a class="nav-link" href="'.$appUrl.'reports/scores.php">Scores</a>'; ?>
+      <?php echo '<a class="nav-link" href="'.$appUrl.'reports/debugLog.php">Debug Log</a>'; ?>
+      <?php echo '<a class="nav-link" href="'.$appUrl.'reports/replay-prompt.php">Replay</a>'; ?>
     </div>
   </div>
 </body>

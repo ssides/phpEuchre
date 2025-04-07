@@ -41,10 +41,10 @@
         ,`PR`
         ,`ScoringInProgress`
         ,`Speed`
-        ,ou.`ThumbnailPath` `OThumbnailPath`,substr(op.`Name`,1,8) `OName`
-        ,pu.`ThumbnailPath` `PThumbnailPath`,substr(pp.`Name`,1,8) `PName`
-        ,lu.`ThumbnailPath` `LThumbnailPath`,substr(lp.`Name`,1,8) `LName`
-        ,ru.`ThumbnailPath` `RThumbnailPath`,substr(rp.`Name`,1,8) `RName`
+        ,ou.`ThumbnailPath` `OThumbnailPath`,op.`Name` `OName`
+        ,pu.`ThumbnailPath` `PThumbnailPath`,pp.`Name` `PName`
+        ,lu.`ThumbnailPath` `LThumbnailPath`,lp.`Name` `LName`
+        ,ru.`ThumbnailPath` `RThumbnailPath`,rp.`Name` `RName`
         ,`GameStartDate`
         ,`GameFinishDate`
         ,`GameEndDate`

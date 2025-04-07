@@ -70,5 +70,6 @@
     </div>
   </div>
   <?php include('../content/js/reports/scores.php') ?>
+  <?php include('../content/js/reports/scoresViewModel.php') ?>
 </body>
 </html>

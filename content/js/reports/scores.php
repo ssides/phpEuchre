@@ -18,50 +18,44 @@
     this.dealer = data.Dealer || '';
     this.dealID = data.DealID || '';
   }
-
-  function scoresViewModel() {
-    var self = this;
-    
-    self.scores = ko.observableArray();
-    self.gameID = ko.observable();
-    
-    self.getScores = function() {
-      var postData = { 
-        <?php echo 'r:'."'{$$a['r']}'" ?>,
-        gameID: self.gameID().trim()
-        };
-      $.ajax({
-        method: 'POST',
-        url: '../api/reports/getScores.php',
-        data: postData,
-        success: function (response) {
-          try {
-            let data = JSON.parse(response);
-            if (data.ErrorMsg) {
-              console.log(data.ErrorMsg);
-            } else {
-              var s = [];
-              data.Scores.forEach(function(i){
-                s.push(new score(i));
-              });
-              self.scores(s);
-            }
-          } catch (error) {
-            console.log('Error ' + ': ' + error.message || error);
-            console.log(error.stack);
-          }
-        },
-        error: function (xhr, status, error) {
-          console.log(xhr.responseText);
-          console.log(error);
-        }
-      });
-    };
-
-    
-  }    
   
-  $(function () {
-    ko.applyBindings(new scoresViewModel());
-  });
+  scores = {};
+  
+  scores.scores = [];
+  scores.success = false;
+  
+  scores.getScores = function(gameID) {
+    scores.success = false;
+    var postData = { 
+      <?php echo 'r:'."'{$$a['r']}'" ?>,
+      gameID: gameID
+      };
+    $.ajax({
+      method: 'POST',
+      url: '../api/reports/getScores.php',
+      data: postData,
+      success: function (response) {
+        try {
+          let data = JSON.parse(response);
+          if (data.ErrorMsg) {
+            console.log(data.ErrorMsg);
+          } else {
+            scores.scores = [];
+            data.Scores.forEach(function(i){
+              scores.scores.push(new score(i));
+            });
+            scores.success = true;
+          }
+        } catch (error) {
+          console.log('Error ' + ': ' + error.message || error);
+          console.log(error.stack);
+        }
+      },
+      error: function (xhr, status, error) {
+        console.log(xhr.responseText);
+        console.log(error);
+      }
+    });
+  };
+
 </script>
