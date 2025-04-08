@@ -4,6 +4,7 @@
     var self = this;
 
     self.trumpURL = ko.observable('');
+    self.isLoaner = ko.observable(false);
     
     self.update = function(gameData) { 
       if (gameData.OrganizerTrump) {
@@ -13,6 +14,7 @@
       } else {
         self.trumpURL('');
       }
+      self.isLoaner(gameData.CardFaceUp.length == 5);
     };
     
   }

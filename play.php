@@ -27,10 +27,13 @@
       <div class="inner-block justify-content-center">
         <table>
           <tr>
-            <td>
+            <td style="text-align: center">
               <div id="WhatsTrump">
                 <div class="whatsTrumpContainer" data-bind="visible: trumpURL().length > 0">
                   <img class="whatsTrump" data-bind="attr: {src: trumpURL() }"/>
+                </div>
+                <div style="display:none;" data-bind="visible: isLoaner() ">
+                  <span class="loaner">Loaner</span>
                 </div>
               </div>
             </td>
