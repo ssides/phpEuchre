@@ -44,22 +44,15 @@
       } else {
         self.dealer(' ');
       }
-      self.isPlayersTurn(self.myPosition == gameData.Turn);
+
+      self.isPlayersTurn(gameData.CardFaceUp[2] == 'U' ? (self.myPosition == gameData.Dealer ? true : false) : self.myPosition == gameData.Turn);
       self.isPlayerSkipped(gameData.CardFaceUp.length > 4 && gameData.CardFaceUp[4] == self.myPosition);
       
       var trump = gameData.OrganizerTrump || gameData.OpponentTrump;
       
       if (trump && gameData.CardFaceUp.length > 3 && gameData.CardFaceUp[3] == self.myPosition) {
         self.pickedItUp(false);
-        if (self.myPosition == 'O' || self.myPosition == 'P') {
-          if (gameData.OrganizerTrump) {
-            self.trumpURL(app.getCardURL(gameData.OrganizerTrump));
-          }
-        } else {
-          if (gameData.OpponentTrump) {
-            self.trumpURL(app.getCardURL(gameData.OpponentTrump));
-          }
-        }
+        self.trumpURL(app.getCardURL(trump));
       } else if (!trump && gameData.CardFaceUp.length > 3 && gameData.CardFaceUp[2] == 'U' && gameData.CardFaceUp[3] == self.myPosition) {
         self.pickedItUp(true);
       } else {

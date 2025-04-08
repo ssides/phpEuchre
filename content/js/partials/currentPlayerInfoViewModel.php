@@ -59,7 +59,7 @@
         self.dealer(' ');
       }
       
-      self.isMyTurn(self.myPosition == self.gameData.Turn);
+      self.isMyTurn(self.gameData.CardFaceUp[2] == 'U' ? (self.myPosition == self.gameData.Dealer ? true : false) : self.myPosition == self.gameData.Turn);
       self.iamSkipped(self.gameData.CardFaceUp.length > 4 && self.gameData.CardFaceUp[4] == self.myPosition);
       
       var updateReason = '';
