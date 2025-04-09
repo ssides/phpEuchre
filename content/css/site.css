@@ -418,3 +418,55 @@ table.dbgTable td {
   border-radius: .1rem;
 }
 
+.requiredField {
+  color: #FF2C03;
+  font-size: 0.7rem;
+}
+
+.sfeTooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* The tooltip text */
+.sfeTooltip .sfeTooltiptext {
+  visibility: hidden;
+  background-color: #0F0182;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  top: 125%; /* Position below the element */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+  font-size: 0.6rem;
+}
+
+/* Show the tooltip on hover */
+.sfeTooltip:hover .sfeTooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Disable tooltip on touch devices */
+.touch-device .sfeTooltip .sfeTooltiptext {
+  display: none;
+}
+
+/* Arrow pointing up */
+.sfeTooltip .sfeTooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%; /* Place arrow at the top of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #0F0182 transparent; /* Arrow points up */
+}

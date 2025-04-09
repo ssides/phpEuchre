@@ -2,6 +2,19 @@
 
 <script type="text/javascript">
 
+  function isTouchDevice() {
+    return (
+      'ontouchstart' in window || // Works on most touch devices
+      navigator.maxTouchPoints > 0 || // Works on modern browsers
+      navigator.msMaxTouchPoints > 0 || // For older IE touch devices
+      window.matchMedia('(pointer: coarse)').matches // Fallback for coarse pointers
+    );
+  }
+  
+  if (isTouchDevice()) {
+    document.body.classList.add('touch-device');
+  }
+
   function group(id, description) {
     this.id = id;
     this.description = description;
@@ -75,11 +88,12 @@
   $(function () {
     var vm = new loginViewModel();
     ko.applyBindings(vm);
-    
+
     var loginError = '<?php echo str_replace("'", "\'", $loginError); ?>';
     if (loginError.length > 0) {
       vm.setErrorMessage(loginError);
     }
-    
+
+
   });
 </script>
