@@ -12,6 +12,6 @@
   $dealChoices = 12000;
   $gameControllerLog = true;
   $clearTableDelay = 2;
-  $version = '1.10.1:6';
+  $version = '1.10.1:7';
   $$a = array();
 ?>

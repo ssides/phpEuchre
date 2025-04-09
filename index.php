@@ -29,18 +29,24 @@
           <table>
             <tr>
               <td style="width: 80px"><label for="name_signin">Name</label></td>
-              <td><input type="text" name="name_signin" id="name_signin" data-bind="value: name" /></td>
+              <td><input type="text" name="name_signin" id="name_signin" data-bind="value: name" /><span class="requiredField">&nbsp;*</span></td>
             </tr>
             <tr>
               <td><label for="password_signin">Password</label></td>
-              <td><input type="password" name="password_signin" id="password_signin" data-bind="value: password" /></td>
+              <td><input type="password" name="password_signin" id="password_signin" data-bind="value: password" /><span class="requiredField">&nbsp;*</span></td>
             </tr>
             <tr>
               <td><label for="selectgroup">Group</label></td>
-              <td>
+              <td class="sfeTooltip" onclick="toggleTooltip(this)">
                 <select id="selectgroup" data-bind="options: groups, optionsText: 'description', value: selectedGroup, optionsCaption:'Select'"></select>
                 <input type="hidden" data-bind="value: selectedGroup() ? selectedGroup().description : ''" id="group_signin" name="group_signin" />
                 <input type="hidden" data-bind="value: selectedGroup() ? selectedGroup().id : ''" id="group_id" name="group_id" />
+                <span class="sfeTooltiptext">Selecting a group will give you the option of starting a game.</span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <span class="requiredField">*&nbsp;Required field</span>
               </td>
             </tr>
           </table>
