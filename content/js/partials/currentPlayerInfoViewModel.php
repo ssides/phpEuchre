@@ -94,7 +94,7 @@
       }
 
       if (updateReason.length > 0 && self.iamSkipped() === false) {
-        $.when(self.getMyCards(updateReason)).done(function(){
+        $.when(self.getMyCards()).done(function(){
           if (self.isMyTurn() && !self.gameData.preScoring()) {
             if (self.trump && self.gameData.Lead) {
               self.markNotPlayable(self.cards());
@@ -190,7 +190,20 @@
       });
     }
     
-    self.getMyCards = function(reason) {
+    self.getPickedUpCardObject = function() { 
+      var c = self.gameData.CardFaceUp.substr(0,2); // card picked up
+      var o = {
+        id: c,
+        url: app.getCardURL(c),
+        suit: 0,
+        rank: 0,
+        isPlayable: ko.observable(false),
+        isSelected: ko.observable(false)
+      };
+      return o;
+    };
+  
+    self.getMyCards = function() {
       var pd = {};
       Object.assign(pd, app.apiPostData);
       pd.positionID = self.myPosition;
@@ -206,22 +219,26 @@
               app.errorVM.add(data.ErrorMsg);
             } else {
               var c = [];
-              
-              if (data.Cards.CardID1.length == 2)
-                c.push(cardSort.getCardObject(self.trump, data.Cards.CardID1.substr(0,2)));
-              if (data.Cards.CardID2.length == 2)
-                c.push(cardSort.getCardObject(self.trump, data.Cards.CardID2.substr(0,2)));
-              if (data.Cards.CardID3.length == 2)
-                c.push(cardSort.getCardObject(self.trump, data.Cards.CardID3.substr(0,2)));
-              if (data.Cards.CardID4.length == 2)
-                c.push(cardSort.getCardObject(self.trump, data.Cards.CardID4.substr(0,2)));
-              if (data.Cards.CardID5.length == 2)
-                c.push(cardSort.getCardObject(self.trump, data.Cards.CardID5.substr(0,2)));
-              
+
               if (self.pickingItUp) {
-                var card = cardSort.getCardObject(self.trump, self.gameData.CardFaceUp.substr(0,2));
-                card.isPlayable(false);
-                c.push(card);
+                var t = self.gameData.CardFaceUp[1]; // pretend the picked up card is already trump.
+                c.push(self.getPickedUpCardObject());
+                c.push(cardSort.getCardObject(t, data.Cards.CardID1.substr(0,2)));
+                c.push(cardSort.getCardObject(t, data.Cards.CardID2.substr(0,2)));
+                c.push(cardSort.getCardObject(t, data.Cards.CardID3.substr(0,2)));
+                c.push(cardSort.getCardObject(t, data.Cards.CardID4.substr(0,2)));
+                c.push(cardSort.getCardObject(t, data.Cards.CardID5.substr(0,2)));
+              } else {
+                if (data.Cards.CardID1.length == 2)
+                  c.push(cardSort.getCardObject(self.trump, data.Cards.CardID1.substr(0,2)));
+                if (data.Cards.CardID2.length == 2)
+                  c.push(cardSort.getCardObject(self.trump, data.Cards.CardID2.substr(0,2)));
+                if (data.Cards.CardID3.length == 2)
+                  c.push(cardSort.getCardObject(self.trump, data.Cards.CardID3.substr(0,2)));
+                if (data.Cards.CardID4.length == 2)
+                  c.push(cardSort.getCardObject(self.trump, data.Cards.CardID4.substr(0,2)));
+                if (data.Cards.CardID5.length == 2)
+                  c.push(cardSort.getCardObject(self.trump, data.Cards.CardID5.substr(0,2)));
               }
               
               self.cards(c);
@@ -375,7 +392,7 @@
             if (data.ErrorMsg) {
               app.errorVM.add(data.ErrorMsg);
             } else {
-              self.getMyCards(false);
+              self.getMyCards();
               if (self.shouldAdvanceTurn()) {
                 self.setNextTurnWithSkip();
               }
@@ -435,7 +452,7 @@
             if (data.ErrorMsg) {
               app.errorVM.add(data.ErrorMsg);
             } else {
-              self.getMyCards(false);
+              self.getMyCards();
             }
           } catch (error) {
             app.errorVM.add('Could not parse response from discardCard. ' + error + ': ' + response);
