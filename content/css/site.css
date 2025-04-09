@@ -412,10 +412,15 @@ table.dbgTable td {
   min-height: 0 !important;
 }
 
-.btn-xsm {
+.replay-xsm {
   padding: .1rem .3rem;
   font-size: .5rem;
   border-radius: .1rem;
+}
+
+.buttonSize {
+  font-size: .7rem;
+  white-space: nowrap;
 }
 
 .requiredField {

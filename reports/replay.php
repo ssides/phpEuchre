@@ -162,16 +162,16 @@
                       </div>
                       <div class="row">
                         <div class="col-3">
-                          <button id="previousHand" type="button" class="btn btn-primary btn-xsm" style="display:none" data-bind="click: previousHand, visible: showPreviousHandButton">Previous&nbsp;Hand</button>
+                          <button id="previousHand" type="button" class="btn btn-primary replay-xsm" style="display:none" data-bind="click: previousHand, visible: showPreviousHandButton">Previous&nbsp;Hand</button>
                         </div>
                         <div class="col-3">
-                          <button id="nextHand" type="button" class="btn btn-primary btn-xsm" style="display:none" data-bind="click: nextHand, visible: showNextHandButton">Next&nbsp;Hand</button>
+                          <button id="nextHand" type="button" class="btn btn-primary replay-xsm" style="display:none" data-bind="click: nextHand, visible: showNextHandButton">Next&nbsp;Hand</button>
                         </div>
                         <div class="col-3">
-                          <button id="playCard" type="button" class="btn btn-primary btn-xsm" data-bind="click: playCard">Play&nbsp;Card</button>
+                          <button id="playCard" type="button" class="btn btn-primary replay-xsm" data-bind="click: playCard">Play&nbsp;Card</button>
                         </div>
                         <div class="col-3">
-                          <button id="playTrick" type="button" class="btn btn-primary btn-xsm" data-bind="click: playTrick">Play&nbsp;Trick</button>
+                          <button id="playTrick" type="button" class="btn btn-primary replay-xsm" data-bind="click: playTrick">Play&nbsp;Trick</button>
                         </div>
                       </div>
                     </div>
