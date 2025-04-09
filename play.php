@@ -115,7 +115,7 @@
                 </div>
                 <div style="height: 48px">&nbsp;</div>
                 <div id="ReplayReport" >
-                  <button id="replay" type="button" class="btn btn-secondary btn-xsm" style="display:none" data-bind="visible: showReplayButton, click: replay">Replay Report</button>
+                  <button id="replay" type="button" class="btn btn-secondary replay-xsm" style="display:none" data-bind="visible: showReplayButton, click: replay">Replay Report</button>
                 </div>
               </div>
             </td>
@@ -157,21 +157,21 @@
                       <span data-bind="visible: iamSkipped">Your partner is taking the hand alone.</span>
                     </div>
                     <div class="col">
-                      <button id="discard" type="button" style="display:none" data-bind="visible: showDiscardBtn, enable: enableDiscardBtn, click: discard">Discard</button>
-                      <button id="play" type="button" style="display:none" data-bind="visible: showPlayBtn, enable: enablePlayBtn, click: play">Play</button>
+                      <button id="discard" type="button" class="buttonSize" style="display:none" data-bind="visible: showDiscardBtn, enable: enableDiscardBtn, click: discard">Discard</button>
+                      <button id="play" type="button" class="buttonSize" style="display:none" data-bind="visible: showPlayBtn, enable: enablePlayBtn, click: play">Play</button>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-3 pt-1">
-                      <button id="pass" type="button" style="display:none" data-bind="visible: showPassBtn, enable: enablePassBtn, click: pass">Pass</button>
+                      <button id="pass" type="button" class="buttonSize" style="display:none" data-bind="visible: showPassBtn, enable: enablePassBtn, click: pass">Pass</button>
                     </div>
                     <div class="col-4 pt-1">
-                      <button id="pickitup" type="button" style="display:none" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup, click: pickItUp">Pick it up</button>
+                      <button id="pickitup" type="button" class="buttonSize" style="display:none" data-bind="visible: showPickItUpGroup, enable: enablePickItUpGroup, click: pickItUp">Pick it up</button>
                     </div>
                     <div class="col-3 pt-1">
                       <div class="form-check aloneMargin" data-bind="visible: showPickItUpGroup">
                         <input class="form-check-input" type="checkbox" id="alone" data-bind="checked: obsAlone, enable: enablePickItUpGroup" name="alone" value="alone" />
-                        <label class="form-check-label" for="alone" id="lblAlone" data-bind="enable: enablePickItUpGroup">Alone</label>
+                        <label class="form-check-label buttonSize" for="alone" id="lblAlone" data-bind="enable: enablePickItUpGroup">Alone</label>
                       </div>
                     </div>
                   </div>
@@ -183,13 +183,13 @@
             <td colspan=3>
               <div id="ErrorInfo">
                 <p class="d-inline-flex gap-1">
-                  <button class="btn btn-primary btn-xsm" type="button" data-bs-toggle="collapse" data-bs-target="#errorList" aria-expanded="false" aria-controls="errorList">
+                  <button class="btn btn-primary replay-xsm" type="button" data-bs-toggle="collapse" data-bs-target="#errorList" aria-expanded="false" aria-controls="errorList">
                     Errors (<span data-bind="text: errorsCount"></span>)
                   </button>
                 </p>
                 <div class="collapse" id="errorList">
                   <div class="card card-body">
-                    <button class="btn btn-secondary btn-xsm" data-bind="click: clear, visible: errorsCount() > 0" type="button">Clear</button>
+                    <button class="btn btn-secondary replay-xsm" data-bind="click: clear, visible: errorsCount() > 0" type="button">Clear</button>
 
                     <div data-bind='foreach: errors'>
                       <div>
@@ -282,7 +282,7 @@
           <div class="row">
             <div class="col">
               <div class="float-end">
-                  <button id="replay-end" type="button" class="btn btn-secondary btn-xsm" onclick="app.replayReportGameEnd()">Replay Report</button>
+                  <button id="replay-end" type="button" class="btn btn-secondary replay-xsm" onclick="app.replayReportGameEnd()">Replay Report</button>
               </div>
             </div>
           </div>
@@ -312,7 +312,7 @@
           <div class="row">
             <div class="col">
               <div class="float-end">
-                  <button id="replay-end" type="button" class="btn btn-secondary btn-xsm" onclick="app.replayReportGameEnd()">Replay Report</button>
+                  <button id="replay-end" type="button" class="btn btn-secondary replay-xsm" onclick="app.replayReportGameEnd()">Replay Report</button>
               </div>
             </div>
           </div>
