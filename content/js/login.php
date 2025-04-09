@@ -3,16 +3,13 @@
 <script type="text/javascript">
 
   function isTouchDevice() {
-    return (
-      'ontouchstart' in window || // Works on most touch devices
-      navigator.maxTouchPoints > 0 || // Works on modern browsers
-      navigator.msMaxTouchPoints > 0 || // For older IE touch devices
-      window.matchMedia('(pointer: coarse)').matches // Fallback for coarse pointers
-    );
+    const hasMouse = window.matchMedia('(pointer: fine)').matches; // Fine pointer (mouse)
+    return !hasMouse;
   }
   
   if (isTouchDevice()) {
     document.body.classList.add('touch-device');
+    <?php echo "// this is a touch device\n"; ?>
   }
 
   function group(id, description) {
