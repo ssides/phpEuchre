@@ -37,7 +37,7 @@
             </tr>
             <tr>
               <td><label for="selectgroup">Group</label></td>
-              <td class="sfeTooltip" onclick="toggleTooltip(this)">
+              <td class="sfeTooltip">
                 <select id="selectgroup" data-bind="options: groups, optionsText: 'description', value: selectedGroup, optionsCaption:'Select'"></select>
                 <input type="hidden" data-bind="value: selectedGroup() ? selectedGroup().description : ''" id="group_signin" name="group_signin" />
                 <input type="hidden" data-bind="value: selectedGroup() ? selectedGroup().id : ''" id="group_id" name="group_id" />
