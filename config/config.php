@@ -7,6 +7,7 @@
   $positionDistance = 3;
   // the images folder must be called images and it must be in root.
   $uploadsDir = 'C:/src/phpEuchre/images/';
+  $audioDir = 'audio/';
   $cardFaces = "1"; // can be any number 1 to 5.  Selects different card faces.
   $firstJackChoices = 500;
   $dealChoices = 12000;

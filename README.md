@@ -1,5 +1,5 @@
 # phpEuchre
-An online Euchre game for the Sides family. (Work in progress.)
+An online Euchre game for the Sides family. 
 
 This is dev hosted on a Google Cloud LAMP stack VM. Google Cloud LAMP of Sept. 2022 is assumed, and other versions are not expressly supported.
 
