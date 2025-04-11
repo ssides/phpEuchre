@@ -289,9 +289,14 @@ table.dbgTable td {
   line-height: 17px;
 }
 
+.playTableBox {
+  width: 230px;
+  height: 230px;
+}
+
 .playTable {
-  width: 200px;
-  height: 168px;
+  width: 225px;
+  height: 225px;
   background-color: #006F2D;
 }
 
@@ -475,3 +480,12 @@ table.dbgTable td {
   border-style: solid;
   border-color: transparent transparent #0F0182 transparent; /* Arrow points up */
 }
+
+.sfeSound {
+  position: relative;
+  top:  -9px;
+  left: 0px;
+  width: 14.4px;
+  height: 10px;
+}
+

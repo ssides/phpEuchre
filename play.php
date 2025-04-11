@@ -57,7 +57,7 @@
               </div>
             </td>
             <td>
-              <div id="PlayTable">
+              <div id="PlayTable" class="playTableBox">
                 <table class="playTable">
                   <thead>
                     <tr>
@@ -176,6 +176,14 @@
                     </div>
                   </div>
                 </div>
+              </div>
+            </td>
+          </tr>
+          <tr id="SFESound">
+            <td colspan=3>
+              <div class="float-end" style="display: none; height: 1px;" data-bind="visible: showSoundIcon()">
+                <img class="sfeSound" data-bind="visible: soundMute(), click: toggleSound" src="<?php echo $appUrl.'content/images/soundMute.png'; ?>" />
+                <img class="sfeSound" data-bind="visible: !soundMute(), click: toggleSound" src="<?php echo $appUrl.'content/images/sound.png'; ?>" />
               </div>
             </td>
           </tr>
@@ -338,6 +346,7 @@
   include('content/js/partials/bidDialogViewModel.php');
   include('content/js/partials/finishGameDialogViewModel.php');
   include('content/js/partials/errorViewModel.php');
+  include('content/js/partials/soundViewModel.php');
 
   include('content/js/play.php')
   ?>
