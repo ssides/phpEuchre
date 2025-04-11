@@ -17,6 +17,7 @@
     self.previousCards = '';
     self.pickingItUp = false;
     self.bidModalIsVisible = false;
+    self.playOnce = [];
     self.gameData = new gameModel({});
     self.showPassBtn = ko.observable(false);
     self.enablePassBtn = ko.observable(true);
@@ -32,6 +33,7 @@
     self.obsAlone = ko.observable();
     self.trumpURL = ko.observable('');
     self.cards = ko.observableArray();
+    self.showSoundIcon = ko.observable(false);
     self.sortedCards = ko.pureComputed(function(){
       return self.cards.slice().sort(cardSort.sortCardsCompareFn);
     });
@@ -60,6 +62,8 @@
       }
       
       self.isMyTurn(self.gameData.CardFaceUp[2] == 'U' ? (self.myPosition == self.gameData.Dealer ? true : false) : self.myPosition == self.gameData.Turn);
+      self.playMyTurnSound(self.isMyTurn(), "yourturn");
+      self.playPickingItUpSound();
       self.iamSkipped(self.gameData.CardFaceUp.length > 4 && self.gameData.CardFaceUp[4] == self.myPosition);
       
       var updateReason = '';
@@ -684,6 +688,49 @@
       event.preventDefault();
     };
 
+    self.playMyTurnSound = function(ismyturn, yt){
+      if (ismyturn) {
+        if (!self.playOnce.includes(yt)) {
+          self.playOnce.push(yt);
+          app.soundQueue.push(app.sounds[yt]);
+        }
+      } else {
+        app.playOnceRemove(self.playOnce, yt);
+      }
+    };
+    
+    self.playPickingItUpSound = function(){
+      var cmd = '';
+      if (self.gameData.CardFaceUp.length > 2) {
+        switch(self.gameData.CardFaceUp[2]) {
+          case 'U': 
+            cmd = 'U' + self.gameData.CardFaceUp.substr(0,2);
+            break;
+          case 'D': 
+            cmd = 'D' + self.gameData.CardFaceUp.substr(0,2);
+            break;
+          case 'K': 
+            cmd = 'K' + self.gameData.CardFaceUp.substr(0,2);
+            break;
+        }
+      }
+      if (cmd) {
+        if (!self.playOnce.includes(cmd)) {
+          self.playOnce.push(cmd);
+          app.soundQueue.push(app.sounds[cmd]);
+        }
+      } else {
+        if (self.playOnce.includes("yourturn")) {
+          self.playOnce = [];
+          self.playOnce.push("yourturn");
+        } else {
+          self.playOnce = [];
+        }
+      }
+    };
+
+    
+    
     self.initialize = function(selfPosition, game){
       self.gameData = new gameModel(game);
       self.myPosition = selfPosition;

@@ -3,8 +3,9 @@
 <script type="text/javascript">
 
   function playSound() {
-      var audio = new Audio('<?php echo $appUrl.$audioDir."loaner.mp3"; ?>');
-      audio.play();
+      app.soundQueue.push(app.sounds["yourturn"]);
+      app.soundQueue.push(app.sounds["C"]);
+      app.soundQueue.push(app.sounds["DKC"]);
   }
 
   function soundManagerViewModel() {
@@ -20,6 +21,8 @@
   $(function () {
     var vm = new soundManagerViewModel();
     ko.applyBindings(vm);
+    
+    setInterval(app.soundPop, 300);
 
     var loginError = '<?php echo str_replace("'", "\'", $loginError); ?>';
     if (loginError.length > 0) {

@@ -248,6 +248,7 @@
         self.placeCard[app.positions.indexOf(self.position)](card, playerID);
         if (self.position != playerID && !self.iamTheSkippedPlayer()) {
           if (!self.acknowledgmentAccepted(playerID) && !self.acknowledgmentHasBeenSent(playerID)) {
+            app.soundQueue.push(app.sounds["cardplayed"]);
             self.acknowledgeCard(playerID);
           }
         }
@@ -255,7 +256,6 @@
     };
     
     self.getCurrentStartCard = function(){
-      // console.log('getCurrentStartCard()');
       $.ajax({
         method: 'POST',
         url: 'api/getCurrentStartCard.php',
@@ -322,7 +322,6 @@
     // It distributes cards to players in table `Play`. The dealer calls self.deal().
     self.deal = function(){
       // console.log('deal()');
-
       $.ajax({
         method: 'POST',
         url: 'api/deal.php',
@@ -664,6 +663,7 @@
     };
     
     self.dealOrWaitForCardFaceUpFn = function(){
+      app.soundQueue.push(app.sounds["shuffleQuiet"]);
       if (self.position === self.game.Dealer) {
         self.deal();
       }
@@ -841,7 +841,7 @@
         self.heartbeatOp.isStarted = false;
       }
     };
-    
+
     self.gameExecution = [
       { id: 'initialize', fn: self.initializeFn },
       { id: 'selectFirstJack', fn: self.selectFirstJackFn },
@@ -882,8 +882,12 @@
     ko.applyBindings(gc.replayVM, $('#ReplayReport')[0]);
     ko.applyBindings(gc.bidDialogVM, $('#bidModal')[0]);
     ko.applyBindings(gc.finishGameDialogVM, $('#finishGameModal')[0]);
+
     app.errorVM = new errorViewModel();
     ko.applyBindings(app.errorVM, $('#ErrorInfo')[0]);
+    
+    var soundVM = new soundViewModel();
+    ko.applyBindings(soundVM, $('#SFESound')[0]);
   });
   
 </script>
