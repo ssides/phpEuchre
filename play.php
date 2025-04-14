@@ -20,7 +20,6 @@
 </head>
 
 <body>
-  <?php if (strpos($appUrl, "8080") === false) { trigger_error("Play"); } ?>
   <?php include('header.php'); ?>
 
   <div class="App">
