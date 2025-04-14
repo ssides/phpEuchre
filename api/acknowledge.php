@@ -7,15 +7,15 @@ include_once('../config/config.php');
 include('../controllers/isAuthenticated.php');
 
 if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
-    http_response_code(405); // Method Not Allowed
-    echo json_encode(['ErrorMsg' => 'Expecting request method: POST']);
-    exit;
+  http_response_code(405); // Method Not Allowed
+  echo json_encode(['ErrorMsg' => 'Expecting request method: POST']);
+  exit;
 }
 
-if (!isset($_POST['r']) || !isAuthenticated($_POST['r']) || !isset($_POST['gameID']) || !isset($_POST['position'])) {
-    http_response_code(400); // Bad Request
-    echo json_encode(['ErrorMsg' => 'Missing or invalid authentication, gameID, or position']);
-    exit;
+if (!isset($_POST['r']) || !isAuthenticated($_POST['r']) || !isset($_POST['gameID']) || !isset($_POST['position']) || strpos("OPLR", $_POST['position']) === false) {
+  http_response_code(400); // Bad Request
+  echo json_encode(['ErrorMsg' => 'Missing or invalid authentication, gameID, or position']);
+  exit;
 }
 
 $response = ['ErrorMsg' => ''];
@@ -24,40 +24,40 @@ $position = $_POST['position'];
 
 $conn = mysqli_connect($hostname, $username, $password, $dbname);
 if (!$conn) {
-    http_response_code(500); // Internal Server Error
-    echo json_encode(['ErrorMsg' => 'Database connection failed']);
-    exit;
+  http_response_code(500); // Internal Server Error
+  echo json_encode(['ErrorMsg' => 'Database connection failed']);
+  exit;
 }
 
 mysqli_begin_transaction($conn);
 
 try {
-    $sql = "UPDATE `Game` SET `AC{$position}` = ? WHERE `ID` = ?";
-    $stmt = mysqli_prepare($conn, $sql);
-    if (!$stmt) {
-        throw new Exception(mysqli_error($conn));
-    }
+  $sql = "UPDATE `Game` SET `AC{$position}` = ? WHERE `ID` = ?";
+  $stmt = mysqli_prepare($conn, $sql);
+  if (!$stmt) {
+    throw new Exception(mysqli_error($conn));
+  }
 
-    $value = 'A';
-    mysqli_stmt_bind_param($stmt, 'ss', $value, $gameID);
-    if (!mysqli_stmt_execute($stmt)) {
-        throw new Exception(mysqli_error($conn));
-    }
+  $value = 'A';
+  mysqli_stmt_bind_param($stmt, 'ss', $value, $gameID);
+  if (!mysqli_stmt_execute($stmt)) {
+    throw new Exception(mysqli_error($conn));
+  }
 
-    mysqli_commit($conn);
-    http_response_code(200);
-    echo json_encode($response);
+  mysqli_commit($conn);
+  http_response_code(200);
+  echo json_encode($response);
 
 } catch (Exception $e) {
-    mysqli_rollback($conn);
-    // Log the exception to /var/log/php_errors.log
-    // error_log("[" . date('Y-m-d H:i:s') . "] Database error: " . $e->getMessage() . "\n", 3, '/var/log/php_errors.log');
-    // better to use trigger_error() as follows.
-    trigger_error("Error: Acknowledge: ".$e->getMessage(), E_USER_ERROR);
-    
-    http_response_code(500); // Internal Server Error
-    $response['ErrorMsg'] = 'An error occurred while updating the game';
-    echo json_encode($response);
+  mysqli_rollback($conn);
+  // Log the exception to /var/log/php_errors.log
+  // error_log("[" . date('Y-m-d H:i:s') . "] Database error: " . $e->getMessage() . "\n", 3, '/var/log/php_errors.log');
+  // better to use trigger_error() as follows.
+  trigger_error($e->getMessage(), E_USER_ERROR);
+
+  http_response_code(500); // Internal Server Error
+  $response['ErrorMsg'] = 'An error occurred while updating the game';
+  echo json_encode($response);
 }
 
 mysqli_close($conn);
