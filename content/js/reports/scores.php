@@ -1,5 +1,3 @@
-<?php include_once('../../../config/config.php'); ?>
-
 <script type="text/javascript">
 
   function score(data) {

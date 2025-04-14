@@ -16,6 +16,7 @@
 </head>
 
 <body>
+  <?php if (strpos($appUrl, "8080") === false) { trigger_error("finishedGames"); } ?>
   <div class="card">
     <div class="card-header">
       <?php include('header.php'); ?>

@@ -1,7 +1,3 @@
-<?php 
-  include_once('../../config/config.php'); 
-?>
-
 <script type="text/javascript">
 
   function trickModel(data) {
