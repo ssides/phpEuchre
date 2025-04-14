@@ -1,4 +1,6 @@
 <?php 
+  include_once('config/db.php');
+  include_once('config/config.php');
   require('authorize.php'); 
   include('controllers/dashboard.php'); 
   include_once('svc/group.php');
@@ -20,6 +22,7 @@
 </head>
 
 <body>
+  <?php trigger_error("Dashboard"); ?>
   <!-- Header -->
   <?php include('header.php'); ?>
 
