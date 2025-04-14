@@ -1,6 +1,4 @@
 <?php  
-    include_once('config/db.php');
-    include_once('config/config.php');
     include_once('svc/services.php');
     include_once('svc/thumbnailServices.php');
     include_once('controllers/isAuthenticated.php'); // for readAuthCookie()

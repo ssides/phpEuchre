@@ -1,4 +1,6 @@
-<?php include('controllers/login.php'); ?>
+<?php 
+  include('controllers/login.php'); 
+?>
 <!doctype html>
 <html lang="en">
 
@@ -14,7 +16,6 @@
 </head>
 
 <body>
-
   <?php include('header.php'); ?>
 
   <div class="App">

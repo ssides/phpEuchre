@@ -1,7 +1,8 @@
 ﻿<?php
+  include_once('config/db.php');
+  include_once('config/config.php');
   require('authorize.php');
   include('controllers/play.php');
-  include_once('config/config.php');
  ?>
 <!doctype html>
 <html lang="en">
