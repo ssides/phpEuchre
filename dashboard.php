@@ -22,7 +22,7 @@
 </head>
 
 <body>
-  <?php trigger_error("Dashboard"); ?>
+  <?php if (strpos($appUrl, "8080") === false) { trigger_error("Dashboard"); } ?>
   <!-- Header -->
   <?php include('header.php'); ?>
 
