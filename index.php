@@ -18,8 +18,6 @@
 </head>
 
 <body>
-  <?php if (strpos($appUrl, "8080") === false) { trigger_error("index.php"); } ?>
-
   <?php include('header.php'); ?>
 
   <div class="App">
