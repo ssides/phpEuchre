@@ -1,4 +1,6 @@
 <?php 
+  include_once('config/db.php');
+  include_once('config/config.php');
   include('controllers/login.php'); 
 ?>
 <!doctype html>
@@ -16,6 +18,8 @@
 </head>
 
 <body>
+  <?php if (strpos($appUrl, "8080") === false) { trigger_error("index.php"); } ?>
+
   <?php include('header.php'); ?>
 
   <div class="App">

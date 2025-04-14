@@ -1,6 +1,4 @@
 <?php
-  include_once('config/db.php');
-  include_once('config/config.php');
   include_once('controllers/isAuthenticated.php');
   include_once('svc/group.php');
   include('svc/cookie.php');
