@@ -19,7 +19,6 @@
 </head>
 
 <body>
-  <?php if (strpos($appUrl, "8080") === false) { trigger_error("Set Profile"); } ?>
   <!-- Header -->
   <?php include('header.php'); ?>
 
