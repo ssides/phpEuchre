@@ -1,7 +1,8 @@
 ﻿<?php
+  include_once('config/db.php');
+  include_once('config/config.php');
   require('authorize.php');
   include('controllers/play.php');
-  include_once('config/config.php');
  ?>
 <!doctype html>
 <html lang="en">
@@ -19,7 +20,7 @@
 </head>
 
 <body>
-
+  <?php if (strpos($appUrl, "8080") === false) { trigger_error("Play"); } ?>
   <?php include('header.php'); ?>
 
   <div class="App">

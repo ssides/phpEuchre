@@ -1,7 +1,8 @@
 <?php
+  include_once('config/db.php');
+  include_once('config/config.php');
   require('authorize.php');
   include_once('controllers/organize.php');
-  include_once('config/config.php');
   include_once('svc/group.php');
 
 ?>
@@ -21,6 +22,7 @@
 </head>
 
 <body>
+  <?php if (strpos($appUrl, "8080") === false) { trigger_error("Organize"); } ?>
   <!-- Header -->
   <?php include('header.php'); ?>
 

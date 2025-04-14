@@ -1,6 +1,8 @@
-<?php require('authorize.php'); ?>
-<?php include('controllers/setProfile.php'); ?>
-<!doctype html>
+<?php
+  include_once('config/db.php');
+  include_once('config/config.php');
+  require('authorize.php'); 
+  include('controllers/setProfile.php'); ?><!doctype html>
 <html lang="en">
 
 <head>
@@ -17,6 +19,7 @@
 </head>
 
 <body>
+  <?php if (strpos($appUrl, "8080") === false) { trigger_error("Set Profile"); } ?>
   <!-- Header -->
   <?php include('header.php'); ?>
 
