@@ -1,5 +1,4 @@
 <?php require('authorize.php'); ?>
-<?php include('controllers/dashboard.php'); ?>
 
 <!doctype html>
 <html lang="en">
