@@ -105,7 +105,7 @@
     return $deal;
   }
 
-  function getLastDeals($gameID, $limit) {
+  function getLastDeals($conn, $gameID, $limit) {
     $deals = [];
 
     $sql = "
@@ -117,9 +117,7 @@
       LIMIT ?";
 
     $stmt = mysqli_prepare($conn, $sql);
-    if ($stmt === false) {
-      throw new Exception(mysqli_error($conn));
-    }
+    if ($stmt === false) {   throw new Exception(mysqli_error($conn));  }
 
     mysqli_stmt_bind_param($stmt, "si", $gameID, $limit);
     mysqli_stmt_execute($stmt);
