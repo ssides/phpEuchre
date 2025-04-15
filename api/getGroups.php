@@ -1,36 +1,47 @@
 <?php 
-  include_once('../../config/db.php');
-  include_once('../../config/config.php');
+  include_once('../config/db.php');
+  include_once('../config/config.php');
   
-  if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    
-    $response = array();
-    $response['ErrorMsg'] = is_null($connection) ? "No connection. " : "";
-    $groups = array();
+  if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
+    http_response_code(405); // Method Not Allowed
+    echo json_encode(['ErrorMsg' => 'Expecting request method: POST']);
+    exit;
+  }
 
+  if (!isset($_POST['r']) || !isAuthenticated($_POST['r']) ) {
+    http_response_code(400); // Bad Request
+    echo json_encode(['ErrorMsg' => 'One or more request parameters are missing or invalid']);
+    exit;
+  }
+  
+  $response = ['ErrorMsg' => ''];
+  
+  try {
     $sql = "select `ID`,`Description` from `Group`";
-    
-    $results = mysqli_query($connection, $sql);
-    if ($results === false) {
-      $response['ErrorMsg'] .= mysqli_error($connection);;
+    $stmt = mysqli_prepare($connection, $sql);
+    if ($stmt === false) { throw new Exception(mysqli_error($connection)); }
+
+    if (!mysqli_stmt_execute($stmt)) { throw new Exception(mysqli_stmt_error($stmt)); }
+
+    $result = mysqli_stmt_get_result($stmt);
+        
+    if (mysqli_num_rows($result) === 0) {
+      $response['ErrorMsg'] = 'No groups are defined';
     } else {
-      $rowCount = mysqli_num_rows($results);
-      if ($rowCount <= 0) {
-        $response['ErrorMsg'] .= "No groups are defined. ";
-      } else {
-        while ($row = mysqli_fetch_array($results)) {
-          array_push($groups, array($row['ID'],$row['Description']));
-        }
+      while ($row = mysqli_fetch_assoc($result)) {
+        $response['Groups'][] = [$row['ID'], $row['Description']];
       }
     }
-  
-    $response['Groups'] = $groups;
 
+    mysqli_stmt_close($stmt);
+    
     http_response_code(200);
     echo json_encode($response);
 
-  } else {
-    echo "Expecting request method: POST";
+  } catch (Exception $e) {
+    trigger_error($e->getMessage() . "\nStack trace: " . $e->getTraceAsString(), E_USER_ERROR);
+    http_response_code(500); // Internal Server Error
+    echo json_encode(['ErrorMsg' => 'An error occurred while updating the game.']);
   }
-
+  
 ?>
