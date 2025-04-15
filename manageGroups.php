@@ -1,4 +1,6 @@
 <?php
+  include_once('config/db.php');
+  include_once('config/config.php');
   require('authorize.php'); 
   include_once('svc/group.php');
 
