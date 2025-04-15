@@ -27,7 +27,7 @@
     self.getGroups = function() {
       $.ajax({
         method: 'POST',
-        url: 'api/groups/getGroups.php',
+        url: 'api/getGroups.php',
         data: { },
         success: function (response) {
           let data = JSON.parse(response);
