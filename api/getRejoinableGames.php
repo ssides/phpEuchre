@@ -10,7 +10,7 @@
     exit;
   }
 
-  if (!isset($_POST['r']) || !isAuthenticated($_POST['r']) || !isset($_POST['gameID']) || !isset($_POST['positionID']) || strpos("OPLR", $_POST['positionID']) === false) {
+  if (!isset($_POST['r']) || !isAuthenticated($_POST['r'])) {
     http_response_code(400); // Bad Request
       echo "ID invalid or missing.";
     exit;
