@@ -46,7 +46,7 @@
     if (!mysqli_stmt_execute($stmt)) { throw new Exception(mysqli_error($conn)); }
 
     $result = mysqli_stmt_get_result($stmt);
-    if ($result === false) { throw new Exception(mysqli_stmt_error($stmt)); }
+    if (!$result) { throw new Exception(mysqli_stmt_error($stmt)); }
 
     while ($row = mysqli_fetch_array($results)) {
       $cards .= is_null($row['PO']) ? '' : $row['PO'];
@@ -61,7 +61,7 @@
       throw new Exception("Play state error.");
     }
     
-    showPlayerCardPlayed($conn, $cardNumber, $p, $hand['PlayID']);
+    showPlayerCardPlayed($conn, $cardNumber, $cardID.'P', $hand['PlayID']);
     showGameCardPlayed($conn, $positionID, $cardID, $gameID);
     
     if (strlen($cards) == 0) { // if this is the first card of the trick 
