@@ -48,7 +48,7 @@
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) { throw new Exception(mysqli_stmt_error($stmt)); }
 
-    while ($row = mysqli_fetch_array($results)) {
+    while ($row = mysqli_fetch_array($result)) {
       $cards .= is_null($row['PO']) ? '' : $row['PO'];
       $cards .= is_null($row['PP']) ? '' : $row['PP'];
       $cards .= is_null($row['PL']) ? '' : $row['PL'];
