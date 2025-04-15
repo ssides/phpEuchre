@@ -10,7 +10,7 @@
     exit;
   }
 
-  if (!isset($_POST['r']) || !isAuthenticated($_POST['r']) || !isset($_POST['gameID']) || !isset($_POST['cardID']) || !isset($_POST['positionID']) || strlen($_POST['positionID']) != 1 || strpos("OPLR", $_POST['positionID']) === false) {
+  if (!isset($_POST['r']) || !isAuthenticated($_POST['r']) || !isset($_POST['gameID']) || !isset($_POST['positionID']) || strlen($_POST['positionID']) != 1 || strpos("OPLR", $_POST['positionID']) === false) {
     http_response_code(400); // Bad Request
     echo json_encode(['ErrorMsg' => 'One or more request parameters are missing or invalid']);
     exit;

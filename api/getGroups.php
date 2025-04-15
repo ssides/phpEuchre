@@ -7,12 +7,6 @@
     echo json_encode(['ErrorMsg' => 'Expecting request method: POST']);
     exit;
   }
-
-  if (!isset($_POST['r']) || !isAuthenticated($_POST['r']) ) {
-    http_response_code(400); // Bad Request
-    echo json_encode(['ErrorMsg' => 'One or more request parameters are missing or invalid']);
-    exit;
-  }
   
   $response = ['ErrorMsg' => ''];
   

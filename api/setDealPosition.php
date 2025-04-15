@@ -33,7 +33,8 @@
   mysqli_begin_transaction($conn);
 
   try {
-    
+    $turn = getNextTurn($position);
+
     if ($isFirst) {
       $sql = "update `Game` set `FirstDealPosition`=?, `Dealer`=?, `Turn`=?, `CardFaceUp`=null where `ID`=?";
       
