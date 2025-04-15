@@ -24,8 +24,10 @@ $position = $_POST['position'];
 
 $conn = mysqli_connect($hostname, $username, $password, $dbname);
 if (!$conn) {
-  http_response_code(500); // Internal Server Error
-  echo json_encode(['ErrorMsg' => 'Database connection failed']);
+  trigger_error("Database connection failed: " . mysqli_connect_error(), E_USER_ERROR);
+  http_response_code(500);
+  $response['ErrorMsg'] = "Internal server error.";
+  echo json_encode($response);
   exit;
 }
 

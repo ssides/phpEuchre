@@ -4,128 +4,122 @@
   include('../controllers/isAuthenticated.php');
   include('../svc/getThumbnailURL.php');
 
-  if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST['r']) && isAuthenticated($_POST['r'])) {
-      
-      $response = array();
-      $response['ErrorMsg'] = "";
-      $gameID = $_POST['gameID'];
-      $playerID = $_POST['r'];
-      $game = array();
-      
-      $conn = mysqli_connect($hostname, $username, $password, $dbname);
-
-      $sql = "select 
-        `Organizer`
-        ,`Partner`
-        ,`Left`
-        ,`Right`
-        ,`Dealer`
-        ,`Turn`
-        ,`Lead`
-        ,`CardFaceUp`
-        ,`OrganizerTrump`
-        ,`OrganizerTricks`
-        ,`OrganizerScore`
-        ,`OpponentTrump`
-        ,`OpponentTricks`
-        ,`OpponentScore`
-        ,`PlayTo`
-        ,`ACO`
-        ,`ACP`
-        ,`ACR`
-        ,`ACL`
-        ,`PO`
-        ,`PP`
-        ,`PL`
-        ,`PR`
-        ,`ScoringInProgress`
-        ,`Speed`
-        ,ou.`ThumbnailPath` `OThumbnailPath`,op.`Name` `OName`
-        ,pu.`ThumbnailPath` `PThumbnailPath`,pp.`Name` `PName`
-        ,lu.`ThumbnailPath` `LThumbnailPath`,lp.`Name` `LName`
-        ,ru.`ThumbnailPath` `RThumbnailPath`,rp.`Name` `RName`
-        ,`GameStartDate`
-        ,`GameFinishDate`
-        ,`GameEndDate`
-        ,gd.`DealID`
-      from `Game` g
-      left join (select `DealID`,`GameID` from `GameDeal` where `GameID` = '{$gameID}' and `IsActive` = '1') gd on g.`ID` = gd.`GameID`
-      left join `UserProfile` ou on g.`Organizer` = ou.`PlayerID`
-      join `Player` op on g.`Organizer` = op.`ID`
-      left join `UserProfile` pu on g.`Partner` = pu.`PlayerID`
-      join `Player` pp on g.`Partner` = pp.`ID`
-      left join `UserProfile` lu on g.`Left` = lu.`PlayerID`
-      join `Player` lp on g.`Left` = lp.`ID`
-      left join `UserProfile` ru on g.`Right` = ru.`PlayerID`
-      join `Player` rp on g.`Right` = rp.`ID`
-      where g.`ID`='{$gameID}'";
-         
-      $results = mysqli_query($conn, $sql);
-      if ($results === false) {
-        $response['ErrorMsg'] .= mysqli_error($conn);
-      } else {
-        while ($row = mysqli_fetch_array($results)) {
-          $game['Organizer'] = $row['Organizer'];
-          $game['Partner'] = $row['Partner'];
-          $game['Left'] = $row['Left'];
-          $game['Right'] = $row['Right'];
-          $game['Dealer'] = $row['Dealer'];
-          $game['Turn'] = is_null($row['Turn']) ? '' : $row['Turn'];
-          $game['Lead'] = is_null($row['Lead']) ? '' : $row['Lead'];
-          $game['CardFaceUp'] = is_null($row['CardFaceUp']) ? '' : $row['CardFaceUp'];
-          $game['OrganizerTrump']  = is_null($row['OrganizerTrump']) ? '' : $row['OrganizerTrump'];
-          $game['OrganizerTricks'] = is_null($row['OrganizerTricks']) ? '' : $row['OrganizerTricks'];
-          $game['OrganizerScore'] = $row['OrganizerScore'];
-          $game['OpponentTrump']   = is_null($row['OpponentTrump']) ? '' : $row['OpponentTrump'];
-          $game['OpponentTricks']  = is_null($row['OpponentTricks']) ? '' : $row['OpponentTricks'];
-          $game['OpponentScore'] = $row['OpponentScore'];
-          $game['PlayTo'] = $row['PlayTo'];
-          
-          // ACP, ACR, and ACL are set to 'A' when the associated player acknowledges (automatically) seeing the first Jack.  
-          // This is how game state is determined.  These columns are also used during play to make sure all players
-          // have seen the card played.
-          $game['ACO'] = is_null($row['ACO']) ? '' : $row['ACO'];
-          $game['ACP'] = is_null($row['ACP']) ? '' : $row['ACP'];
-          $game['ACR'] = is_null($row['ACR']) ? '' : $row['ACR'];
-          $game['ACL'] = is_null($row['ACL']) ? '' : $row['ACL'];
-          
-          // PO, PP, PL, and PR are the cards each player has played in turn.
-          $game['PO'] = is_null($row['PO']) ? '' : $row['PO'];
-          $game['PP'] = is_null($row['PP']) ? '' : $row['PP'];
-          $game['PL'] = is_null($row['PL']) ? '' : $row['PL'];
-          $game['PR'] = is_null($row['PR']) ? '' : $row['PR'];
-          $game['ScoringInProgress'] = $row['ScoringInProgress'];
-          $game['Speed'] = $row['Speed'];
-          $game['OThumbnailPath'] = $row['OThumbnailPath'];
-          $game['OThumbnailURL'] = is_null($row['OThumbnailPath']) ? '' : getThumbnailURL($row['OThumbnailPath']);
-          $game['OName'] = $row['OName'];
-          $game['PThumbnailURL'] =  is_null($row['PThumbnailPath']) ? '' : getThumbnailURL($row['PThumbnailPath']);
-          $game['PName'] = $row['PName'];
-          $game['LThumbnailURL'] =  is_null($row['LThumbnailPath']) ? '' : getThumbnailURL($row['LThumbnailPath']);
-          $game['LName'] = $row['LName'];
-          $game['RThumbnailURL'] =  is_null($row['RThumbnailPath']) ? '' : getThumbnailURL($row['RThumbnailPath']);
-          $game['RName'] = $row['RName'];
-          $game['GameStartDate'] = $row['GameStartDate'];
-          $game['GameFinishDate'] = is_null($row['GameFinishDate']) ? '' : $row['GameFinishDate'];
-          $game['GameEndDate'] = is_null($row['GameEndDate']) ? '' : $row['GameEndDate'];
-          $game['DealID'] = is_null($row['DealID']) ? '' : $row['DealID'];
-        }
-      }
-      
-      $response['Game'] = $game;
-
-      mysqli_close($conn);
-
-      http_response_code(200);
-      
-      echo json_encode($response);
-
-    } else {
-      echo "ID invalid or missing.";
-    }
-  } else {
-    echo "Expecting request method: POST";
+  if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
+    http_response_code(405); // Method Not Allowed
+    echo json_encode(['ErrorMsg' => 'Expecting request method: POST']);
+    exit;
   }
+
+  if (!isset($_POST['r']) || !isAuthenticated($_POST['r']) || !isset($_POST['gameID'])) {
+    http_response_code(400); // Bad Request
+    echo json_encode(['ErrorMsg' => 'Missing or invalid authentication or gameID.']);
+    exit;
+  }
+
+  $response = ['ErrorMsg' => ''];
+  $gameID = $_POST['gameID'];
+  $playerID = $_POST['r'];
+  $game = [];
+
+  $conn = mysqli_connect($hostname, $username, $password, $dbname);
+  if (!$conn) {
+    trigger_error("Database connection failed: " . mysqli_connect_error(), E_USER_ERROR);
+    http_response_code(500);
+    $response['ErrorMsg'] = "Internal server error.";
+    echo json_encode($response);
+    exit;
+  }
+
+  try {
+    $sql = "SELECT 
+            `Organizer`, `Partner`, `Left`, `Right`, `Dealer`, `Turn`, `Lead`, `CardFaceUp`,
+            `OrganizerTrump`, `OrganizerTricks`, `OrganizerScore`, `OpponentTrump`, 
+            `OpponentTricks`, `OpponentScore`, `PlayTo`, `ACO`, `ACP`, `ACR`, `ACL`, 
+            `PO`, `PP`, `PL`, `PR`, `ScoringInProgress`, `Speed`,
+            ou.`ThumbnailPath` `OThumbnailPath`, op.`Name` `OName`,
+            pu.`ThumbnailPath` `PThumbnailPath`, pp.`Name` `PName`,
+            lu.`ThumbnailPath` `LThumbnailPath`, lp.`Name` `LName`,
+            ru.`ThumbnailPath` `RThumbnailPath`, rp.`Name` `RName`,
+            `GameStartDate`, `GameFinishDate`, `GameEndDate`, gd.`DealID`
+        FROM `Game` g
+        LEFT JOIN (SELECT `DealID`, `GameID` FROM `GameDeal` WHERE `GameID` = ? AND `IsActive` = '1') gd ON g.`ID` = gd.`GameID`
+        LEFT JOIN `UserProfile` ou ON g.`Organizer` = ou.`PlayerID`
+        JOIN `Player` op ON g.`Organizer` = op.`ID`
+        LEFT JOIN `UserProfile` pu ON g.`Partner` = pu.`PlayerID`
+        JOIN `Player` pp ON g.`Partner` = pp.`ID`
+        LEFT JOIN `UserProfile` lu ON g.`Left` = lu.`PlayerID`
+        JOIN `Player` lp ON g.`Left` = lp.`ID`
+        LEFT JOIN `UserProfile` ru ON g.`Right` = ru.`PlayerID`
+        JOIN `Player` rp ON g.`Right` = rp.`ID`
+        WHERE g.`ID` = ?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+    if (!$stmt) {
+      throw new Exception(mysqli_error($conn));
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $gameID, $gameID);
+    if (!mysqli_stmt_execute($stmt)) {
+      throw new Exception(mysqli_error($conn));
+    }
+
+    $result = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_assoc($result)) {
+      $game = [
+          'Organizer' => $row['Organizer'],
+          'Partner' => $row['Partner'],
+          'Left' => $row['Left'],
+          'Right' => $row['Right'],
+          'Dealer' => $row['Dealer'],
+          'Turn' => $row['Turn'] ?? '',
+          'Lead' => $row['Lead'] ?? '',
+          'CardFaceUp' => $row['CardFaceUp'] ?? '',
+          'OrganizerTrump' => $row['OrganizerTrump'] ?? '',
+          'OrganizerTricks' => $row['OrganizerTricks'] ?? '',
+          'OrganizerScore' => $row['OrganizerScore'],
+          'OpponentTrump' => $row['OpponentTrump'] ?? '',
+          'OpponentTricks' => $row['OpponentTricks'] ?? '',
+          'OpponentScore' => $row['OpponentScore'],
+          'PlayTo' => $row['PlayTo'],
+          'ACO' => $row['ACO'] ?? '',
+          'ACP' => $row['ACP'] ?? '',
+          'ACR' => $row['ACR'] ?? '',
+          'ACL' => $row['ACL'] ?? '',
+          'PO' => $row['PO'] ?? '',
+          'PP' => $row['PP'] ?? '',
+          'PL' => $row['PL'] ?? '',
+          'PR' => $row['PR'] ?? '',
+          'ScoringInProgress' => $row['ScoringInProgress'],
+          'Speed' => $row['Speed'],
+          'OThumbnailPath' => $row['OThumbnailPath'],
+          'OThumbnailURL' => $row['OThumbnailPath'] ? getThumbnailURL($row['OThumbnailPath']) : '',
+          'OName' => $row['OName'],
+          'PThumbnailURL' => $row['PThumbnailPath'] ? getThumbnailURL($row['PThumbnailPath']) : '',
+          'PName' => $row['PName'],
+          'LThumbnailURL' => $row['LThumbnailPath'] ? getThumbnailURL($row['LThumbnailPath']) : '',
+          'LName' => $row['LName'],
+          'RThumbnailURL' => $row['RThumbnailPath'] ? getThumbnailURL($row['RThumbnailPath']) : '',
+          'RName' => $row['RName'],
+          'GameStartDate' => $row['GameStartDate'],
+          'GameFinishDate' => $row['GameFinishDate'] ?? '',
+          'GameEndDate' => $row['GameEndDate'] ?? '',
+          'DealID' => $row['DealID'] ?? ''
+      ];
+    }
+
+    $response['Game'] = $game;
+
+    mysqli_stmt_close($stmt);
+    http_response_code(200);
+    echo json_encode($response);
+
+  } catch (Exception $e) {
+    trigger_error($e->getMessage() . "\nStack trace: " . $e->getTraceAsString(), E_USER_ERROR);
+    http_response_code(500); // Internal Server Error
+    $response['ErrorMsg'] = 'An error occurred while getting the game state.';
+    echo json_encode($response);
+  }
+  
+  mysqli_close($conn);
 
 ?>
