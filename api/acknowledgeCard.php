@@ -16,8 +16,7 @@
     exit;
   }
   
-  $response = array();
-  $response['ErrorMsg'] = "";
+  $response = ['ErrorMsg' => ''];
   $gameID = $_POST['gameID'];
   $positionID = $_POST['positionID'];
   $playerID = $_POST['playerID'];
@@ -25,11 +24,11 @@
   $ack = "";
   $conn = mysqli_connect($hostname, $username, $password, $dbname);
   if (!$conn) {
-      trigger_error("Database connection failed: " . mysqli_connect_error(), E_USER_ERROR);
-      http_response_code(500);
-      $response['ErrorMsg'] = "Internal server error.";
-      echo json_encode($response);
-      exit;
+    trigger_error("Database connection failed: " . mysqli_connect_error(), E_USER_ERROR);
+    http_response_code(500);
+    $response['ErrorMsg'] = "Internal server error.";
+    echo json_encode($response);
+    exit;
   }
 
   mysqli_begin_transaction($conn);
@@ -78,7 +77,7 @@
     mysqli_rollback($conn);
     trigger_error($e->getMessage() . "\nStack trace: " . $e->getTraceAsString(), E_USER_ERROR);
     http_response_code(500); // Internal Server Error
-    $response['ErrorMsg'] = 'An error occurred while updating the game';
+    $response['ErrorMsg'] = 'An error occurred while updating the game.';
     echo json_encode($response);
   }
 
