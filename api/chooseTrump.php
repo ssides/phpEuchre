@@ -41,9 +41,7 @@
     if (!$stmt) { throw new Exception(mysqli_error($conn)); }
 
     mysqli_stmt_bind_param($stmt, "s", $gameID);
-    if (!mysqli_stmt_execute($stmt)) {
-      throw new Exception(mysqli_error($conn));
-    }
+    if (!mysqli_stmt_execute($stmt)) { throw new Exception(mysqli_error($conn)); }
 
     $result = mysqli_stmt_get_result($stmt);
 
