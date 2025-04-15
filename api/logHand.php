@@ -52,7 +52,7 @@
   $dealer = $_POST['dealer'];
 
   try {
-    $sql = "insert into gameplay (id, gameid, dealid, lead, cardo, cardp, cardl, cardr, organizertrump, opponenttrump, organizerscore, organizertricks, opponentscore, opponenttricks, cardfaceup, dealer, insertdate) 
+    $sql = "insert into `GamePlay` (id, gameid, dealid, lead, cardo, cardp, cardl, cardr, organizertrump, opponenttrump, organizerscore, organizertricks, opponentscore, opponenttricks, cardfaceup, dealer, insertdate) 
             values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())";
 
     $stmt = mysqli_prepare($connection, $sql);
