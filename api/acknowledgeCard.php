@@ -56,9 +56,7 @@
       // Prepare statement to update ACK field
       $sql = "UPDATE `Game` SET `AC{$positionID}` = ? WHERE `ID` = ?";
       $stmt = mysqli_prepare($conn, $sql);
-      if ($stmt === false) {
-        throw new Exception(mysqli_error($conn));
-      }
+      if ($stmt === false) { throw new Exception(mysqli_error($conn)); }
 
       mysqli_stmt_bind_param($stmt, "ss", $ack, $gameID);
       if (!mysqli_stmt_execute($stmt)) {

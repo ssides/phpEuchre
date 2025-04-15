@@ -6,79 +6,86 @@
   include('../svc/getNextTurn.php');
   include('../svc/goingAlone.php');
 
-  if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST['r']) && isAuthenticated($_POST['r'])) {
-      
-      $response = array();
-      $response['ErrorMsg'] = "";
-      $gameID = $_POST['gameID'];
-      $playerID = $_POST['r'];
-      $positionID = $_POST['positionID'];
-      $cardID = $_POST['cardID']; // card being discarded
-      
-      $dealer = '';
-      $cardFaceUp = '';
-      
-      $conn =  mysqli_connect($hostname, $username, $password, $dbname);
-      
-      mysqli_query($conn, "START TRANSACTION;");
-      
-      $sql = "select `Dealer`,`CardFaceUp` from `Game` where `ID`='{$gameID}'";
-
-      $results = mysqli_query($conn, $sql);
-      if ($results === false) {
-        $response['ErrorMsg'] .= mysqli_error($conn);
-      } else {
-        while ($row = mysqli_fetch_array($results)) {
-          $dealer = is_null($row['Dealer']) ? '' : $row['Dealer'];
-          $cardFaceUp = is_null($row['CardFaceUp']) ? '' : $row['CardFaceUp'];
-        }
-      }
-      
-      if (strlen($dealer) > 0 && $dealer == $positionID && strlen($cardFaceUp) > 3 && $cardFaceUp[2] == 'U') {
-        $hand = getHand($conn, $gameID, $positionID);
-        if (strlen($hand['ErrorMsg']) > 0) {
-          $response['ErrorMsg'] .= $hand['ErrorMsg'];
-        }
-
-        $cardNumber = getCardNumber($hand, $cardID);
-        
-        if ($cardNumber == '0') {
-          // I don't let them discard CardFaceUp.
-          $response['ErrorMsg'] .= "Card not found '{$cardID}'. ";
-        } else {
-          // save the hand and set trump based on who ordered it up. Turn goes to left of dealer.
-          $response['ErrorMsg'] .= saveHandSetTurn($conn, $hand, $cardNumber, $cardFaceUp, $gameID, $dealer);
-        }
-      } else {
-        $response['ErrorMsg'] .= "discardCard: Invalid game state.";
-      }
-
-      if (strlen($response['ErrorMsg']) > 0) {
-        mysqli_query($conn, "ROLLBACK;");
-      } else {
-        mysqli_query($conn, "COMMIT;");
-      }
-
-      mysqli_close($conn);
-
-      http_response_code(200);
-      
-      echo json_encode($response);
-      
-    } else {
-      echo "ID invalid or missing.";
-    }
-  } else {
-    echo "Expecting request method: POST";
+  if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
+    http_response_code(405); // Method Not Allowed
+    echo json_encode(['ErrorMsg' => 'Expecting request method: POST']);
+    exit;
   }
 
-  // save the hand and set trump based on who ordered it up.
+  if (!isset($_POST['r']) || !isAuthenticated($_POST['r']) || !isset($_POST['gameID']) || !isset($_POST['cardID']) || !isset($_POST['positionID']) || strpos("OPLR", $_POST['positionID']) === false) {
+    http_response_code(400); // Bad Request
+    echo json_encode(['ErrorMsg' => 'Missing or invalid authentication, gameID, cardID, or positionID']);
+    exit;
+  }
+  
+  $response = ['ErrorMsg' => ''];
+  $gameID = $_POST['gameID'];
+  $playerID = $_POST['r'];
+  $positionID = $_POST['positionID'];
+  $cardID = $_POST['cardID'];
+
+  $conn = mysqli_connect($hostname, $username, $password, $dbname);
+  if (!$conn) {
+    trigger_error("Database connection failed: " . mysqli_connect_error(), E_USER_ERROR);
+    http_response_code(500);
+    $response['ErrorMsg'] = "Internal server error.";
+    echo json_encode($response);
+    exit;
+  }
+
+  mysqli_begin_transaction($conn);
+
+  try {
+    
+    $sql = "SELECT `Dealer`, `CardFaceUp` FROM `Game` WHERE `ID` = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    if ($stmt === false) { throw new Exception(mysqli_error($conn)); }
+    
+    mysqli_stmt_bind_param($stmt, "s", $gameID);
+    if (!mysqli_stmt_execute($stmt)) { throw new Exception(mysqli_error($conn)); }
+
+    $result = mysqli_stmt_get_result($stmt);
+    if ($result === false) { throw new Exception("Invalid GameID."); }
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+
+    $dealer = $row['Dealer'] ?? '';
+    $cardFaceUp = $row['CardFaceUp'] ?? '';
+
+    if (strlen($dealer) > 0 && $dealer == $positionID && strlen($cardFaceUp) > 3 && $cardFaceUp[2] == 'U') {
+      $hand = getHand($conn, $gameID, $positionID);
+
+      $cardNumber = getCardNumber($hand, $cardID);
+
+      if ($cardNumber == '0') {
+        throw new Exception("Card not found '{$cardID}'. ");
+      } else {
+        saveHandSetTurn($conn, $hand, $cardNumber, $cardFaceUp, $gameID, $dealer);
+      }
+    } else {
+      throw new Exception("Invalid game state.");
+    }
+
+    mysqli_commit($conn);
+    http_response_code(200);
+    echo json_encode($response);
+
+  } catch (Exception $e) {
+    mysqli_rollback($conn);
+    trigger_error($e->getMessage() . "\nStack trace: " . $e->getTraceAsString(), E_USER_ERROR);
+    http_response_code(500); // Internal Server Error
+    $response['ErrorMsg'] = 'An error occurred while updating the game.';
+    echo json_encode($response);
+  }
+
+  mysqli_close($conn);
+
+  // functions
+  
   function saveHandSetTurn($conn, $hand, $cardNumber, $cardFaceUp, $gameID, $dealer) {
-    $response = "";
-    $cardID = substr($cardFaceUp,0,2);
-    $trump = substr($cardFaceUp,1,1);
-    $playerID = substr($cardFaceUp,3,1);
+    $cardID = substr($cardFaceUp, 0, 2);
+    $trump = substr($cardFaceUp, 1, 1);
+    $playerID = substr($cardFaceUp, 3, 1);
     $trumpColumn = $playerID == 'O' || $playerID == 'P' ? 'OrganizerTrump' : 'OpponentTrump';
     $turn = getNextTurn($dealer);
 
@@ -88,20 +95,26 @@
         $turn = getNextTurn($turn);
       }
     }
+
+    // Update Play table
+    $sql = "UPDATE `Play` SET `CardID{$cardNumber}` = ? WHERE `ID` = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    if ($stmt === false) { throw new Exception(mysqli_error($conn)); }
+
+    mysqli_stmt_bind_param($stmt, "ss", $cardID, $hand['PlayID']);
+    if (!mysqli_stmt_execute($stmt)) { throw new Exception(mysqli_error($conn)); }
+    mysqli_stmt_close($stmt);
+
+    // Update Game table
+    $cardFaceUp = $cardID . 'S' . substr($cardFaceUp, 3);
+    $sql = "UPDATE `Game` SET `{$trumpColumn}` = ?, `CardFaceUp` = ?, `Turn` = ? WHERE `ID` = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    if ($stmt === false) { throw new Exception(mysqli_error($conn)); }
     
-    $sql = "update `Play` set `CardID{$cardNumber}` = '{$cardID}' where `ID`='{$hand['PlayID']}'";
-    $results = mysqli_query($conn, $sql);
-    if ($results === false) {
-      $response .= mysqli_error($conn);
-    }
+    mysqli_stmt_bind_param($stmt, "ssss", $trump, $cardFaceUp, $turn, $gameID);
+    if (!mysqli_stmt_execute($stmt)) { throw new Exception(mysqli_error($conn)); }
     
-    $cardFaceUp = $cardID.'S'.substr($cardFaceUp,3);
-    $sql = "update `Game` set `{$trumpColumn}` = '{$trump}',`CardFaceUp` = '{$cardFaceUp}',`Turn` = '{$turn}' where `ID`='{$gameID}'";
-    $results = mysqli_query($conn, $sql);
-    if ($results === false) {
-      $response .= mysqli_error($conn);
-    }
-    
-    return $response;
+    mysqli_stmt_close($stmt);
   }
+  
 ?>
