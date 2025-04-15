@@ -9,43 +9,41 @@
     exit;
   }
 
-  if (!isset($_POST['r']) || !isAuthenticated($_POST['r']) || !isset($_POST['identifier'])) {
+  if (!isset($_POST['r']) || !isAuthenticated($_POST['r'])  || !isset($_POST['identifier']) || !isset($_POST['player']) || !isset($_POST['gameID'])) {
     http_response_code(400); // Bad Request
-    echo "ID invalid or missing.";
+    echo "One or more request parameters are invalid or missing.";
     exit;
   }
 
-  $id = $_POST['identifier'];
-
+  $id = $_POST['identifier'];  // 'partner', 'left' or 'right'
+  $playerID = $_POST['player'];
+  $gameID = $_POST['gameID'];
+  
   mysqli_begin_transaction($connection);
 
   try {
     $sql = '';
-    $column = '';
     $date_column = '';
 
     switch ($id) {
       case 'partner':
-          $column = 'partner';
-          $date_column = 'partnerinvitedate';
-          break;
+        $date_column = 'partnerinvitedate';
+        break;
       case 'left':
-          $column = 'left';
-          $date_column = 'leftinvitedate';
-          break;
+        $date_column = 'leftinvitedate';
+        break;
       case 'right':
-          $column = 'right';
-          $date_column = 'rightinvitedate';
-          break;
+        $date_column = 'rightinvitedate';
+        break;
       default:
-          throw new Exception('Invalid identifier');
+        throw new Exception('Invalid identifier');
     }
 
-    $sql = "update `Game` set {$column} = ?, {$date_column} = now() where id = ?";
+    $sql = "update `Game` set `{$id}` = ?, `{$date_column}` = now() where id = ?";
     $stmt = mysqli_prepare($connection, $sql);
     if ($stmt === false) { throw new Exception(mysqli_error($connection)); }
 
-    $result = mysqli_stmt_bind_param($stmt, 'ss', $_POST['player'], $_POST['gameID']);
+    $result = mysqli_stmt_bind_param($stmt, 'ss', $playerID, $gameID);
     if ($result === false) { throw new Exception(mysqli_stmt_error($stmt)); }
 
     $result = mysqli_stmt_execute($stmt);
