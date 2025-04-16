@@ -3,8 +3,6 @@
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
 
-  trigger_error(basename(__FILE__)); // debug
-
   // I as positionID am acknowledging that I have seen the card played by playerID.
   if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
     http_response_code(405); // Method Not Allowed
