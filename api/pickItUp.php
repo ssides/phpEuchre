@@ -59,7 +59,6 @@
 
     // Update CardFaceUp
     $sql = "update `Game` set `CardFaceUp` = ? where `ID` = ?";
-    if (!mysqli_begin_transaction($conn)) { throw new Exception(mysqli_error($conn)); }
 
     $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) { throw new Exception(mysqli_error($conn)); }
