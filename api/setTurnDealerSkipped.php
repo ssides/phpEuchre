@@ -36,8 +36,8 @@
     $dealer = '';
     $cardFaceUp = '';
     $sql = "select `Dealer`, `CardFaceUp` from `Game` where `ID` = ?";
-    $stmt = mysqli_prepare($connection, $sql);
-    if ($stmt === false) { throw new Exception(mysqli_error($connection)); }
+    $stmt = mysqli_prepare($conn, $sql);
+    if ($stmt === false) { throw new Exception(mysqli_error($conn)); }
 
     mysqli_stmt_bind_param($stmt, 's', $gameID);
     if (!mysqli_stmt_execute($stmt)) { throw new Exception(mysqli_stmt_error($stmt)); }
@@ -75,8 +75,8 @@
     $cardFaceUpModified = $cardID.'K'.substr($cardFaceUp,3);
     
     $sql = "update `Game` set `{$trumpColumn}` = ?, `CardFaceUp` = ?, `Turn` = ? where `ID` = ?";
-    $stmt = mysqli_prepare($connection, $sql);
-    if ($stmt === false) { throw new Exception(mysqli_error($connection)); }
+    $stmt = mysqli_prepare($conn, $sql);
+    if ($stmt === false) { throw new Exception(mysqli_error($conn)); }
 
     mysqli_stmt_bind_param($stmt, 'ssss', $trump, $cardFaceUpModified, $turn, $gameID);
     if (!mysqli_stmt_execute($stmt)) { throw new Exception(mysqli_stmt_error($stmt)); }
