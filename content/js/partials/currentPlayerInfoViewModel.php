@@ -220,7 +220,7 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             } else {
               var c = [];
 
@@ -248,11 +248,11 @@
               self.cards(c);
             }
           } catch (error) {
-            app.errorVM.add('Could not parse response from getMyCards. ' + error + ': ' + response);
+            console.log('Could not parse response from getMyCards. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -270,14 +270,14 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             }
           } catch (error) {
-            app.errorVM.add('Could not parse response from setNextTurn. ' + error + ': ' + response);
+            console.log('Could not parse response from setNextTurn. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -295,14 +295,14 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             }
           } catch (error) {
-            app.errorVM.add('Could not parse response from setNextTurn. ' + error + ': ' + response);
+            console.log('Could not parse response from setNextTurn. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -363,14 +363,14 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             }
           } catch (error) {
-            app.errorVM.add('Could not parse response from declineCard. ' + error + ': ' + response);
+            console.log('Could not parse response from declineCard. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -394,7 +394,7 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             } else {
               self.getMyCards();
               if (self.shouldAdvanceTurn()) {
@@ -403,11 +403,11 @@
               // when 4 cards have been played, the game controller will score the hand and set Lead and Turn.
             }
           } catch (error) {
-            app.errorVM.add('Could not parse response from playCard. ' + error + ': ' + response);
+            console.log('Could not parse response from playCard. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -428,14 +428,14 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             }
           } catch (error) {
-            app.errorVM.add('Could not parse response from pickItUp. ' + error + ': ' + response);
+            console.log('Could not parse response from pickItUp. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -454,16 +454,16 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             } else {
               self.getMyCards();
             }
           } catch (error) {
-            app.errorVM.add('Could not parse response from discardCard. ' + error + ': ' + response);
+            console.log('Could not parse response from discardCard. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };

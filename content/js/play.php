@@ -119,14 +119,14 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             }
           } catch(error) {
-            app.errorVM.add('Could not parse response from acknowledge. ' + error + ': ' + response);
+            console.log('Could not parse response from acknowledge. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -146,14 +146,14 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             }
           } catch(error) {
-            app.errorVM.add('Could not parse response from acknowledgeCard. ' + error + ': ' + response);
+            console.log('Could not parse response from acknowledgeCard. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -185,13 +185,13 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) 
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
           } catch(error) {
-            app.errorVM.add('Could not parse response from logHand. ' + error + ': ' + response);
+            console.log('Could not parse response from logHand. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -270,15 +270,15 @@
                 clearInterval(self.firstjackTimer);
               }
             } else if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             }
           } catch (error) {
-            app.errorVM.add('Could not parse response from getCurrentStartCard. ' + error + ': ' + response + ': Game stopped.');
+            console.log('Could not parse response from getCurrentStartCard. ' + error + ': ' + response + ': Game stopped.');
             clearInterval(self.firstjackTimer);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText + ': Game stopped.');
+          console.log(xhr.responseText + ': Game stopped.');
           clearInterval(self.firstjackTimer);
         }
       });
@@ -303,12 +303,12 @@
               self.firstjackOp.succeeded = true;
             }
           } catch (error) {
-            app.errorVM.add('Could not parse response from getNextStartCard. ' + error + ': ' + response);
+            console.log('Could not parse response from getNextStartCard. ' + error + ': ' + response);
             clearInterval(self.firstjackTimer);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
           clearInterval(self.firstjackTimer);
         }
       });
@@ -327,15 +327,15 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             } 
           } catch (error) {
-            app.errorVM.add('Could not parse response from deal. ' + error + ': ' + response + ': Game stopped.');
+            console.log('Could not parse response from deal. ' + error + ': ' + response + ': Game stopped.');
             clearInterval(self.heartbeatTimer);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText + ': Game stopped.');
+          console.log(xhr.responseText + ': Game stopped.');
           clearInterval(self.heartbeatTimer);
         }
       });
@@ -358,14 +358,14 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             } 
           } catch (error) {
-            app.errorVM.add('Could not parse response from setDealPosition. ' + error + ': ' + response);
+            console.log('Could not parse response from setDealPosition. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText + ': Game stopped.');
+          console.log(xhr.responseText + ': Game stopped.');
           clearInterval(self.heartbeatTimer);
         }
       });
@@ -387,11 +387,11 @@
         success: function(response){
           let data = JSON.parse(response);
           if (data.ErrorMsg) {
-            app.errorVM.add(data.ErrorMsg);
+            console.log(data.ErrorMsg);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText + ': Game stopped.');
+          console.log(xhr.responseText + ': Game stopped.');
           clearInterval(self.heartbeatTimer);
         }
       });
@@ -454,7 +454,7 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             } else {
               self.game = new gameModel(data.Game);
               if (self.game.GameEndDate) {
@@ -466,12 +466,12 @@
               }
             }
           } catch (error) {
-            app.errorVM.add('Error in getGame(): ' + error.message || error + ': Game stopped.');
+            console.log('Error in getGame(): ' + error.message || error + ': Game stopped.');
           }
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -486,15 +486,15 @@
           try {
             var data = JSON.parse(response);
             if (data.ErrorMsg) 
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
           } catch (error) {
-            app.errorVM.add('Error ' + ': ' + error.message || error + ': Game stopped.');
+            console.log('Error ' + ': ' + error.message || error + ': Game stopped.');
             console.log(error.stack);
             clearInterval(self.heartbeatTimer);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText + ': Game stopped.');
+          console.log(xhr.responseText + ': Game stopped.');
           clearInterval(self.heartbeatTimer);
         }
       });
@@ -520,15 +520,15 @@
           try {
             var data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             }
           } catch (error) {
-            app.errorVM.add('Error ' + ': ' + error.message || error);
+            console.log('Error ' + ': ' + error.message || error);
             console.log(error.stack);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -565,15 +565,15 @@
           try {
             var data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             }
           } catch (error) {
-            app.errorVM.add('Error ' + ': ' + error.message || error);
+            console.log('Error ' + ': ' + error.message || error);
             console.log(error.stack);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -587,15 +587,15 @@
           try {
             var data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             }
           } catch (error) {
-            app.errorVM.add('Error ' + ': ' + error.message || error);
+            console.log('Error ' + ': ' + error.message || error);
             console.log(error.stack);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -880,9 +880,6 @@
     ko.applyBindings(gc.bidDialogVM, $('#bidModal')[0]);
     ko.applyBindings(gc.finishGameDialogVM, $('#finishGameModal')[0]);
 
-    app.errorVM = new errorViewModel();
-    ko.applyBindings(app.errorVM, $('#ErrorInfo')[0]);
-    
     var soundVM = new soundViewModel();
     ko.applyBindings(soundVM, $('#SFESound')[0]);
   });
