@@ -4,7 +4,10 @@
   include('../controllers/isAuthenticated.php');
   include('../svc/getNextTurn.php');
 
- if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
+  trigger_error(basename(__FILE__)); // debug
+  
+
+  if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
     http_response_code(405); // Method Not Allowed
     echo json_encode(['ErrorMsg' => 'Expecting request method: POST']);
     exit;
