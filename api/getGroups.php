@@ -11,7 +11,7 @@
   $response = ['ErrorMsg' => ''];
   
   try {
-    $sql = "select `ID`,`Description` from `Group`";
+    $sql = "select `ID`,`Description` from `Group` g where g.`IsActive` = '1'";
     $stmt = mysqli_prepare($connection, $sql);
     if ($stmt === false) { throw new Exception(mysqli_error($connection)); }
 
