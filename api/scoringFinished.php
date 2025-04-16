@@ -40,6 +40,7 @@
 
     mysqli_stmt_close($stmt);
     
+    mysqli_commit($conn);
     http_response_code(200);
     echo json_encode($response);
 
