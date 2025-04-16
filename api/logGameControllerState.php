@@ -75,7 +75,7 @@
   } catch (Exception $e) {
     trigger_error($e->getMessage() . "\nStack trace: " . $e->getTraceAsString(), E_USER_ERROR);
     http_response_code(500); // Internal Server Error
-    echo json_encode(['ErrorMsg' => 'An error occurred while updating the game.']);
+    echo json_encode(['ErrorMsg' => 'An error occurred while logging the game state.']);
   }
 
   mysqli_close($conn);
