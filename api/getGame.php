@@ -63,6 +63,12 @@
       throw new Exception(mysqli_error($conn));
     }
 
+    // ACP, ACR, and ACL are set to 'A' when the associated player acknowledges (automatically) seeing the first Jack.  
+    // This is how game state is determined.  These columns are also used during play to make sure all players
+    // have seen the card played.
+
+    // PO, PP, PL, and PR are the cards each player has played in turn.
+
     $result = mysqli_stmt_get_result($stmt);
     while ($row = mysqli_fetch_assoc($result)) {
       $game = [
