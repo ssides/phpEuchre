@@ -3,8 +3,6 @@
   include_once('../config/config.php');
   include('../controllers/isAuthenticated.php');
 
-  trigger_error(basename(__FILE__)); // debug
-
   if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
     http_response_code(405); // Method Not Allowed
     echo json_encode(['ErrorMsg' => 'Expecting request method: POST']);
