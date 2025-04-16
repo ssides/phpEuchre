@@ -5,8 +5,6 @@
   include('../svc/getNextTurn.php');
   include('../svc/goingAlone.php');
 
-  trigger_error(basename(__FILE__)); // debug
-  
   // If someone ordered it up alone, skip that player's partner.
   // phpEuchre\api\chooseTrump.php has similar functionality, but those functions don't 
   // work in this context.
