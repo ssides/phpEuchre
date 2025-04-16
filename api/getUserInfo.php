@@ -4,6 +4,8 @@
   include('../controllers/isAuthenticated.php');
   include('../svc/getThumbnailURL.php');
 
+  trigger_error(basename(__FILE__)); // debug
+
   if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
     http_response_code(405); // Method Not Allowed
     echo 'Expecting request method: POST';
