@@ -59,7 +59,6 @@
     echo json_encode($response);
 
   } catch (Exception $e) {
-    mysqli_rollback($conn);
     trigger_error($e->getMessage() . "\nStack trace: " . $e->getTraceAsString(), E_USER_ERROR);
     http_response_code(500); // Internal Server Error
     $response['ErrorMsg'] = 'An error occurred while getting users.';
