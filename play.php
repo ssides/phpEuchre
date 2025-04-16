@@ -189,28 +189,6 @@
               </div>
             </td>
           </tr>
-          <tr>
-            <td colspan=3>
-              <div id="ErrorInfo">
-                <p class="d-inline-flex gap-1">
-                  <button class="btn btn-primary replay-xsm" type="button" data-bs-toggle="collapse" data-bs-target="#errorList" aria-expanded="false" aria-controls="errorList">
-                    Errors (<span data-bind="text: errorsCount"></span>)
-                  </button>
-                </p>
-                <div class="collapse" id="errorList">
-                  <div class="card card-body">
-                    <button class="btn btn-secondary replay-xsm" data-bind="click: clear, visible: errorsCount() > 0" type="button">Clear</button>
-
-                    <div data-bind='foreach: errors'>
-                      <div>
-                        <span data-bind="text: message"></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
         </table>
       </div>
     </div>
@@ -347,7 +325,6 @@
   include('content/js/partials/playViewModel.php');
   include('content/js/partials/bidDialogViewModel.php');
   include('content/js/partials/finishGameDialogViewModel.php');
-  include('content/js/partials/errorViewModel.php');
   include('content/js/partials/soundViewModel.php');
 
   include('content/js/play.php')

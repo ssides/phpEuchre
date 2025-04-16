@@ -39,16 +39,16 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             } else {
               self.submitted = true;
             }
           } catch (error) {
-            app.errorVM.add('Could not parse response from setNextTurn. ' + error + ': ' + response);
+            console.log('Could not parse response from setNextTurn. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };
@@ -68,16 +68,16 @@
           try {
             let data = JSON.parse(response);
             if (data.ErrorMsg) {
-              app.errorVM.add(data.ErrorMsg);
+              console.log(data.ErrorMsg);
             } else {
               self.submitted = true;
             }
           } catch (error) {
-            app.errorVM.add('Could not parse response from chooseTrump. ' + error + ': ' + response);
+            console.log('Could not parse response from chooseTrump. ' + error + ': ' + response);
           }
         },
         error: function (xhr, status, error) {
-          app.errorVM.add(xhr.responseText);
+          console.log(xhr.responseText);
         }
       });
     };

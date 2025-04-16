@@ -162,12 +162,11 @@
               self.rightInfoVM.updateName(data.Game.RThumbnailURL, data.Game.RName);
             }
           } catch (error) {
-            app.errorVM.add('Error in getGame(): ' + error.message || error + ': Game stopped.');
+            console.log('Error in getGame(): ' + error.message || error + ': Game stopped.');
           }
         },
         error: function (xhr, status, error) {
           console.log(xhr.responseText);
-          app.errorVM.add(xhr.responseText);
         }
       });
     };
