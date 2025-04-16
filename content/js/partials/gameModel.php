@@ -12,10 +12,10 @@
     this.CardFaceUp = data.CardFaceUp || '';
     this.OrganizerTrump = data.OrganizerTrump || '';
     this.OrganizerTricks = data.OrganizerTricks || '';
-    this.OrganizerScore = data.OrganizerScore || '';
+    this.OrganizerScore = data.OrganizerScore;
     this.OpponentTrump = data.OpponentTrump || '';
     this.OpponentTricks = data.OpponentTricks || '';
-    this.OpponentScore = data.OpponentScore || '';
+    this.OpponentScore = data.OpponentScore;
     this.PlayTo = data.PlayTo | '';
     this.ACO = data.ACO || '';
     this.ACP = data.ACP || '';
