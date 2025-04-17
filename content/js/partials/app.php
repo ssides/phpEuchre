@@ -85,7 +85,7 @@
     "KQD": '<?php echo $appUrl.$audioDir."KQD.mp3"; ?>',
     "KQH": '<?php echo $appUrl.$audioDir."KQH.mp3"; ?>',
     "KQS": '<?php echo $appUrl.$audioDir."KQS.mp3"; ?>',
-    "loaner": '<?php echo $appUrl.$audioDir."loaner.mp3"; ?>',
+    "loner": '<?php echo $appUrl.$audioDir."loner.mp3"; ?>',
     "shuffleQuiet": '<?php echo $appUrl.$audioDir."shuffleQuiet.mp3"; ?>',
     "cardplayed": '<?php echo $appUrl.$audioDir."cardplayed.mp3"; ?>',
     "U1C": '<?php echo $appUrl.$audioDir."U1C.mp3"; ?>',

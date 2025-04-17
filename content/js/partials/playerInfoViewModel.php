@@ -13,7 +13,7 @@
     self.isPlayersTurn = ko.observable(false);
     self.isPlayerSkipped = ko.observable(false);
     self.trumpURL = ko.observable('');
-    self.isLoaner = ko.observable(false);
+    self.isLoner = ko.observable(false);
     
     self.aSetThumbnailURL = [
       function(){},
@@ -39,7 +39,7 @@
       self.aSetThumbnailURL[self.ix](gameData);
     };
     
-    self.loanerPosition = function(partner) {
+    self.lonerPosition = function(partner) {
       var p = '';
       switch(partner) {
         case 'O': p = 'P'; break;
@@ -59,8 +59,8 @@
 
       self.isPlayersTurn(gameData.CardFaceUp[2] == 'U' ? (self.myPosition == gameData.Dealer ? true : false) : self.myPosition == gameData.Turn);
       self.isPlayerSkipped(gameData.CardFaceUp.length > 4 && self.myPosition == gameData.CardFaceUp[4]);
-      var p = self.loanerPosition(gameData.CardFaceUp[4]);
-      self.isLoaner(gameData.CardFaceUp.length > 4 && self.myPosition == self.loanerPosition(gameData.CardFaceUp[4]));
+      var p = self.lonerPosition(gameData.CardFaceUp[4]);
+      self.isLoner(gameData.CardFaceUp.length > 4 && self.myPosition == self.lonerPosition(gameData.CardFaceUp[4]));
       
       var trump = gameData.OrganizerTrump || gameData.OpponentTrump;
       
