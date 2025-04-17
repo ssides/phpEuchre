@@ -32,8 +32,8 @@
                 <div class="whatsTrumpContainer" data-bind="visible: trumpURL().length > 0">
                   <img class="whatsTrump" data-bind="attr: {src: trumpURL() }"/>
                 </div>
-                <div style="display:none;" data-bind="visible: isLoaner() ">
-                  <span class="loaner">Loaner</span>
+                <div style="display:none;" data-bind="visible: isLoner() ">
+                  <span class="loner">Loner</span>
                 </div>
               </div>
             </td>

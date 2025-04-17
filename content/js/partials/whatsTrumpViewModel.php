@@ -4,7 +4,7 @@
     var self = this;
 
     self.trumpURL = ko.observable('');
-    self.isLoaner = ko.observable(false);
+    self.isLoner = ko.observable(false);
     self.playOnce = [];
     self.playOnceLength = 0;
     
@@ -28,8 +28,8 @@
         }
       }
       
-      self.isLoaner(gameData.CardFaceUp.length == 5);
-      self.playLoanerSound(trump, "loaner");
+      self.isLoner(gameData.CardFaceUp.length == 5);
+      self.playLonerSound(trump, "loner");
       
       if (trump && gameData.CardFaceUp.length > 2 && gameData.CardFaceUp[2] != 'U' && gameData.CardFaceUp[2] != 'S') {
         self.playTrumpSound(trump);
@@ -43,11 +43,11 @@
       }
     };
 
-    self.playLoanerSound = function(trump, loaner){
-      if (trump && self.isLoaner()) {
-        if (!self.playOnce.includes(loaner)) {
-          self.playOnce.push(loaner);
-          app.soundQueue.push(app.sounds[loaner]);
+    self.playLonerSound = function(trump, loner){
+      if (trump && self.isLoner()) {
+        if (!self.playOnce.includes(loner)) {
+          self.playOnce.push(loner);
+          app.soundQueue.push(app.sounds[loner]);
         }
       }
     };

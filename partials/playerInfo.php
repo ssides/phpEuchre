@@ -6,7 +6,7 @@
           <img data-bind="attr: {src: thumbnailURL() }" style="height: 15px; width: 15px;" />
         </div>
       </td>
-      <td>&nbsp;<span data-bind="text: name, class: isLoaner() ? 'loaner' : ''"></span></td>
+      <td>&nbsp;<span data-bind="text: name, class: isLoner() ? 'loner' : ''"></span></td>
       <td>
         <div class="dealerBorder" data-bind="visible: dealer() != ' '">
           &nbsp;<span class="dealer" data-bind="text: dealer"></span>
