@@ -139,7 +139,6 @@
       if (!app.soundPlaying) {
         var timeDiff = Date.now() - app.deadSoundStartTime;
         if (timeDiff >= 5000) {
-          console.log("queue silence");
           app.soundQueue.push(app.sounds["silence"]); // warm up the play sound apparatus.
         }
       }
