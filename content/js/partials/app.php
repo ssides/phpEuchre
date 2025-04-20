@@ -29,6 +29,7 @@
     window.location.href = 'reports/replay-game-end.php';
   }
 
+  app.deadSoundStartTime = Date.now();
   app.soundQueue = [];
   app.soundPlaying = false;
   
@@ -112,35 +113,47 @@
     "UQD": '<?php echo $appUrl.$audioDir."UQD.mp3"; ?>',
     "UQH": '<?php echo $appUrl.$audioDir."UQH.mp3"; ?>',
     "UQS": '<?php echo $appUrl.$audioDir."UQS.mp3"; ?>',
-    "yourturn": '<?php echo $appUrl.$audioDir."yourturn.mp3"; ?>',
+    "yourturn": '<?php echo $appUrl.$audioDir."yourturn.mp3";        ?>',
+    "silence":  '<?php echo $appUrl.$audioDir."momentofsilence.mp3"; ?>'
   };
 
   app.soundPop = function() {
-    if (app.soundQueue.length > 0 && !app.soundPlaying) {
-      var audio = new Audio(app.soundQueue.pop());
-      app.soundPlaying = true;
-
-      // Handle the play() Promise
-      audio.play()
-        .then(() => {
-          // Playback started successfully
-          audio.addEventListener('ended', function() {
-          app.soundPlaying = false;
+    if (!app.soundPlaying) {
+      if (app.soundQueue.length > 0) {
+        var audio = new Audio(app.soundQueue.pop());
+        app.soundPlaying = true;
+        // Handle the play() Promise
+        audio.play()
+          .then(() => {
+            // Playback started successfully
+            audio.addEventListener('ended', function() {
+            app.soundPlaying = false;
+            app.deadSoundStartTime = Date.now();
+            });
+          })
+          .catch((error) => {
+          console.error("Audio playback failed:", error);
+          app.soundPlaying = false; // Reset flag on failure
           });
-        })
-        .catch((error) => {
-        console.error("Audio playback failed:", error);
-        app.soundPlaying = false; // Reset flag on failure
-        });
+      }
+      if (!app.soundPlaying) {
+        var timeDiff = Date.now() - app.deadSoundStartTime;
+        if (timeDiff >= 5000) {
+          console.log("queue silence");
+          app.soundQueue.push(app.sounds["silence"]); // warm up the play sound apparatus.
+        }
+      }
     }
   };
 
   app.soundMute = function(){
-    if (app.soundQueue.length > 0) {
-      app.soundQueue.pop();
-    }
+    app.soundQueue = [];
   };
   
+  // this is used by viewmodels that need to make sure a sound
+  // is played only once, but code is reentered multiple times
+  // in the same state.  todo: make sure there aren't multiple
+  // copies of this.
   app.playOnceRemove = function(a, i){
     const ix = a.indexOf(i);
     if (ix != -1) {

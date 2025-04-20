@@ -9,6 +9,8 @@
 
     self.toggleSound = function(){
       if (self.soundMute()) {
+        app.deadSoundStartTime = Date.now();
+        app.soundQueue.push(app.sounds["silence"]); // warm up the play sound apparatus.
         clearInterval(self.soundTimer);
         self.soundTimer = setInterval(app.soundPop, 100);
         self.soundMute(false);
