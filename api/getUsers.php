@@ -31,7 +31,7 @@
   }
 
   try {
-    $sql = "select p.`ID`, substr(`Name`, 1, 8) `Name`, u.`ThumbnailPath`
+    $sql = "select p.`ID`, `Name`, u.`ThumbnailPath`
         from `Player` p
         join `PlayerGroup` pg on p.`ID` = pg.`PlayerID` and pg.`GroupID` = ? and pg.`IsActive` = '1'
         left join `UserProfile` u on u.`PlayerID` = p.`ID`

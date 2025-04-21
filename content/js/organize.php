@@ -176,7 +176,7 @@
             console.log(data.ErrorMsg);
           }
           data.Users.forEach(function (i) {
-            self.users.push(new player(i[0], i[1], i[2]));
+            self.users.push(new player(i[0], i[1].substr(0,14), i[2]));
           });
         },
         error: function (xhr, status, error) {
