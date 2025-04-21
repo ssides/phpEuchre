@@ -113,8 +113,10 @@
     "UQD": '<?php echo $appUrl.$audioDir."UQD.mp3"; ?>',
     "UQH": '<?php echo $appUrl.$audioDir."UQH.mp3"; ?>',
     "UQS": '<?php echo $appUrl.$audioDir."UQS.mp3"; ?>',
-    "yourturn": '<?php echo $appUrl.$audioDir."yourturn.mp3";        ?>',
-    "silence":  '<?php echo $appUrl.$audioDir."momentofsilence.mp3"; ?>'
+    "yourturn": '<?php echo $appUrl.$audioDir."yourturn.mp3"; ?>',
+    "silence": '<?php echo $appUrl.$audioDir."momentofsilence.mp3"; ?>',
+    "gamewinner": '<?php echo $appUrl.$audioDir."gamewinner.mp3"; ?>',
+    "gameloser": '<?php echo $appUrl.$audioDir."gameloser.mp3"; ?>',
   };
 
   app.soundPop = function() {
@@ -125,7 +127,7 @@
         // Handle the play() Promise
         audio.play()
           .then(() => {
-            // Playback started successfully
+            // Play started successfully
             audio.addEventListener('ended', function() {
             app.soundPlaying = false;
             app.deadSoundStartTime = Date.now();
@@ -133,7 +135,7 @@
           })
           .catch((error) => {
           console.error("Audio playback failed:", error);
-          app.soundPlaying = false; // Reset flag on failure
+          app.soundPlaying = false;
           });
       }
       if (!app.soundPlaying) {
@@ -146,19 +148,9 @@
   };
 
   app.soundMute = function(){
-    app.soundQueue = [];
-  };
-  
-  // this is used by viewmodels that need to make sure a sound
-  // is played only once, but code is reentered multiple times
-  // in the same state.  todo: make sure there aren't multiple
-  // copies of this.
-  app.playOnceRemove = function(a, i){
-    const ix = a.indexOf(i);
-    if (ix != -1) {
-      a.splice(ix, 1);
+    if (app.soundQueue.length > 0) {
+      app.soundQueue = [];
     }
   };
-
   
 </script>

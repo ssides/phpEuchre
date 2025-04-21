@@ -613,6 +613,7 @@
       self.playerInfoVM.initialize(self.position, self.game);
       self.myScoreVM.initialize('M', self.position, self.game);
       self.opponentScoreVM.initialize('O', self.position, self.game);
+      self.finishGameDialogVM.initialize(self.position);
       
       if (self.game.Dealer) {
         // the dealer has been determined
