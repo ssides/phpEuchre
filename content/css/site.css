@@ -423,6 +423,11 @@ table.dbgTable td {
   border-radius: .1rem;
 }
 
+.select-user-xsm {
+  font-size: .7rem;
+  width: 100px;
+}
+
 .buttonSize {
   font-size: .7rem;
   white-space: nowrap;

@@ -42,7 +42,7 @@
             <td>
               <div class="org-border">
                 <span>Partner</span><br />
-                <select data-bind="visible: !partnerInvited(), options: users, optionsText: 'name', value: selectedPartner, optionsCaption:'Select'"></select>
+                <select class="select-user-xsm" data-bind="visible: !partnerInvited(), options: users, optionsText: 'name', value: selectedPartner, optionsCaption:'Select'"></select>
                 <div data-bind="visible: partnerInvited">
                   <table>
                     <tr>
@@ -64,7 +64,7 @@
             <td>
               <div class="org-border">
                 <span>Opponent Left</span><br />
-                <select data-bind="visible: !leftInvited(), options: users, optionsText: 'name', value: selectedLeft, optionsCaption:'Select'"></select>
+                <select class="select-user-xsm" data-bind="visible: !leftInvited(), options: users, optionsText: 'name', value: selectedLeft, optionsCaption:'Select'"></select>
                 <div data-bind="visible: leftInvited">
                   <table>
                     <tr>
@@ -84,7 +84,7 @@
             <td>
               <div class="org-border">
                 <span>Opponent Right</span><br />
-                <select data-bind="visible: !rightInvited(), options: users, optionsText: 'name', value: selectedRight, optionsCaption:'Select'"></select>
+                <select class="select-user-xsm" data-bind="visible: !rightInvited(), options: users, optionsText: 'name', value: selectedRight, optionsCaption:'Select'"></select>
                 <div data-bind="visible: rightInvited">
                   <table>
                     <tr>
@@ -119,7 +119,7 @@
             <table>
               <tr>
                 <td><label for="playTo">Play to:&nbsp;&nbsp;</label></td>
-                <td style="width: 54px"><input id="playTo" name="playTo" type="number" data-bind="value: playTo" style="width:50px" max="20" min="1"></td>
+                <td style="width: 54px"><input id="playTo" name="playTo" type="number" data-bind="value: playTo" style="width:60px" max="20" min="1"></td>
                 <td></td>
               </tr>
               <tr>
