@@ -3,58 +3,80 @@
   include_once('../../config/config.php');
   include('../../controllers/isAuthenticated.php');
   
-  if($_SERVER["REQUEST_METHOD"] === 'POST') {
-    if (isset($_POST['r']) && isAuthenticated($_POST['r'])) {
-      $games = array();
-      $log = array();
-      $gameID = $_POST['gameID'];
+  if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
+    http_response_code(405); // Method Not Allowed
+    echo 'Expecting request method: POST';
+    exit;
+  }
 
-      $sql = "select `DealID`,`PlayerID`,`GameControllerState`,`InsertDate`,`Message`,`OpponentScore`,`OpponentTricks`,`OrganizerScore`,`OrganizerTricks`,`PositionID`,`Dealer`,`Turn`,`CardFaceUp`,`ACO`,`ACP`,`ACL`,`ACR`,`PO`,`PP`,`PL`,`PR`
-        from `GameControllerLog` 
-        where `GameID`='{$gameID}' order by `InsertDate`";
-
-      $results = mysqli_query($connection, $sql);
-      if ($results === false) {
-        $games['ErrorMsg'] = mysqli_error($connection);
-      } else {
-        while ($row = mysqli_fetch_array($results)) {
-          $r = array();
-          $r['OrganizerScore'] = $row['OrganizerScore'];
-          $r['OpponentScore'] = $row['OpponentScore'];
-          $r['OrganizerTricks'] = $row['OrganizerTricks'];
-          $r['OpponentTricks'] = $row['OpponentTricks'];
-          $r['DealID'] = is_null($row['DealID']) ? '' : $row['DealID'];
-          $r['PlayerID'] = $row['PlayerID'];
-          $r['GameControllerState'] = $row['GameControllerState'];
-          $r['InsertDate'] = $row['InsertDate'];
-          $r['Message'] = is_null($row['Message']) ? '' : $row['Message'];
-          $r['PositionID'] = $row['PositionID'];
-          $r['Dealer'] = is_null($row['Dealer']) ? '' : $row['Dealer'];
-          $r['Turn'] = is_null($row['Turn']) ? '' : $row['Turn'];
-          $r['CardFaceUp'] = is_null($row['CardFaceUp']) ? '' : $row['CardFaceUp'];
-          $r['ACO'] = is_null($row['ACO']) ? '' : $row['ACO'];
-          $r['ACP'] = is_null($row['ACP']) ? '' : $row['ACP'];
-          $r['ACL'] = is_null($row['ACL']) ? '' : $row['ACL'];
-          $r['ACR'] = is_null($row['ACR']) ? '' : $row['ACR'];
-          $r['PO'] = is_null($row['PO']) ? '' : $row['PO'];
-          $r['PP'] = is_null($row['PP']) ? '' : $row['PP'];
-          $r['PL'] = is_null($row['PL']) ? '' : $row['PL'];
-          $r['PR'] = is_null($row['PR']) ? '' : $row['PR'];
-          
-          array_push($log, $r);
-        }
-      }
-
-      $games['Log'] = $log;
-      
-      http_response_code(200);
-      echo json_encode($games);
-
-    } else {
-      echo "ID invalid or missing.";
-    }
-  } else {
-    echo "Expecting request method: POST";
+  if (!isset($_POST['r']) || !isAuthenticated($_POST['r']) || !isset($_POST['gameID'])) {
+    http_response_code(400); // Bad Request
+    echo 'Missing or invalid authentication or gameID';
+    exit;
   }
   
+  $gameID = $_POST['gameID'];
+  $games = [];
+  $log = [];
+  
+  mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+  $conn = mysqli_connect($hostname, $username, $password, $dbname);
+  if (!$conn) {
+    trigger_error("Database connection failed: " . mysqli_connect_error(), E_USER_ERROR);
+    http_response_code(500);
+    echo "Internal server error.";
+    exit;
+  }
+
+  try {
+    $stmt = mysqli_prepare($conn, "select `DealID`, `PlayerID`, `GameControllerState`, `InsertDate`, `Message`, `OpponentScore`, `OpponentTricks`, `OrganizerScore`, `OrganizerTricks`, `PositionID`, `Dealer`, `Turn`, `CardFaceUp`, `ACO`, `ACP`, `ACL`, `ACR`, `PO`, `PP`, `PL`, `PR`
+      from `GameControllerLog` 
+      where `GameID` = ? 
+      order by `InsertDate`");
+      
+    mysqli_stmt_bind_param($stmt, "s", $gameID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_assoc($result)) {
+      $r = [
+        'OrganizerScore' => $row['OrganizerScore'],
+        'OpponentScore' => $row['OpponentScore'],
+        'OrganizerTricks' => $row['OrganizerTricks'],
+        'OpponentTricks' => $row['OpponentTricks'],
+        'DealID' => $row['DealID'] ?? '',
+        'PlayerID' => $row['PlayerID'],
+        'GameControllerState' => $row['GameControllerState'],
+        'InsertDate' => $row['InsertDate'],
+        'Message' => $row['Message'] ?? '',
+        'PositionID' => $row['PositionID'],
+        'Dealer' => $row['Dealer'] ?? '' ,
+        'Turn' => $row['Turn'] ?? '' ,
+        'CardFaceUp' => $row['CardFaceUp'] ?? '' ,
+        'ACO' => $row['ACO'] ?? '' ,
+        'ACP' => $row['ACP'] ?? '' ,
+        'ACL' => $row['ACL'] ?? '' ,
+        'ACR' => $row['ACR'] ?? '' ,
+        'PO' => $row['PO'] ?? '' ,
+        'PP' => $row['PP'] ?? '' ,
+        'PL' => $row['PL'] ?? '' ,
+        'PR' => $row['PR'] ?? '' ,
+      ];
+      $log[] = $r;
+    }
+    
+    $games['Log'] = $log;
+    
+    http_response_code(200);
+    echo json_encode($games);
+
+    mysqli_stmt_close($stmt);
+    
+  } catch (Exception $e) {
+    trigger_error($e->getMessage() . "\nStack trace: " . $e->getTraceAsString(), E_USER_ERROR);
+    http_response_code(500); // Internal Server Error
+    echo 'An error occurred while getting game data.';
+  }
+  
+  mysqli_close($conn);
+
 ?>
