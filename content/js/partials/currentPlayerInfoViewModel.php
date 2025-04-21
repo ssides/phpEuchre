@@ -688,6 +688,17 @@
       event.preventDefault();
     };
 
+    // self.update() is called potentially multiple times while
+    // it's your turn, but the yourturn sound should only play once.
+    // Different viewmodels require different approaches to solve
+    // this same problem.
+    self.playOnceRemove = function(a, i){
+      const ix = a.indexOf(i);
+      if (ix != -1) {
+        a.splice(ix, 1);
+      }
+    };
+
     self.playMyTurnSound = function(ismyturn, yt){
       if (ismyturn) {
         if (!self.playOnce.includes(yt)) {
@@ -695,7 +706,7 @@
           app.soundQueue.push(app.sounds[yt]);
         }
       } else {
-        app.playOnceRemove(self.playOnce, yt);
+        self.playOnceRemove(self.playOnce, yt);
       }
     };
     
