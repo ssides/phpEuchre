@@ -29,13 +29,16 @@
         success: function (response) {
           try {
             let data = JSON.parse(response);
-            if (data.length > 0) {
+            debugger;
+            if (data.ErrorMsg) {
+              console.log(data.ErrorMsg);
+            } else {
               var g = [];
-              data.forEach(function(i){
+              data.Games.forEach(function(i){
                 g.push(new game(i));
               });
               self.games(g);
-            }
+            } 
           } catch (error) {
             console.log('Error ' + ': ' + error.message || error);
             console.log(error.stack);

@@ -16,19 +16,13 @@
   }
   
   $gameID = $_POST['gameID'];
-  $games = [];
+  $response = [];
   $log = [];
   
-  mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-  $conn = mysqli_connect($hostname, $username, $password, $dbname);
-  if (!$conn) {
-    trigger_error("Database connection failed: " . mysqli_connect_error(), E_USER_ERROR);
-    http_response_code(500);
-    echo "Internal server error.";
-    exit;
-  }
-
   try {
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    $conn = mysqli_connect($hostname, $username, $password, $dbname);
+
     $stmt = mysqli_prepare($conn, "select `DealID`, `PlayerID`, `GameControllerState`, `InsertDate`, `Message`, `OpponentScore`, `OpponentTricks`, `OrganizerScore`, `OrganizerTricks`, `PositionID`, `Dealer`, `Turn`, `CardFaceUp`, `ACO`, `ACP`, `ACL`, `ACR`, `PO`, `PP`, `PL`, `PR`
       from `GameControllerLog` 
       where `GameID` = ? 
@@ -64,12 +58,13 @@
       $log[] = $r;
     }
     
-    $games['Log'] = $log;
+    $response['Log'] = $log;
     
     http_response_code(200);
-    echo json_encode($games);
+    echo json_encode($response);
 
     mysqli_stmt_close($stmt);
+    mysqli_close($conn);
     
   } catch (Exception $e) {
     trigger_error($e->getMessage() . "\nStack trace: " . $e->getTraceAsString(), E_USER_ERROR);
@@ -77,6 +72,5 @@
     echo 'An error occurred while getting game data.';
   }
   
-  mysqli_close($conn);
 
 ?>
