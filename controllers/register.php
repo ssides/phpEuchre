@@ -4,8 +4,8 @@
   
   if(isset($_POST["submit"])) {
 
-      $name            = $_POST["name"];
-      $password        = $_POST["password"];
+      $name = $_POST["name"];
+      $password = $_POST["password"];
       $confirmpassword = $_POST["confirmpassword"];
       
       $_name = mysqli_real_escape_string($connection, $name);

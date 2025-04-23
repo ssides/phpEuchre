@@ -92,6 +92,4 @@
     echo json_encode(['ErrorMsg' => 'An error occurred while getting game data.']);
   }
 
-
-
 ?>

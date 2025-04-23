@@ -29,7 +29,6 @@
         success: function (response) {
           try {
             let data = JSON.parse(response);
-            debugger;
             if (data.ErrorMsg) {
               console.log(data.ErrorMsg);
             } else {
