@@ -6,7 +6,6 @@
   
 <?php 
   $userIsAuthenticated = isAppAuthenticated(); 
-  $isManager = isManager($$a['r'], $$a['k']);
 ?>
 
   <nav class="navbar navbar-expand navbar-dark bg-primary fixed-top text-nowrap">
@@ -35,7 +34,7 @@
             <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">
               <?php echo '<a class="nav-link" href="setProfile.php">Profile</a>'; ?>
             </li>
-            <li class="nav-item <?php echo (!$userIsAuthenticated || !$isManager) ? "hide" : ""; ?>">
+            <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">
               <?php echo '<a class="nav-link" href="manageGroups.php">Groups</a>'; ?>
             </li>
             <li class="nav-item <?php echo (!$userIsAuthenticated) ? "hide" : ""; ?>">

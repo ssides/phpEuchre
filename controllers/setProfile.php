@@ -77,15 +77,6 @@
         updateThumbnail($$a['r'], $userProfile);
       } else if(isset($_POST['close'])) {
         header('Location: dashboard.php');
-      } else if(isset($_POST['joinrequest'])) {
-        $controllerError = is_null($connection) ? "No connection. " : "";
-        $group_description  = $_POST['group_description'];
-        $group_id  = $_POST['group_id'];
-        if (empty($group_description) && empty($group_id)) {
-          $controllerError .= "No group selected.";
-        } else {
-          sendJoinRequest($$a['r'], $group_id);
-        }
       }
     }
     
@@ -104,22 +95,6 @@
         return $thumbnailDim / $width;
       } else {
         return $thumbnailDim / $height;
-      }
-    }
-    
-    function sendJoinRequest($pid, $gid) {
-      global $controllerError, $hostname, $username, $password, $dbname;
-      
-      try {
-        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-        $conn = mysqli_connect($hostname, $username, $password, $dbname);
-
-        $smt = mysqli_prepare($conn, "insert into `GroupRequest` (`ID`,`PlayerID`,`GroupID`,`IsActive`,`InsertDate`) values (?, ?, ?, 'R', now())");
-        mysqli_stmt_bind_param($smt, 'sss', GUID(), $pid, $gid);
-        mysqli_stmt_execute($smt);
-        mysqli_stmt_close($smt);
-      } catch (Exception $e) {
-        $controllerError .= $e->getMessage();
       }
     }
 ?>

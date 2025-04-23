@@ -116,29 +116,6 @@
         </div>
         <?php endif; ?>
         
-        </br>
-        <div class="container border">
-          <div class="row">
-            <form action="" method="post">
-              <table class="profilePadding"> 
-                <tr>
-                  <td><label for="selectgroup">Group Name</label></td>
-                  <td>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td>                
-                    <select id="selectgroup" name="selectgroup" data-bind="options: groups, optionsText: 'description', value: selectedGroup, optionsCaption:'Select'"></select>
-                      <input type="hidden" data-bind="value: selectedGroup() ? selectedGroup().description : ''" id="group_description" name="group_description" />
-                      <input type="hidden" data-bind="value: selectedGroup() ? selectedGroup().id : ''" id="group_id" name="group_id" />
-                  </td>
-                  <td class="profileTablePadding">
-                    <button type="submit" name="joinrequest" id="joinrequest" class="btn btn-outline-primary btn-sm btn-block">Request to Join</button>
-                  </td>
-                </tr>
-              </table>
-            </form>
-          </div>
-        </div>
       </div>
     </div>
   </div>
