@@ -48,7 +48,7 @@
       pd.playerID = playerID;
       $.ajax({
         method: 'POST',
-        url: 'api/serviceJoinRequest.php',
+        url: 'api/groups/serviceJoinRequest.php',
         data: pd,
         success: function (response) {
           self.isJoinRequestError(false);
@@ -80,7 +80,7 @@
       pd.groupID = this.groupID;
       $.ajax({
         method: 'POST',
-        url: 'api/sendJoinRequest.php',
+        url: 'api/groups/sendJoinRequest.php',
         data: pd,
         success: function (response) {
           let data = JSON.parse(response);
@@ -104,7 +104,7 @@
       Object.assign(pd, app.apiPostData);
       $.ajax({
         method: 'POST',
-        url: 'api/getGroupsIBelongTo.php',
+        url: 'api/groups/getGroupsIBelongTo.php',
         data: pd,
         success: function(response) {
           let data = JSON.parse(response);
@@ -126,7 +126,7 @@
       Object.assign(pd, app.apiPostData);
       $.ajax({
         method: 'POST',
-        url: 'api/getGroupsIMightWantToJoin.php',
+        url: 'api/groups/getGroupsIMightWantToJoin.php',
         data: pd,
         success: function(response) {
           let data = JSON.parse(response);
@@ -138,7 +138,7 @@
         },
         error: function(xhr, status, error){
           self.isRequestSentError(true);
-          self.requestSentMessage(error);
+          self.requestSentMessage(xhr.responseText);
         }
       });
     };
@@ -149,7 +149,7 @@
       pd.groupName = self.groupName();
       $.ajax({
         method: 'POST',
-        url: 'api/createGroup.php',
+        url: 'api/groups/createGroup.php',
         data: pd,
         success: function(response) {
           let data = JSON.parse(response);

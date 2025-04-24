@@ -1,6 +1,6 @@
 <?php 
-  include_once('../config/db.php');
-  include_once('../config/config.php');
+  include_once('../../config/db.php');
+  include_once('../../config/config.php');
   
   if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
     http_response_code(405); // Method Not Allowed

@@ -1,7 +1,10 @@
 <?php 
-  include_once('../config/db.php');
-  include_once('../config/config.php');
-  include('../controllers/isAuthenticated.php');
+  include_once('../../config/db.php');
+  include_once('../../config/config.php');
+  include('../../controllers/isAuthenticated.php');
+  include('../../svc/thumbnailServices.php');
+  include('../../svc/getThumbnailURL.php');
+  include('../../svc/services.php'); // for GUID
 
   if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
     http_response_code(405); // Method Not Allowed
@@ -16,38 +19,23 @@
   }
   
   $response = ['ErrorMsg' => ''];
-  $response['Groups'] = [];
   $playerID = $_POST['r'];
   
   try {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
 
-    $sql = "select g.`Description`, g.`ManagerID`
-      from `Group` g
-      join `PlayerGroup` pg on g.`ID` = pg.`GroupID` and pg.`PlayerID` = ?
-      where g.`IsActive` = '1' and pg.`IsActive` = '1'
-      order by g.`Description`";
-      
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "s", $playerID);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    
-    while ($row = mysqli_fetch_assoc($result)) {
-      $response['Groups'][] = [
-        'Description' => $row['Description'],
-        'IsManager' => $row['ManagerID'] == $playerID ? 1 : 0
-        ];
-    }
-
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
+    $summary = getUserProfileSummary($conn, $playerID);
+    $fivepct = $summary['displayScale'] * 0.05;
+    $summary['displayScale'] += $fivepct;
+    updateThumbnail($conn, $playerID, $summary);
 
     http_response_code(200);
     echo json_encode($response);
+    mysqli_close($conn);
 
   } catch (Exception $e) {
+    if (isset($conn) && $conn) { mysqli_close($conn); }
     trigger_error($e->getMessage() . "\nStack trace: " . $e->getTraceAsString(), E_USER_ERROR);
     http_response_code(500); // Internal Server Error
     echo json_encode(['ErrorMsg' => 'An error occurred while creating the group.']);
