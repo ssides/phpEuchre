@@ -4,7 +4,7 @@
   $reportsUrl = $appUrl.'reports/';
   $cookieName = 'sidesEuchre1';
   $thumbnailDim = 25;
-  $positionDistance = 3;
+  $positionDistance = 3;  // used by setProfile when adjusting the profile image.
   // the images folder must be called images and it must be in root.
   $uploadsDir = '/var/www/html/phpEuchre/images/';
   $audioDir = 'audio/';
@@ -13,6 +13,6 @@
   $dealChoices = 12000;
   $gameControllerLog = true;
   $clearTableDelay = 2;
-  $version = '1.10.2:11';
+  $version = '1.10.2:12';
   $$a = array();
 ?>

@@ -539,3 +539,11 @@ table.dbgTable td {
   width: 20px; 
   height: 20px;
 }
+
+.replayScoreBorder {
+  font-size: .6rem;
+  border: 1px solid #b9bdf6;
+  padding: 6px;
+  border-radius: 5px;
+  background: #f0fae3;
+}
