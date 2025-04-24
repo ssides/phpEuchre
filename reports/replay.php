@@ -22,8 +22,6 @@
       <?php include('header.php'); ?>
     </div>
     <div class="card-body">
-      <div style="height: 58px">&nbsp;</div>
-
       <div class="App" >
         <div class="vertical-center" >
           <div class="inner-block justify-content-center replayWidth">
@@ -43,7 +41,7 @@
                 </td>
                 <td>
                   <div id="OpponentScore" class="score">
-                    <div class="scoreBorder">
+                    <div class="replayScoreBorder">
                       <?php include('../partials/reports/replay/score.php'); ?>
                     </div>
                   </div>
@@ -118,7 +116,7 @@
               <tr>
                 <td>
                   <div id="OrganizerScore" class="score">
-                    <div class="scoreBorder">
+                    <div class="replayScoreBorder">
                       <?php include('../partials/reports/replay/score.php'); ?>
                     </div>
                   </div>

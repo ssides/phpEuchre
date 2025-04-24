@@ -17,9 +17,9 @@
     
     self.updateScore = function(hand) {
       if (self.label() == "Organizer") {
-        self.score(hand.organizerScore);
+        self.score(hand.organizerScore ? hand.organizerScore : 0);
       } else {
-        self.score(hand.opponentScore);
+        self.score(hand.opponentScore ? hand.opponentScore : 0);
       }
     }
     
