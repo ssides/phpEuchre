@@ -87,6 +87,7 @@
     mysqli_close($conn);
     
   } catch (Exception $e) {
+    if (isset($conn) && $conn) { mysqli_close($conn); }
     trigger_error($e->getMessage() . "\nStack trace: " . $e->getTraceAsString(), E_USER_ERROR);
     http_response_code(500); // Internal Server Error
     echo json_encode(['ErrorMsg' => 'An error occurred while getting game data.']);

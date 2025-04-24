@@ -3,7 +3,6 @@
   include_once('config/config.php');
   require('authorize.php'); 
   include('controllers/dashboard.php'); 
-  include_once('svc/group.php');
 ?>
 
 <!doctype html>

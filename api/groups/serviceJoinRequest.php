@@ -1,8 +1,8 @@
 <?php 
-  include_once('../config/db.php');
-  include_once('../config/config.php');
-  include('../controllers/isAuthenticated.php');
-  include('../svc/services.php');
+  include_once('../../config/db.php');
+  include_once('../../config/config.php');
+  include('../../controllers/isAuthenticated.php');
+  include('../../svc/services.php');
 
   if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
     http_response_code(405); // Method Not Allowed

@@ -4,7 +4,7 @@
   $reportsUrl = $appUrl.'reports/';
   $cookieName = 'sidesLocalEuchre1';
   $thumbnailDim = 25;
-  $positionDistance = 3;
+  $positionDistance = 3; // used when adjusting profile image
   // the images folder must be called images and it must be in root.
   $uploadsDir = 'C:/src/phpEuchre/images/';
   $audioDir = 'audio/';

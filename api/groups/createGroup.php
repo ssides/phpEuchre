@@ -1,8 +1,8 @@
 <?php 
-  include_once('../config/db.php');
-  include_once('../config/config.php');
-  include('../controllers/isAuthenticated.php');
-  include('../svc/services.php'); // for GUID
+  include_once('../../config/db.php');
+  include_once('../../config/config.php');
+  include('../../controllers/isAuthenticated.php');
+  include('../../svc/services.php'); // for GUID
 
   // I as positionID am acknowledging that I have seen the card played by playerID.
   if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
@@ -20,6 +20,7 @@
   $response = ['ErrorMsg' => ''];
   $groupName = $_POST['groupName'];
   $playerID = $_POST['r'];
+  
   
   try {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -42,7 +43,10 @@
     mysqli_close($conn);
 
   } catch (Exception $e) {
-    mysqli_rollback($conn);
+    if (isset($conn) && $conn) {
+        mysqli_rollback($conn);
+        mysqli_close($conn);
+    }
     trigger_error($e->getMessage() . "\nStack trace: " . $e->getTraceAsString(), E_USER_ERROR);
     http_response_code(500); // Internal Server Error
     echo json_encode(['ErrorMsg' => 'An error occurred while creating the group.']);

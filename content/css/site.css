@@ -526,3 +526,16 @@ table.dbgTable td {
   padding: 4px;
 }
 
+.profileText {
+  font-size: .8rem;
+  padding-left: 20px;
+}
+
+.profileButtonText {
+  font-size: .75rem;
+}
+
+.profileArrowSize {
+  width: 20px; 
+  height: 20px;
+}

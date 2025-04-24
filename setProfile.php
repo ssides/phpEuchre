@@ -1,8 +1,10 @@
 <?php
   include_once('config/db.php');
   include_once('config/config.php');
-  require('authorize.php'); 
-  include('controllers/setProfile.php'); ?><!doctype html>
+  require('authorize.php');
+  include('controllers/setProfile.php');
+?>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -25,101 +27,81 @@
   <div class="App">
     <div class="vertical-center">
       <div class="inner-block">
-      
-        <div class="row">
-          <div class = "col-12">
-            <form class="float-end" action="" method="post">
-              <button type="submit" class="btn-close" aria-label="Close" name="close" id="close"></button>
-            </form>
-          </div>
-        </div>
-        
+
         <div class="alert alert-danger" style="display:none" data-bind="visible: errorMessage().length > 0" >
           <div data-bind="text: errorMessage"></div>
         </div>
-        
-        <?php if(empty($thumbnailPath)): ?>
-        <form action="" method="post" enctype="multipart/form-data">
-          <div class="mb-3 profilePadding">
-            <label for="profileImage" class="form-label">Profile Image</label>
-            <input class="form-control" type="file" id="profileImage" name="profileImage">
-          </div>
-          <button type="submit" name="upload" id="upload" class="btn btn-outline-primary btn-lg btn-block">Upload</button>
-        </form>
-        <?php else: ?>
-        <div class="row">
-          <div class="col-md-12">
+        <div class="row" style="display: none;" data-bind="visible: thumbnailurl().length > 0">
+          <div class="row col-12">
             <table>
+              <tr>
+                <td colspan="5" style="padding: 20px;">
+                  <span class="profileText">Use the buttons to make adjustments to your profile picture.</span>
+                </td>
+              </tr>
               <tr>
                 <td></td>
                 <td class="userProfileCell">
-
-                  <form action="" method="post">
-                    <button type="submit" name="up" id="up" class="btn btn-outline-primary btn-sm btn-block">
-                      <div class="bi bi-arrow-up"></div>
-                    </button>
-                  </form>
-
+                  <button type="button" name="up" id="up" class="btn btn-outline-primary btn-sm btn-block" data-bind="click: up">
+                    <img class="profileArrowSize" src="<?php echo $appUrl.'content/images/profile/up.png'; ?>" alt="Up Arrow">
+                  </button>
                 </td>
                 <td></td>
                 <td rowspan="3">
-                  <form action="" method="post" title="Zoom In">
-                    <button type="submit" name="zoomin" id="zoomin" class="btn btn-outline-primary btn-sm btn-block" style="width: 30px;">+</button>
-                  </form>
-                  <form action="" method="post" title="Zoom Out">
-                    <button type="submit" name="zoomout" id="zoomout" class="btn btn-outline-primary btn-sm btn-block" style="width: 30px;">-</button>
-                  </form>
+                  <button type="button" name="zoomin" id="zoomin" class="btn btn-outline-primary btn-sm btn-block" style="width: 30px;" data-bind="click: zoomin">+</button>
+                  <button type="button" name="zoomout" id="zoomout" class="btn btn-outline-primary btn-sm btn-block" style="width: 30px;" data-bind="click: zoomout">-</button>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <form action="" method="post">
-                    <button type="submit" name="left" id="left" class="btn btn-outline-primary btn-sm btn-block">
-                      <div class="bi bi-arrow-left"></div>
-                    </button>
-                  </form>
+                  <button type="button" name="left" id="left" class="btn btn-outline-primary btn-sm btn-block float-end" data-bind="click: left">
+                    <img class="profileArrowSize" src="<?php echo $appUrl.'content/images/profile/left.png'; ?>" alt="Left Arrow">
+                  </button>
                 </td>
                 <td class="userProfileCell">
-                  <img src="./thumbnail.php?r=<?php echo mt_rand(0, 65535) ?>" alt="Thumbnail">
+                  <img data-bind="attr: {src: thumbnailurl() }" />
                 </td>
                 <td>
-                  <form action="" method="post">
-                    <button type="submit" name="right" id="right" class="btn btn-outline-primary btn-sm btn-block">
-                      <div class="bi bi-arrow-right"></div>
-                    </button>
-                  </form>
+                  <button type="button" name="right" id="right" class="btn btn-outline-primary btn-sm btn-block" data-bind="click: right">
+                    <img class="profileArrowSize" src="<?php echo $appUrl.'content/images/profile/right.png'; ?>" alt="Right Arrow">
+                  </button>
                 </td>
                 <td></td>
               </tr>
               <tr>
                 <td></td>
                 <td class="userProfileCell">
-                  <form action="" method="post">
-                    <button type="submit" name="down" id="down" class="btn btn-outline-primary btn-sm btn-block">
-                      <div class="bi bi-arrow-down"></div>
-                    </button>
-                  </form>
+                  <button type="button" name="down" id="down" class="btn btn-outline-primary btn-sm btn-block" data-bind="click: down">
+                    <img class="profileArrowSize" src="<?php echo $appUrl.'content/images/profile/down.png'; ?>" alt="Down Arrow">
+                  </button>
                 </td>
                 <td>
                 </td>
-                <td></td>
+                <td>
+                  <button type="button" name="change" id="change" class="btn btn-outline-primary btn-sm btn-block profileButtonText" data-bind="click: change">Change Picture</button>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="5" style="padding: 10px;">&nbsp;</td>
               </tr>
             </table>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-4">
-            <form class="vpad" action="" method="post">
-              <button type="submit" name="change" id="change" class="btn btn-outline-primary btn-sm btn-block">Change Picture</button>
+        <div class="row" style="display: none;" data-bind="visible: thumbnailurl().length == 0 && pageReady()">
+          <div class="row col-12">
+            <form action="" method="post" enctype="multipart/form-data">
+              <div class="mb-3 profilePadding">
+                <label for="profileImage" class="form-label">Profile Image</label>
+                <input class="form-control" type="file" id="profileImage" name="profileImage">
+              </div>
+              <button type="submit" name="upload" id="upload" class="btn btn-outline-primary btn-lg btn-block">Upload</button>
             </form>
           </div>
         </div>
-        <?php endif; ?>
-        
       </div>
     </div>
   </div>
-
+        
   <?php
     include('content/js/partials/app.php');
     include('content/js/setProfile.php')
