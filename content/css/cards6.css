@@ -1,0 +1,10 @@
+
+.clipCard {
+  position: absolute;
+  top: -21px;
+  left: -13px;
+  height: 135px;
+  width: 97px;
+  transform: scale(70%);
+  clip-path: inset(4px 61px 98px 2px);
+}
