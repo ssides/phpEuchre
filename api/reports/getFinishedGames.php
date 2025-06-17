@@ -25,7 +25,8 @@
     $conn = mysqli_connect($hostname, $username, $password, $dbname);
     
     $sql = " select 
-        g.`GameFinishDate`
+        g.`ID`
+        ,g.`GameFinishDate`
         ,op.`Name` `OName`
         ,pp.`Name` `PName`
         ,g.`OrganizerScore`
@@ -44,7 +45,7 @@
       where g.`GameStartDate` is not null
       and g.`GameFinishDate` is not null
       and g.`GameFinishDate` > ?
-      order by g.`GameFinishDate`
+      order by g.`GameFinishDate` desc
       ";
 
     $stmt = mysqli_prepare($conn, $sql);
@@ -54,6 +55,7 @@
     
     while ($row = mysqli_fetch_assoc($result)) {
       $r = [
+        'ID' => $row['ID'],
         'GameFinishDate' => $row['GameFinishDate'],
         'OName' => $row['OName'],
         'PName' => $row['PName'],

@@ -25,6 +25,7 @@
       <table class="reportTable">
       <thead>
       <tr>
+        <td>Game ID</td>
         <td>Finish Date</td>
         <td>Organizer</td>
         <td>Partner</td>
@@ -36,6 +37,7 @@
       </thead>
       <tbody data-bind="foreach: finishedGames">
       <tr>
+        <td class="reportCell" data-bind="text: id"></td>
         <td class="reportCell" data-bind="text: finishDate"></td>
         <td data-bind="text: organizer, class: organizerScore > opponentScore ? 'reportCell reportWinner' : 'reportCell'"></td>
         <td data-bind="text: partner, class: organizerScore > opponentScore ? 'reportCell reportWinner' : 'reportCell'" ></td>

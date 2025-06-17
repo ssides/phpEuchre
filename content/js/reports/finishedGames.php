@@ -1,6 +1,7 @@
 <script type="text/javascript">
 
   function finishedGame(data) {
+    this.id = data.ID || '';
     this.finishDate = data.GameFinishDate || '';
     this.organizer = data.OName || '';
     this.partner = data.PName || '';
