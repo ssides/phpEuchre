@@ -19,23 +19,25 @@
 
 <body>
 
-  <div class="helloPadding">
-  <?php 
-    $$d = array();
-    $$d['r'] = "46C058D6-695B-47EF-AD84-095D16D020A2";
-    $$d['k'] = "16052C21-7E42-466B-BB56-9D3FEDD3E1AF";
-    
-    $e = base64_encode(serialize($$d));
-    echo $e;
-    echo '<br>';
+  <button id="startButton">Start Timer</button>
+  <button id="stopButton">Stop Timer</button>
+  <script>
+    const sound = new Audio('http://localhost:8080/audio/loner.mp3');
+    let timer = null;
 
-    $$a = unserialize(base64_decode($e));
-    echo 'r: '.$$a['r'];
-    echo '<br>';
-    echo 'k: '.$$a['k'];
-    echo '<br>';
-  ?>
-  </div>
+    document.getElementById('startButton').addEventListener('click', () => {
+      if (!timer) {
+        timer = setInterval(() => {
+          sound.play().catch(error => console.log('Error:', error));
+          }, 1000);
+      }
+    });
+
+    document.getElementById('stopButton').addEventListener('click', () => {
+      clearInterval(timer);
+      timer = null;
+    });
+  </script>
   
 </body>
 

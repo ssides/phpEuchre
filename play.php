@@ -181,9 +181,8 @@
           </tr>
           <tr id="SFESound">
             <td colspan=3>
-              <div class="float-end" style="display: none; height: 1px;" data-bind="visible: showSoundIcon()">
-                <img class="sfeSound" data-bind="visible: soundMute(), click: toggleSound" src="<?php echo $appUrl.'content/images/soundMute.png'; ?>" />
-                <img class="sfeSound" data-bind="visible: !soundMute(), click: toggleSound" src="<?php echo $appUrl.'content/images/sound.png'; ?>" />
+              <div class="float-end">
+                <img id="soundOnOff" class="sfeSound" src="<?php echo $appUrl.'content/images/soundMute.png'; ?>" />
               </div>
             </td>
           </tr>
@@ -323,7 +322,6 @@
   include('content/js/partials/playViewModel.php');
   include('content/js/partials/bidDialogViewModel.php');
   include('content/js/partials/finishGameDialogViewModel.php');
-  include('content/js/partials/soundViewModel.php');
 
   include('content/js/play.php')
   ?>

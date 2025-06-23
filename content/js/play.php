@@ -880,9 +880,84 @@
     ko.applyBindings(gc.replayVM, $('#ReplayReport')[0]);
     ko.applyBindings(gc.bidDialogVM, $('#bidModal')[0]);
     ko.applyBindings(gc.finishGameDialogVM, $('#finishGameModal')[0]);
+    
+    const soundImg = document.getElementById('soundOnOff');
+    let soundOnOff = false;
+    let soundTimer = setInterval(app.soundMute, 1000);
+    let audioContext = null;
 
-    var soundVM = new soundViewModel();
-    ko.applyBindings(soundVM, $('#SFESound')[0]);
+    // Initialize AudioContext on first user interaction
+    function initAudioContext() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        // Resume context if suspended (iOS Safari requirement)
+        if (audioContext.state === 'suspended') {
+          audioContext.resume().then(() => {
+            console.log('AudioContext resumed');
+          }).catch(err => console.error('Failed to resume AudioContext:', err));
+        }
+      }
+    }
+
+    // Function to play the next sound in the queue
+    function playNextSound() {
+      if (!app.soundPlaying && app.soundQueue.length > 0) {
+        const audioSrc = app.soundQueue.pop();
+        const audio = new Audio(audioSrc);
+        app.soundPlaying = true;
+        audio.play()
+          .then(() => {
+            audio.addEventListener('ended', () => {
+              app.soundPlaying = false;
+              app.deadSoundStartTime = Date.now();
+            });
+          })
+          .catch(error => {
+            console.error('Audio playback failed:', error);
+            app.soundPlaying = false;
+            // Resume AudioContext if suspended
+            if (audioContext && audioContext.state === 'suspended') {
+              audioContext.resume().catch(err => console.error('Failed to resume AudioContext:', err));
+            }
+          });
+      }
+
+      // Add silence to queue if no sound has played for 5 seconds
+      if (!app.soundPlaying) {
+        const timeDiff = Date.now() - app.deadSoundStartTime;
+        if (timeDiff >= 5000) {
+          app.soundQueue.push(app.sounds['silence']);
+        }
+      }
+    }
+
+    // Toggle sound on/off
+    soundImg.addEventListener('click', () => {
+      // Initialize AudioContext on user click (required for iOS Safari)
+      initAudioContext();
+
+      if (soundTimer) {
+        cancelAnimationFrame(soundTimer);
+        soundTimer = null;
+      }
+
+      soundOnOff = !soundOnOff;
+      if (soundOnOff) {
+        // Sound is ON: start playing sounds
+        soundImg.src = "<?php echo $appUrl.'content/images/sound.png'; ?>";
+        function loop() {
+          playNextSound();
+          soundTimer = requestAnimationFrame(loop);
+        }
+        loop();
+      } else {
+        // Sound is OFF: mute and switch to mute image
+        app.soundPlaying = false; // Reset to allow immediate replay on next toggle
+        soundTimer = requestAnimationFrame(() => app.soundMute());
+        soundImg.src = "<?php echo $appUrl.'content/images/soundMute.png'; ?>";
+      }
+    });
+        
   });
   
 </script>
