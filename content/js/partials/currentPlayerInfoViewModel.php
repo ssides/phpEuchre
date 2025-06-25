@@ -62,7 +62,6 @@
       }
       
       self.isMyTurn(self.gameData.CardFaceUp[2] == 'U' ? (self.myPosition == self.gameData.Dealer ? true : false) : self.myPosition == self.gameData.Turn);
-      self.playMyTurnSound(self.isMyTurn(), "yourturn");
       self.playPickingItUpSound();
       self.iamSkipped(self.gameData.CardFaceUp.length > 4 && self.gameData.CardFaceUp[4] == self.myPosition);
       
@@ -506,6 +505,7 @@
       var cardID = self.cards().length == 1 ?  self.cards()[0].id : self.getSelectedCard();
       if (cardID) {
         self.enablePlayBtn(false);
+        app.soundQueue.push(app.sounds["cardplayed"]);
         self.playCard(cardID);
       }
     }
@@ -689,24 +689,11 @@
     };
 
     // self.update() is called potentially multiple times while
-    // it's your turn, but the yourturn sound should only play once.
-    // Different viewmodels require different approaches to solve
-    // this same problem.
+    // it's your turn.
     self.playOnceRemove = function(a, i){
       const ix = a.indexOf(i);
       if (ix != -1) {
         a.splice(ix, 1);
-      }
-    };
-
-    self.playMyTurnSound = function(ismyturn, yt){
-      if (ismyturn) {
-        if (!self.playOnce.includes(yt)) {
-          self.playOnce.push(yt);
-          app.soundQueue.push(app.sounds[yt]);
-        }
-      } else {
-        self.playOnceRemove(self.playOnce, yt);
       }
     };
     
@@ -731,16 +718,9 @@
           app.soundQueue.push(app.sounds[cmd]);
         }
       } else {
-        if (self.playOnce.includes("yourturn")) {
-          self.playOnce = [];
-          self.playOnce.push("yourturn");
-        } else {
-          self.playOnce = [];
-        }
+        self.playOnce = [];
       }
     };
-
-    
     
     self.initialize = function(selfPosition, game){
       self.gameData = new gameModel(game);
