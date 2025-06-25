@@ -113,7 +113,6 @@
     "UQD": '<?php echo $appUrl.$audioDir."UQD.mp3"; ?>',
     "UQH": '<?php echo $appUrl.$audioDir."UQH.mp3"; ?>',
     "UQS": '<?php echo $appUrl.$audioDir."UQS.mp3"; ?>',
-    "yourturn": '<?php echo $appUrl.$audioDir."yourturn.mp3"; ?>',
     "silence": '<?php echo $appUrl.$audioDir."momentofsilence.mp3"; ?>',
     "gamewinner": '<?php echo $appUrl.$audioDir."gamewinner.mp3"; ?>',
     "gameloser": '<?php echo $appUrl.$audioDir."gameloser.mp3"; ?>',
