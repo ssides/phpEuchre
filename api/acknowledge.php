@@ -58,7 +58,7 @@ try {
   trigger_error($e->getMessage(), E_USER_ERROR);
 
   http_response_code(500); // Internal Server Error
-  $response['ErrorMsg'] = 'An error occurred while updating the game';
+  $response['ErrorMsg'] = 'An error occurred while updating the game.';
   echo json_encode($response);
 }
 
