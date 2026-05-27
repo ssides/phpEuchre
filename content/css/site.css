@@ -547,3 +547,10 @@ table.dbgTable td {
   border-radius: 5px;
   background: #f0fae3;
 }
+
+.labelCell {
+    width: 80px;
+    vertical-align: top;
+    padding-top: 10px;   /* Adjust this value as needed */
+    font-weight: normal;
+}

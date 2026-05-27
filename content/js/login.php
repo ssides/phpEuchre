@@ -17,13 +17,17 @@
 
   function loginViewModel() {
     var self = this;
-    
+   
     self.errorMessage = ko.observable('');
     self.name = ko.observable('');
-    self.password = ko.observable('');
     self.selectedGroup = ko.observable();
     self.groups = ko.observableArray();
     
+    // New autocomplete properties
+    self.suggestions = ko.observableArray([]);
+    self.showSuggestions = ko.observable(false);
+    self.highlightIndex = ko.observable(-1);
+
     self.getGroups = function() {
       $.ajax({
         method: 'POST',
@@ -49,6 +53,66 @@
         }
       });
     };
+    
+    self.searchNames = function() {
+        var term = self.name().trim();
+        
+        if (term.length < 2) {
+            self.suggestions([]);
+            self.showSuggestions(false);
+            return;
+        }
+
+        $.ajax({
+            method: 'GET',
+            url: 'api/players/searchNames.php',
+            data: { term: term },
+            success: function (response) {
+                let data = typeof response === 'string' ? JSON.parse(response) : response;
+                self.suggestions(data.names || []);
+                self.showSuggestions(data.names && data.names.length > 0);
+                self.highlightIndex(-1);
+            },
+            error: function() {
+                self.suggestions([]);
+                self.showSuggestions(false);
+            }
+        });
+    };
+
+    // Select a suggestion
+    self.selectSuggestion = function(name) {
+        self.name(name);
+        self.suggestions([]);
+        self.showSuggestions(false);
+        $('#name_signin').focus();
+    };
+
+    // Keyboard navigation
+    self.handleKeyDown = function(data, event) {
+        if (!self.showSuggestions()) return true;
+
+        var current = self.highlightIndex();
+
+        switch(event.key) {
+            case 'ArrowDown':
+                self.highlightIndex(Math.min(current + 1, self.suggestions().length - 1));
+                return false;
+            case 'ArrowUp':
+                self.highlightIndex(Math.max(current - 1, -1));
+                return false;
+            case 'Enter':
+                if (current >= 0) {
+                    self.selectSuggestion(self.suggestions()[current]);
+                    return false;
+                }
+                break;
+            case 'Escape':
+                self.showSuggestions(false);
+                return false;
+        }
+        return true;
+    };
 
     self.setErrorMessage = function(e){
       self.errorMessage(e);
@@ -58,9 +122,7 @@
       var msg = '';
       if (self.name().length == 0) {
         msg = 'Please enter a name.';
-      } else if (self.password().length == 0) {
-        msg = 'Please enter a password.';
-      } 
+      }
       return msg;
     };
     
@@ -74,21 +136,18 @@
     };
     
     self.initialize = function() {
-     self.getGroups();
+        self.getGroups();
     };
-    
+   
     self.initialize();
-  }    
-  
+  }
+
   $(function () {
     var vm = new loginViewModel();
     ko.applyBindings(vm);
-
-    var loginError = '<?php echo str_replace("'", "\'", $loginError); ?>';
-    if (loginError.length > 0) {
-      vm.setErrorMessage(loginError);
-    }
-
-
+    
+    setTimeout(function() {
+        $('#name_signin').focus().select();
+    }, 250);
   });
 </script>

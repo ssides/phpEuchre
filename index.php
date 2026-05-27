@@ -24,22 +24,54 @@
     <div class="vertical-center">
       <div class="inner-block">
         <form id="loginForm" action="" method="post">
-          <h3>Login</h3>
+          <h3>Hello</h3>
+
+          <?php if(isset($_SESSION['login_error'])) {
+            echo('<div class="alert alert-danger">');
+            echo($_SESSION['login_error']);
+            echo('</div>');
+            } 
+          ?>
 
           <div class="alert alert-danger" style="display:none" data-bind="visible: errorMessage().length > 0" >
               <div data-bind="text: errorMessage"></div>
           </div>
           <table>
             <tr>
-              <td style="width: 80px"><label for="name_signin">Name</label></td>
-              <td><input type="text" name="name_signin" id="name_signin" data-bind="value: name" /><span class="requiredField">&nbsp;*</span></td>
+              <td class="labelCell"><label for="name_signin">Name</label></td>
+              <td>
+                  <div class="position-relative">
+                      <input type="text" 
+                             name="name_signin" 
+                             id="name_signin" 
+                             class="form-control"
+                             data-bind="value: name, 
+                                        valueUpdate: 'input',
+                                        event: { 
+                                            input: searchNames, 
+                                            keydown: handleKeyDown,
+                                            blur: function(){ setTimeout(function(){ $root.showSuggestions(false); }, 200); }
+                                        }" 
+                             autocomplete="off" />
+                      
+                      <!-- Suggestions dropdown -->
+                      <div class="list-group position-absolute w-100" 
+                           data-bind="visible: showSuggestions" 
+                           style="max-height: 300px; overflow-y: auto; z-index: 1000; margin-top: 2px; border: 1px solid #ccc;">
+                          <!-- ko foreach: suggestions -->
+                          <a href="#" class="list-group-item list-group-item-action" 
+                             data-bind="text: $data, 
+                                        css: { active: $index() === $parent.highlightIndex() },
+                                        click: function(){ $parent.selectSuggestion($data); }">
+                          </a>
+                          <!-- /ko -->
+                      </div>
+                  </div>
+                  </br>
+              </td>
             </tr>
             <tr>
-              <td><label for="password_signin">Password</label></td>
-              <td><input type="password" name="password_signin" id="password_signin" data-bind="value: password" /><span class="requiredField">&nbsp;*</span></td>
-            </tr>
-            <tr>
-              <td><label for="selectgroup">Group</label></td>
+              <td><label for="selectgroup">Group&nbsp;(optional)&nbsp;</label></td>
               <td class="sfeTooltip">
                 <select id="selectgroup" data-bind="options: groups, optionsText: 'description', value: selectedGroup, optionsCaption:'Select'"></select>
                 <input type="hidden" data-bind="value: selectedGroup() ? selectedGroup().description : ''" id="group_signin" name="group_signin" />
@@ -48,23 +80,21 @@
               </td>
             </tr>
             <tr>
-              <td colspan="2">
-                <span class="requiredField">*&nbsp;Required field</span>
+              <td>&nbsp;</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td><button type="submit" name="login" id="sign_in" class="btn btn-outline-primary btn-lg btn-block" data-bind="click: validateSubmit">Sign in</button>
               </td>
             </tr>
           </table>
-          </br>
-          <button type="submit" name="login" id="sign_in" class="btn btn-outline-primary btn-lg btn-block" data-bind="click: validateSubmit">Sign in</button>
-          </br>
-          </br>
-          <?php echo '<a href="'.$appUrl.'resetPassword.php">Forgot password?</a>'; ?>
         </form>
       </div>
     </div>
   </div>
   
   <?php
-    include('content/js/partials/app.php');
     include('content/js/login.php')
   ?>
 

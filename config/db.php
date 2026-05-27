@@ -9,6 +9,7 @@
     $password = 'JerryMaker34#$';
     $dbname = 'Euchre';
     
-    $connection = mysqli_connect($hostname, $username, $password, $dbname) or die("Database connection not established.")
+    $connection = mysqli_connect($hostname, $username, $password, $dbname) or die("Database connection not established.");
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 ?>

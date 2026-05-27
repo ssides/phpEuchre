@@ -26,30 +26,18 @@
                     <h3>Register</h3>
 
                     <?php echo $success_msg; ?>
-                    <?php echo $name_exist; ?>
-                    <?php echo $email_verify_err; ?>
-                    <?php echo $email_verify_success; ?>
-
+                    <?php if(isset($_SESSION['register_error'])) {
+                        echo('<div class="alert alert-danger">');
+                        echo($_SESSION['register_error']);
+                        echo('</div>');
+                        } 
+                    ?>
+                    
                     <div class="form-group">
                         <label>Name</label>
                         <input type="text" class="form-control" name="name" id="name" />
-
-                        <?php echo $nameEmptyErr; ?>
                     </div>
-
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" class="form-control" name="password" id="password" />
-
-                        <?php echo $_passwordErr; ?>
-                        <?php echo $passwordEmptyErr; ?>
-                    </div>
-
-                    <div class="form-group login-margin-bottom">
-                        <label>Confirm Password</label>
-                        <input type="password" class="form-control" name="confirmpassword" id="confirmpassword" />
-                    </div>
-
+                    </br>
                     <button type="submit" name="submit" id="submit" class="btn btn-outline-primary btn-lg btn-block">Sign up</button>
                 </form>
             </div>
