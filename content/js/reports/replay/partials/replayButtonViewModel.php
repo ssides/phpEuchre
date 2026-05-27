@@ -10,7 +10,7 @@
     }
     
     self.replay = function() {
-      window.location.href = 'reports/replay-from-game.php';
+      window.open('reports/replay-from-game.php', '_blank');
     };
 
   }
