@@ -31,7 +31,7 @@
     self.getInvitations = function() {
       if (!self.invitationInProgress) {
         self.invitationInProgress = true;
-        var postData = { <?php echo 'r:'."'{$$a['r']}'" ?> };
+        var postData = { <?php echo 'r:'."'{$_a['r']}'" ?> };
 
         $.ajax({
           method: 'POST',
@@ -62,7 +62,7 @@
     self.getRejoinableGames = function(){
       if (!self.rejoinInProgress) {
         self.rejoinInProgress = true;
-        var postData = { <?php echo 'r:'."'{$$a['r']}'" ?> };
+        var postData = { <?php echo 'r:'."'{$_a['r']}'" ?> };
         $.ajax({
           method: 'POST',
           url: 'api/getRejoinableGames.php',
@@ -92,7 +92,7 @@
     self.getEndgameGames = function(){
       if (!self.endgameInProgress) {
         self.endgameInProgress = true;
-        var postData = { <?php echo 'r:'."'{$$a['r']}'" ?> };
+        var postData = { <?php echo 'r:'."'{$_a['r']}'" ?> };
         $.ajax({
           method: 'POST',
           url: 'api/getEndableGames.php',

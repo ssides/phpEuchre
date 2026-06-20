@@ -8,7 +8,7 @@
       $gameID = $_SESSION['gameID'];
       if(isset($_POST['startGame'])) {
         
-        if (saveGameStartInfo($$a['r'], $_SESSION['gameID'], $_POST['playTo'], $_POST['gameSpeed'])) {
+        if (saveGameStartInfo($_a['r'], $_SESSION['gameID'], $_POST['playTo'], $_POST['gameSpeed'])) {
           header('Location: play.php');
         } else {
           // $controllerError is displayed on the page through the view model.

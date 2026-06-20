@@ -25,7 +25,7 @@
   scores.getScores = function(gameID) {
     scores.success = false;
     var postData = { 
-      <?php echo 'r:'."'{$$a['r']}'" ?>,
+      <?php echo 'r:'."'{$_a['r']}'" ?>,
       gameID: gameID
       };
     $.ajax({

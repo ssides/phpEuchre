@@ -16,13 +16,13 @@
   }
   
   function readAuthCookie() {
-    global $_COOKIE, $cookieName, $$a;
+    global $_COOKIE, $cookieName, $_a;
     $result = false;
     
-    if (isset($$a['r']) && strlen($$a['r']) > 0) {
+    if (isset($_a['r']) && strlen($_a['r']) > 0) {
       $result = true;
     } else if (!empty($_COOKIE[$cookieName])) {
-      $$a = unserialize(base64_decode($_COOKIE[$cookieName]));
+      $_a = unserialize(base64_decode($_COOKIE[$cookieName]));
       $result = true;
     }
     
@@ -30,11 +30,11 @@
   }
   
   function isAppAuthenticated() {
-    global $$a;
+    global $_a;
     $result = false;
     
-    if (isset($$a['r']) || readAuthCookie()) {
-      $result = isAuthenticated($$a['r']);
+    if (isset($_a['r']) || readAuthCookie()) {
+      $result = isAuthenticated($_a['r']);
     }
     
     return $result;

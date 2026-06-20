@@ -33,7 +33,7 @@
     
     self.getLogData = function() {
       var postData = { 
-        <?php echo 'r:'."'{$$a['r']}'" ?>,
+        <?php echo 'r:'."'{$_a['r']}'" ?>,
         gameID: self.gameID().trim()
         };
       $.ajax({
