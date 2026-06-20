@@ -21,7 +21,7 @@
     self.games = ko.observableArray([]);
 
     self.getGames = function() {
-      var postData = { <?php echo 'r:'."'{$$a['r']}'" ?> };
+      var postData = { <?php echo 'r:'."'{$_a['r']}'" ?> };
       $.ajax({
         method: 'POST',
         url: '../api/reports/getGames.php',

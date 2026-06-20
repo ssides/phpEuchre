@@ -37,10 +37,10 @@
                 
                 $hofs = $vofs = 0;
                 
-                deleteExistingImage($conn, $$a['r']);
+                deleteExistingImage($conn, $_a['r']);
                 
                 $smt = mysqli_prepare($conn, 'insert into `UserProfile` (`ID` , `PlayerID` ,`OriginalName` , `OriginalSavedPath`,`OriginalContentType` ,`ThumbnailPath`, `OriginalFileSize`, `HOffset`,`VOffset`,`OriginalScale`,`DisplayScale`,`InsertDate` ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())');
-                mysqli_stmt_bind_param($smt, 'ssssssiiidd', GUID(), $$a['r'], $_FILES['profileImage']['name'], $destPath, $contentType, $thumbnailPath, $size, $hofs, $vofs, $scale, $scale);
+                mysqli_stmt_bind_param($smt, 'ssssssiiidd', GUID(), $_a['r'], $_FILES['profileImage']['name'], $destPath, $contentType, $thumbnailPath, $size, $hofs, $vofs, $scale, $scale);
                 mysqli_stmt_execute($smt);
                 mysqli_stmt_close($smt);
               }

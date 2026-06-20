@@ -78,7 +78,7 @@
           </div>
         </div>
 
-        <?php if(empty($$a['k'])): ?>
+        <?php if(empty($_a['k'])): ?>
           <div class="org-border dashboardMargin">
             To start a game, log in to a group.
           </div>

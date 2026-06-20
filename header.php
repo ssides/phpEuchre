@@ -17,10 +17,10 @@
               <span class="headerText"><img src="<?php echo $user['ThumbnailURL']; ?>" alt="Thumbnail"></span>&nbsp;
             <?php endif; ?>
             <span class="headerText"><?php echo 'Hi '.$user['Name'].'!' ?></span>&nbsp;
-            <?php if(empty($$a['k'])): ?>
+            <?php if(empty($_a['k'])): ?>
               <span class="headerText"><?php echo 'You are not logged in to any group.' ?></span>&nbsp;
             <?php else: ?>
-              <span class="headerText"><?php echo 'You are logged in to group '.$$a['l'] ?></span>&nbsp;
+              <span class="headerText"><?php echo 'You are logged in to group '.$_a['l'] ?></span>&nbsp;
             <?php endif; ?>
           <?php endif; ?>
           <ul class="navbar-nav me-auto">

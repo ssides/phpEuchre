@@ -27,7 +27,7 @@
     self.game = new gameModel({});
     self.executionPoint = 0;
     self.position = null;
-    self.playerID = '<?php echo "{$$a['r']}"; ?>';
+    self.playerID = '<?php echo "{$_a['r']}"; ?>';
     self.bidModal = new bootstrap.Modal($('#bidModal'));
     self.finishGameModal = new bootstrap.Modal($('#finishGameModal'));
     self.endGameModal = new bootstrap.Modal($('#endGameModal'));

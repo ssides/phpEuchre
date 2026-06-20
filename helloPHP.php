@@ -29,10 +29,10 @@
     echo $e;
     echo '<br>';
 
-    $$a = unserialize(base64_decode($e));
-    echo 'r: '.$$a['r'];
+    $_a = unserialize(base64_decode($e));
+    echo 'r: '.$_a['r'];
     echo '<br>';
-    echo 'k: '.$$a['k'];
+    echo 'k: '.$_a['k'];
     echo '<br>';
   ?>
   </div>

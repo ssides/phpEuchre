@@ -5,7 +5,7 @@
   include('svc/getThumbnailURL.php');
   
   readAuthCookie();
-  $user = getUserInfo($$a['r']);
+  $user = getUserInfo($_a['r']);
   $hdrCtrlrError = is_null($connection) ? "No connection. " : "";
   
   function getUserInfo($playerID) {
